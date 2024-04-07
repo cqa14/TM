@@ -1,0 +1,119 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {french}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {french}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {french}{}\relax 
+\defcounter {refsection}{0}\relax 
+\contentsline {part}{I\hspace {1em}Préambule}{3}{part.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {1}Introduction}{4}{chapter.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {2}Notions théoriques}{6}{chapter.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.1}Informatique}{6}{section.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.2}Physique}{13}{section.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {part}{II\hspace {1em}Les notions de base}{22}{part.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {3}Un ordinateur classique}{23}{chapter.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.1}Logique}{23}{section.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.2}Hardware}{27}{section.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {4}Un qubit}{29}{chapter.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.1}Superposition d'états}{29}{section.4.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.2}Opérations sur un qubit}{30}{section.4.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.3}Mesure}{33}{section.4.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {5}Système à plusieurs qubits}{35}{chapter.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.1}Description du système}{35}{section.5.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.2}Les portes}{36}{section.5.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.3}Applications simples}{38}{section.5.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.3.1}Superdense Coding}{38}{subsection.5.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.3.2}Téléportation quantique}{41}{subsection.5.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {6}Un ordinateur quantique}{44}{chapter.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.1}Universalité}{44}{section.6.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.2}Hardware}{45}{section.6.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {part}{III\hspace {1em}Exemples d'algorithmes}{49}{part.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {7}Algorithme de Deutsch-Jozsa}{50}{chapter.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {8}Quelques protocoles}{53}{chapter.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {8.1}Retour de phase}{53}{section.8.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {8.2}Transformée de Fourier quantique}{55}{section.8.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {8.3}Estimation de phase quantique}{57}{section.8.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {9}Algorithme de Shor}{61}{chapter.9}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {9.1}Principe}{61}{section.9.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {9.2}Implémentation simple}{62}{section.9.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {9.2.1}Simulation}{63}{subsection.9.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {9.2.2}Hardware réel}{64}{subsection.9.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {9.3}Application à un problème concret}{65}{section.9.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {10}Cryptographie : distribution de clés}{68}{chapter.10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {11}Algorithme de Grover}{70}{chapter.11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {11.1}Principe}{70}{section.11.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {11.2}Comparaison avec une implémentation classique}{72}{section.11.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {11.2.1}2 entrées}{73}{subsection.11.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {11.2.2}3 entrées}{73}{subsection.11.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {11.2.3}4 entrées}{74}{subsection.11.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {11.2.4}Différence de complexité}{76}{subsection.11.2.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {11.3}Résolution d'un sudoku}{76}{section.11.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {12}Estimation de phase itérative}{79}{chapter.12}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {13}Modélisation d'un système physique}{81}{chapter.13}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {13.1}Propriété d'un système}{81}{section.13.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {13.2}Évolution temporelle d'un système}{84}{section.13.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {14}Machine learning quantique}{88}{chapter.14}%
+\defcounter {refsection}{0}\relax 
+\contentsline {part}{IV\hspace {1em}Et après...}{93}{part.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {15}Limitations actuelles}{94}{chapter.15}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {16}Technologies de hardware}{98}{chapter.16}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {17}Sur des machines à court terme}{100}{chapter.17}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {18}Sur le long terme}{101}{chapter.18}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {19}Conclusion}{103}{chapter.19}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{Appendices}{104}{section*.84}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {A}Utilisation de \emph {Qiskit}}{105}{appendix.1.A}%

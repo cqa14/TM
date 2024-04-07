@@ -1,0 +1,70 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\usepackage{physics}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\author{Romain Blondel}
+\title{\textbf{Erratum} sur \emph{``Les algorithmes quantiques - ou une théorie d'optimisation''}}
+
+\begin{document}
+
+\maketitle
+Dans le travail de maturité rendu à date du 30 octobre 2023 au gymnase Auguste Piccard intitulé \emph{``Les algorithmes quantiques - ou une théorie d'optimisation''}, une erreur est demeurée dans une équation. Ce document vise à rectifier cela. Tout d'abord, le travail cité est celui de Romain Blondel, classe 3M8, avec M. De Montmollin comme maître de travail.\\ \\
+Il y a une première erreur en page 32 :\\ \\
+``\begin{proof}
+    On a $H \ket{0} = \frac{1}{\sqrt{2}} ((\ket{0}+\ket{1})\bra{0} + (\ket{0}+\ket{1})\bra{1} \ket{0} =
+    \frac{1}{\sqrt{2}} ((\ket{0}+\ket{1})\bra{0}\ket{0} + (\ket{0}+\ket{1})\bra{1}\ket{0}) =
+    \frac{1}{\sqrt{2}} (\ket{0}+\ket{1} + 0) = \frac{1}{\sqrt{2}} \ket{0} + \frac{1}{\sqrt{2}} \ket{1} =
+    \ket{+}$, et un raisonnement similaire pour $\ket{1}$.
+\end{proof}''\\ \\
+qui est en fait :\\ \\
+``\begin{proof}
+    On a $H \ket{0} = \frac{1}{\sqrt{2}} ((\ket{0}+\ket{1})\bra{0} + (\ket{0}-\ket{1})\bra{1}) \ket{0} =
+    \frac{1}{\sqrt{2}} ((\ket{0}+\ket{1})\bra{0}\ket{0} + (\ket{0}-\ket{1})\bra{1}\ket{0}) =
+    \frac{1}{\sqrt{2}} (\ket{0}+\ket{1} + 0) = \frac{1}{\sqrt{2}} \ket{0} + \frac{1}{\sqrt{2}} \ket{1} =
+    \ket{+}$, et un raisonnement similaire pour $\ket{1}$.
+\end{proof}''\\ \\
+Il y en deux fautes dans ce passage. La première est l'oubli d'une parenthèse à la fin avant le second symbol d'égalité, et la seconde est l'échange d'un moins pour un plus dans l'expression liée à $\bra{1}$, qui de toute manière s'annule à 0, mais si l'on essaie avec cette erreur de calculer pour $H \ket{1} = \ket{-}$, on n'aurait pas le bon résultats car la première expression est fausse selon la définition de la porte d'Hadamard.\\ \\
+\clearpage
+Il y a une autre erreur se situant en page 51, dans le passage cité ci-dessous :\\ \\
+``\\
+Nous ne soucions donc plus que des qubits d'entrée, et on peut réécrire l'équation
+comme suit :
+\[
+    \frac{1}{2} (\ket{0} + (-1)^{f(0) \oplus f(1)} \ket{1})
+\]
+qui devient ensuite par la porte d'Hadamard :
+\[
+    \frac{1}{2} (\ket{0} + \ket{1} + (-1)^{f(0) \oplus f(1)} \ket{0} - (-1)^{f(0) \oplus f(1)} \ket{1}) = \frac{1}{2} ((1 + (-1)^{f(0) \oplus f(1)}) \ket{0} + (1 - (-1)^{f(0) \oplus f(1)}) \ket{1})
+\]
+On constate alors que si $f(0) \oplus f(1) = 0$, alors la probabilité de mesure de
+$\ket{0}$ est de 1, et si $f(0) \oplus f(1) = 1$, alors la probabilité de mesure de
+$\ket{1}$ est de 1, ainsi, en mesurant le qubit d'entrée, on peut déterminer si
+l'oracle est constant ou équilibré.\\
+''\\ \\
+qui doit être corrigé ainsi :\\ \\
+``\\
+Nous ne soucions donc plus que des qubits d'entrée, et on peut réécrire l'équation
+comme suit :
+\[
+    \frac{1}{\sqrt{2}} (\ket{0} + (-1)^{f(0) \oplus f(1)} \ket{1})
+\]
+qui devient ensuite par la porte d'Hadamard :
+\[
+    \frac{1}{2} (\ket{0} + \ket{1} + (-1)^{f(0) \oplus f(1)} \ket{0} - (-1)^{f(0) \oplus f(1)} \ket{1}) = \frac{1}{2} ((1 + (-1)^{f(0) \oplus f(1)}) \ket{0} + (1 - (-1)^{f(0) \oplus f(1)}) \ket{1})
+\]
+On constate alors que si $f(0) \oplus f(1) = 0$, alors la probabilité de mesure de
+$\ket{0}$ est de 1, et si $f(0) \oplus f(1) = 1$, alors la probabilité de mesure de
+$\ket{1}$ est de 1, ainsi, en mesurant le qubit d'entrée, on peut déterminer si
+l'oracle est constant ou équilibré.\\
+''\\ \\
+En effet, une faute de rédaction, vraisemblablement lié au copier-coller d'une partie des calculs qui précédent le passage, a mené à l'oubli de modifier la fraction devant l'expression de $\frac{1}{2}$ à $\frac{1}{\sqrt{2}}$. En effet, dans la première expression, pour que les probabilités correspondent, il faut prendre $\frac{1}{\sqrt{2}}$ car $(\frac{1}{\sqrt{2}})^2 + (\frac{1}{\sqrt{2}}(-1)^{f(0) \oplus f(1)})^2 = 1$. Ensuite, en se rappelant que la porte d'Hadamard $H = \frac{1}{\sqrt{2}} ((\ket{0}+\ket{1})\bra{0} + (\ket{0}-\ket{1})\bra{1})$, on voit que le facteur revient bien à $\frac{1}{2}$ et que les probabilité finissant bien à 1 selon la séparation des cas.
+
+\end{document}

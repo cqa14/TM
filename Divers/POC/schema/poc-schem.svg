@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="windows-1252"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="406 103 190 406" xmlns:latexdraw="http://latexdraw.sourceforge.net/namespaces/latexdraw" version="1.1" baseProfile="full">
+    <g>
+        <g latexdraw:type="circle" id="id425393582">
+            <circle cx="501.0" cy="186.0" r="62.0" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="none"/>
+        </g>
+        <g latexdraw:type="dot" id="id448100264" latexdraw:size="40.0" latexdraw:dotShape="*" latexdraw:position="481.0 168.0">
+            <ellipse cx="481.0" cy="168.0" rx="18.46153846153846" ry="18.46153846153846" stroke-width="2.5" stroke-linecap="square" stroke="black" fill="black"/>
+        </g>
+        <g latexdraw:type="dot" id="id52943918" latexdraw:size="40.0" latexdraw:dotShape="*" latexdraw:position="528.0 166.0">
+            <ellipse cx="528.0" cy="166.0" rx="18.46153846153846" ry="18.46153846153846" stroke-width="2.5" stroke-linecap="square" stroke="black" fill="black"/>
+        </g>
+        <g latexdraw:type="bezierCurve" id="id827004299">
+            <path d="M 480.0 207.0 C 480.0 247.0 533.0 244.0 533.0 204.0" stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1781166240">
+            <polyline points="503.0,249.0 502.0,393.0 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1669386127">
+            <polyline points="466.0,290.0 504.0,317.0 576.0,286.0 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1049132582">
+            <polyline points="426.0,489.0 504.0,391.0 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id958516514">
+            <polyline points="501.0,389.0 552.0,481.0 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="text" id="id234153868" fill="black" latexdraw:position="bl" transform="rotate(-29.97405063560623 0.0 0.0) translate(-160.1705911182392 262.30669947797287)">
+            <text x="569.9999999999999" y="168.0">Bonjour</text>
+        </g>
+    </g>
+    <defs/>
+    <metadata>
+        <latexdraw:metadata>
+            <latexdraw:centreHoriz>false</latexdraw:centreHoriz>
+            <latexdraw:positionVert/>
+            <latexdraw:zoom>1.0</latexdraw:zoom>
+            <latexdraw:vpx>0.5</latexdraw:vpx>
+            <latexdraw:vpy>0.382</latexdraw:vpy>
+        </latexdraw:metadata>
+    </metadata>
+</svg>

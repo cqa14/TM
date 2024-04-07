@@ -1,0 +1,103 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+
+% Schéma
+\usepackage[usenames,dvipsnames]{pstricks}
+\usepackage{pstricks-add}
+\usepackage{epsfig}
+\usepackage{pst-grad} % For gradients
+\usepackage{pst-plot} % For axes
+\usepackage[space]{grffile} % For spaces in paths
+\usepackage{etoolbox} % For spaces in paths
+\makeatletter % For spaces in paths
+\patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+\makeatother
+
+\usepackage{auto-pst-pdf} % à ajouter pour compiler
+
+% Quantum circuit
+\usepackage[braket, qm]{qcircuit}
+\usepackage{graphicx}
+
+% Plot / Hist
+\usepackage{pgfplots}
+\DeclareUnicodeCharacter{2212}{−}
+\usepgfplotslibrary{groupplots,dateplot}
+\usetikzlibrary{patterns,shapes.arrows}
+\pgfplotsset{compat=newest}
+
+% Logic
+\usetikzlibrary{positioning,shapes.gates.logic.US}
+
+\begin{document}
+
+\section{Schéma}
+\input{D:/Documents/GAP/TM/Divers/POC/schema/schema-poc.tex}
+
+\section{Quantum circuit}
+% /!\ ajouter \shorthandoff{!} pour que cela fonctionne
+\[\shorthandoff{!}
+\scalebox{1.0}{
+\Qcircuit @C=1.0em @R=0.2em @!R { \\
+	 	\nghost{{qr}_{0} :  } & \lstick{{qr}_{0} :  } & \gate{\mathrm{H}} & \ctrl{1} & \meter & \qw & \qw & \qw\\
+	 	\nghost{{qr}_{1} :  } & \lstick{{qr}_{1} :  } & \qw & \targ & \qw & \meter & \qw & \qw\\
+	 	\nghost{\mathrm{{cr} :  }} & \lstick{\mathrm{{cr} :  }} & \lstick{/_{_{2}}} \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-2,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+\\ }}
+\]
+
+\section{Plotting}
+\input{D:/Documents/GAP/TM/Divers/POC/plot/plot.tex}
+
+\section{Histogramme}
+\input{D:/Documents/GAP/TM/Divers/POC/hist_plot/hist_plot.tex}
+
+\section{Logique}
+\begin{tikzpicture}[
+        %Environment config
+        font=\sffamily,
+        thick,
+        %Environment styles
+        GateCfg/.style={
+            logic gate inputs={normal,normal,normal},
+            draw,
+            scale=2
+        }
+    ]
+    \path
+        (0,0) node[and gate US,GateCfg](AND1){} 
+            ++ (2,-2) node[and gate US,GateCfg](AND2){} 
+            ++ (5,1) node[or gate US,GateCfg](OR1){}
+        (AND1.input 3)
+            ++ (-1,0) node[not gate US, draw](N1){}
+        (AND2.input 3)
+            ++ (-1,0) node[not gate US, draw](N2){}
+        (AND2.input 1 -| N1)
+            node[not gate US, draw](N3){};
+
+    \draw
+        (OR1.input 1) -- ++(-1.5,0) |- (AND1.output)
+        (OR1.input 3) -- ++(-1.5,0) |- (AND2.output)
+        (N2.output)--(AND2.input 3)
+        (N1.output)--(AND1.input 3)
+        (N3.output)--(AND2.input 1)
+        (AND1.input 1) 
+            -- ++(-3,0) coordinate (init) node[anchor=east]{p}
+            node[pos=0.6](temp){}
+        (N1-| temp)
+            ++(0,5pt) edge (temp.center)
+            arc (90:-90:5pt) |- (N3.input)
+        (init |- N1) node[anchor=east]{q} 
+            -- (N1.input) node[pos=0.4](temp2){}
+        (temp2.center) |- (N2.input)
+        (OR1.output) -- ++(2,0) node [midway,anchor=south]{Output};
+\end{tikzpicture}
+
+\end{document}

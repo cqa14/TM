@@ -1,0 +1,5 @@
+[0] Config.pm:311> INFO - This is Biber 2.16
+[0] Config.pm:314> INFO - Logfile is 'erratum.blg'
+[117] biber-MSWIN64:340> INFO - === 
+[682] Utils.pm:411> ERROR - Cannot find 'erratum.bcf'!
+[682] Biber.pm:132> INFO - ERRORS: 1

@@ -1,0 +1,29 @@
+[0] Config.pm:311> INFO - This is Biber 2.16
+[0] Config.pm:314> INFO - Logfile is 'D:/Documents/GAP/TM/auxil/TM-Algo_quant-Romain_Blondel.blg'
+[82] biber-MSWIN64:340> INFO - === 
+[112] Biber.pm:415> INFO - Reading 'D:/Documents/GAP/TM/auxil/TM-Algo_quant-Romain_Blondel.bcf'
+[203] Biber.pm:949> INFO - Using all citekeys in bib section 0
+[214] Biber.pm:4340> INFO - Processing section 0
+[223] Biber.pm:4531> INFO - Looking for bibtex format file 'sources/sources-global.bib' for section 0
+[274] bibtex.pm:1689> INFO - LaTeX decoding ...
+[312] bibtex.pm:1494> INFO - Found BibTeX data source 'sources/sources-global.bib'
+[314] Utils.pm:395> WARN - Entry 'ibm-cern' (sources/sources-global.bib): Invalid format '02/06/2021' of date field 'date' - ignoring
+[333] Utils.pm:395> WARN - Entry 'schrodinger-eq' (sources/sources-global.bib): Invalid format '14/04/2022' of date field 'date' - ignoring
+[335] Utils.pm:395> WARN - Entry 'univ-sing' (sources/sources-global.bib): Invalid format '06/05/2020' of date field 'date' - ignoring
+[338] Utils.pm:395> WARN - Entry 'python-mult-comp' (sources/sources-global.bib): Invalid format '04/04/2019' of date field 'date' - ignoring
+[342] Utils.pm:395> WARN - Entry 'gate-impl' (sources/sources-global.bib): Invalid format '11/11/2020' of date field 'date' - ignoring
+[344] Utils.pm:395> WARN - Entry 'univ-double' (sources/sources-global.bib): Invalid format '01/08/2020' of date field 'date' - ignoring
+[718] Biber.pm:4531> INFO - Looking for bibtex format file 'sources/wikipedia.bib' for section 0
+[757] bibtex.pm:1689> INFO - LaTeX decoding ...
+[798] bibtex.pm:1494> INFO - Found BibTeX data source 'sources/wikipedia.bib'
+[873] Biber.pm:4531> INFO - Looking for bibtex format file 'sources/articles.bib' for section 0
+[918] bibtex.pm:1689> INFO - LaTeX decoding ...
+[950] bibtex.pm:1494> INFO - Found BibTeX data source 'sources/articles.bib'
+[1045] Utils.pm:395> WARN - legacy year field '1963-1965' in entry 'feynmann-lectures' is not an integer - this will probably not sort properly.
+[1156] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1156] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1156] Biber.pm:4168> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'en-US'
+[1156] Biber.pm:4174> INFO - No sort tailoring available for locale 'en-US'
+[1216] bbl.pm:654> INFO - Writing 'D:/Documents/GAP/TM/auxil/TM-Algo_quant-Romain_Blondel.bbl' with encoding 'UTF-8'
+[2104] bbl.pm:757> INFO - Output to D:/Documents/GAP/TM/auxil/TM-Algo_quant-Romain_Blondel.bbl
+[2109] Biber.pm:128> INFO - WARNINGS: 7

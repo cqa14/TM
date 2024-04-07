@@ -1,0 +1,29 @@
+% \usepackage[usenames,dvipsnames]{pstricks}
+% \usepackage{pstricks-add}
+% \usepackage{epsfig}
+% \usepackage{pst-grad} % For gradients
+% \usepackage{pst-plot} % For axes
+% \usepackage[space]{grffile} % For spaces in paths
+% \usepackage{etoolbox} % For spaces in paths
+% \makeatletter % For spaces in paths
+% \patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+% \makeatother
+% 
+\begin{figure}[h]
+\centering
+\psscalebox{1.0 1.0} % Change this value to rescale the drawing.
+{
+\begin{pspicture}(0,-6.1312275)(4.1874804,1.2112274)
+\pscircle[linecolor=black, linewidth=0.04, dimen=outer](1.5256482,-0.048772585){1.26}
+\psdots[linecolor=black, dotsize=0.8](1.1256481,0.3112274)
+\psdots[linecolor=black, dotsize=0.8](2.065648,0.3512274)
+\psbezier[linecolor=black, linewidth=0.04](1.1056482,-0.4687726)(1.1056482,-1.2687726)(2.1656482,-1.2087725)(2.1656482,-0.4087725830078125)
+\psline[linecolor=black, linewidth=0.04](1.5656482,-1.3087726)(1.5456482,-4.1887727)
+\psline[linecolor=black, linewidth=0.04](0.8256482,-2.1287725)(1.5856482,-2.6687727)(3.025648,-2.0487726)
+\psline[linecolor=black, linewidth=0.04](0.025648193,-6.1087728)(1.5856482,-4.1487727)
+\psline[linecolor=black, linewidth=0.04](1.5256482,-4.1087728)(2.545648,-5.9487724)
+\psrotate(2.9056482, 0.3112274){29.97405}{\rput[bl](2.9056482,0.3112274){Bonjour}}
+\end{pspicture}
+}
+\end{figure}
+
