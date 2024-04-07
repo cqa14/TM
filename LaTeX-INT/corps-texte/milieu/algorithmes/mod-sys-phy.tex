@@ -1,0 +1,291 @@
+\chapter{Modélisation d'un système physique}\label{ch:modelisation-d'un-systeme-physique}
+
+\section{Propriété d'un système}\label{sec:propriete-d'un-systeme}
+La modélisation de systèmes quantiques fut une des premières applications pour lequel
+fut pensé l'ordinateur quantique.
+En effet, la simulation d'un système physique est un problème qui peut être résolu par
+un ordinateur quantique de manière plus efficace qu'un ordinateur classique, car il
+utilise des phénomènes similaires à ceux qui sont étudiés.\\ \\
+Dans ce chapitre, nous allons voir comment calculer les niveaux d'énergie hyperfins
+d'un atome d'hydrogène à l'état fondamental.
+L'atome d'hydrogène est composé d'un proton et d'un électron, et chacun de ces deux
+éléments possède un spin, qui prend une valeur positive ou négative.
+Il y a donc quatre états de spins de l'atome d'hydrogène, soit les deux spins sont
+positifs (état $\ket{++}$), soit les deux spins sont négatifs (état $\ket{--}$), soit
+le spin de l'électron est positif et celui du proton est négatif (état $\ket{+-}$), soit
+le spin de l'électron est négatif et celui du proton est positif (état $\ket{-+}$).
+\import{images/algo/mod}{hype-schm.tex}
+De cela, il demeure la question de savoir comment les particules interagissent entre
+elles et donc comment le système évolue.
+Afin de le faire, nous allons utiliser l'équation de Schrödinger, qui a été présentée
+au début afin de justifier les propriétés quantiques de la matière, puis fut quelque
+peu oubliée.
+C'est donc à ce moment que nous allons la réintroduire :
+\[
+    - \frac{\hbar^2}{2m} \pdv[2]{\Psi (x,t)}{x} + V(x,t) \Psi (x,t) = i \hbar \pdv{\Psi (x,t)}{t}
+\]
+qui, formulée comme cela, est assez peu pratique dans notre cas.
+En effet, toute la partie gauche de l'équation peut être exprimée comme un opérateur
+d'évolution, nommé un hamiltonien, et noté $\hat{H}$.
+Cela donne donc :
+\[
+    \hat{H} \ket{\Psi (t)} = i \hbar \pdv{\ket{\Psi (t)}}{t}
+\]
+avec l'hamiltonien qui dépend généralement du temps.
+Quand ce dernier ne dépend pas du temps, l'équation se simplifie en :
+\[
+    \hat{H} \ket{\Psi} = E \ket{\Psi}
+\]
+avec $E$ l'énergie du système.\\ \\
+Petite note sur l'hamiltonien en mécanique classique.
+Celui-ci est étroitement lié au lagrangien, qui est une manière de décrire un système
+physique.
+Considérant une position $q$, la variation de celle-ci par rapport au temps est donnée
+par :
+\[
+    \dot{q} = \dv{q}{t}
+\]
+qui permet de définir la quantité de mouvement $p$ comme étant :
+\[
+    p = \pdv{\mathcal{L}}{\dot{q}}
+\]
+avec $\mathcal{L}$ une fonction appelée lagrangien.
+De cela, on peut établir une équation différentielle, appelée équation d'Euler-Lagrange,
+qui est parfois plus simple à résoudre que l'équation de Newton, qui s'écrit :
+\[
+    \dv{p}{t} = \pdv{\mathcal{L}}{q}
+\]
+L'hamiltonien $\mathcal{H}$ est défini quant à lui comme étant la somme de l'énergie cinétique et
+de l'énergie potentielle (de manière rigoureuse, il s'agit de la transformée de Legendre
+du lagrangien, néanmoins nous nous suffirons de la définition précédente).
+Il sert ensuit à définir les équations d'Hamilton :
+\[
+    \dot{q} = \pdv{\mathcal{H}}{p} \qquad \dot{p} = - \pdv{\mathcal{H}}{q}
+\]
+et il a un rôle similaire en mécanique quantique.\\ \\
+Quand on parle d'un opérateur d'évolution qui influe la fonction d'onde, ça rappellera les
+portes des ordinateurs quantiques.
+Celles-ci sont en effet des opérateurs d'évolution, et en pratique on calcule l'hamiltonien
+de chaque qubit afin de le modifier via les micro-ondes afin que l'utilisateur final ne voie
+que les portes quantiques sans devoir faire ces calculs.\\ \\
+Le système que l'on étudie est un système à deux particules, et chaque particule a deux états,
+ce qui rappelle les qubits.
+Or l'hamiltonien du système peut être exprimé selon les bases de Pauli, qui sont les matrices
+des portes quantiques $X$, $Y$ et $Z$.
+Dans ce cas précis, l'hamiltonien est donné par :
+\[
+    \hat{H} = A (XX + YY + ZZ)
+\]
+avec $A$ une constante propre à l'atome d'hydrogène qui peut être calculée via les flux de champs
+magnétiques, et qui vaut environ $1.47 \cdot 10^{-6}$ électrons-volts ($eV$).
+Comme évoqué pour le cas classique, l'hamiltonien est étroitement lié à l'énergie du système,
+et par l'équation de Schrödinger indépendante du temps, on peut déduire que l'énergie du système
+correspond aux valeurs propres de l'hamiltonien, qui peut être fait via sa mesure dans les
+différentes bases :
+\[
+    E = \expval{H} = A (\expval{XX} + \expval{YY} + \expval{ZZ})
+\]
+Cette opération est faisable avec un ordinateur quantique en faisant les changements de base nécessaires.
+Voyons donc ce que cela donne déjà avec une porte :
+\begin{align*}
+    \langle Z \rangle = \langle q| Z |q \rangle &= \langle q|0 \rangle \langle 0|q\rangle - \langle q|1 \rangle \langle 1|q\rangle = |\langle 0|q \rangle|^2-|\langle 1|q \rangle|^2 \\
+    \langle X \rangle = \langle q| X |q \rangle &= \langle q|+ \rangle \langle +|q\rangle + \langle q|- \rangle \langle -|q\rangle = |\langle +|q \rangle|^2 + |\langle -|q \rangle|^2 = H (|\langle 0|q \rangle|^2-|\langle 1|q \rangle|^2) \\
+    \langle Y \rangle = \langle q| Y |q \rangle &= -i \langle q|0 \rangle \langle 1|q\rangle + i \langle q|1 \rangle \langle 0|q\rangle = -i \langle X \rangle = S^\dag H (|\langle 0|q \rangle|^2-|\langle 1|q \rangle|^2)
+\end{align*}
+où l'on calcule en prenant un qubit général $\ket{q}$ et l'on cherche à isoler les mesures selon
+$\ket{0}$ et $\ket{1}$ en utilisant des portes.
+Notons que la porte $S^\dag$ est la porte inverse de $S$, qui est définie comme étant :
+\[
+    S = \begin{pmatrix}
+        1 & 0 \\
+        0 & i
+    \end{pmatrix}
+\]
+d'où le fait que $S^\dag$ soit définie comme étant :
+\[
+    S^\dag = \begin{pmatrix}
+        1 & 0 \\
+        0 & -i
+    \end{pmatrix}
+\]
+Si l'on fait ensuite de même avec le composante de l'hamiltonien, on obtient :
+\begin{align*}
+    \langle ZZ \rangle = \langle \psi| ZZ |\psi \rangle &= \langle \psi|(|0 \rangle \langle 0| - |1 \rangle \langle 1|) \otimes (|0 \rangle \langle 0| - |1 \rangle \langle 1|)|\psi \rangle \\
+    &= |\langle 00|\psi \rangle|^2-|\langle 01|\psi \rangle|^2-|\langle 10|\psi \rangle|^2+|\langle 11|\psi \rangle|^2 \\
+    \langle XX \rangle = \langle \psi| XX |\psi \rangle &= \langle \psi|H(|0 \rangle \langle 0| - |1 \rangle \langle 1|) \otimes H(|0 \rangle \langle 0| - |1 \rangle \langle 1|)|\psi \rangle \\
+    &= H^{\otimes 2}(|\langle 00|\psi \rangle|^2-|\langle 01|\psi \rangle|^2-|\langle 10|\psi \rangle|^2+|\langle 11|\psi \rangle|^2) \\
+    \langle YY \rangle = \langle \psi| YY |\psi \rangle &= \langle \psi|S^\dag H(|0 \rangle \langle 0| - |1 \rangle \langle 1|) \otimes S^\dag H(|0 \rangle \langle 0| - |1 \rangle \langle 1|)|\psi \rangle \\
+    &= {S^{\dag}}^{\otimes 2} H^{\otimes 2}(|\langle 00|\psi \rangle|^2-|\langle 01|\psi \rangle|^2-|\langle 10|\psi \rangle|^2+|\langle 11|\psi \rangle|^2)
+\end{align*}
+pour un état général $\ket{\psi}$.\\ \\
+La méthode ensuite consiste à créer les quatre états de Bell, qui sont les quatre états
+de superposition équilibrés pour un système à deux qubits.
+Ensuite pour chacun de ces états, on mesure les composantes selon les différentes bases,
+puis on calcule l'énergie du système via les proportions de chacune des mesures.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{H}} & \ctrl{1} & \qw & \qw\\
+        \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \qw & \targ & \qw & \qw\\
+        \\ }}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \ctrl{1} & \qw & \qw\\
+        \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \qw & \qw & \targ & \qw & \qw\\
+        \\ }}
+    \]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{H}} & \ctrl{1} & \qw & \qw\\
+        \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{X}} & \targ & \qw & \qw\\
+        \\ }}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{H}} & \gate{\mathrm{Z}} & \ctrl{1} & \qw & \qw\\
+        \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{X}} & \gate{\mathrm{Z}} & \targ & \qw & \qw\\
+        \\ }}
+    \]
+    \caption{Création des états de Bell $\ket{\Phi^+}$, $\ket{\Phi^-}$, $\ket{\Psi^+}$ et $\ket{\Psi^-}$}
+    \label{fig:circ-bell}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+        \scalebox{1.0}{
+            \Qcircuit @C=1.0em @R=0.2em @!R { \\
+            \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } \barrier[0em]{1} & \qw & \meter & \qw & \qw & \qw\\
+            \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \qw & \qw & \meter & \qw & \qw\\
+            \nghost{\mathrm{{meas} :  }} & \lstick{\mathrm{{meas} :  }} & \lstick{/_{_{2}}} \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-2,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+            \\ }}
+        \scalebox{1.0}{
+            \Qcircuit @C=1.0em @R=0.2em @!R { \\
+            \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{H}} \barrier[0em]{1} & \qw & \meter & \qw & \qw & \qw\\
+            \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{H}} & \qw & \qw & \meter & \qw & \qw\\
+            \nghost{\mathrm{{meas} :  }} & \lstick{\mathrm{{meas} :  }} & \lstick{/_{_{2}}} \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-2,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+            \\ }}
+    \]
+    \[\shorthandoff{!}
+        \scalebox{1.0}{
+            \Qcircuit @C=1.0em @R=0.2em @!R { \\
+            \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{S^\dagger}} & \gate{\mathrm{H}} \barrier[0em]{1} & \qw & \meter & \qw & \qw & \qw\\
+            \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{S^\dagger}} & \gate{\mathrm{H}} & \qw & \qw & \meter & \qw & \qw\\
+            \nghost{\mathrm{{meas} :  }} & \lstick{\mathrm{{meas} :  }} & \lstick{/_{_{2}}} \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-2,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+            \\ }}
+    \]
+    \caption{Circuit de mesure selon la base $ZZ$, $XX$, $YY$}
+    \label{fig:circ-meas-double}
+\end{figure}
+Les états de Bell sont traités ensuite en les mesurant selon les bases $ZZ$, $XX$ et $YY$,
+$2^{16}$ fois pour chaque base.
+Nous dénommons $p_{i}$ la proportion de mesure de l'état $i$, soit $p_{i} = \frac{\# i}{2^{16}}$
+avec $i \in \{00, 01, 10, 11\}$.
+Ensuite, on sait que l'énergie est donnée par la formule suivante, déduite des équations
+présentées plus haut :
+\[
+    E = A (p_{00} - p_{01} - p_{10} + p_{11})
+\]
+ce qui nous donne par simulation que pour les états $\ket{\Phi^+}$, $\ket{\Phi^-}$ et $\ket{\Psi^+}$,
+l'énergie est de $E \approx 1.47 \cdot 10^{-6} \ [eV]$ et pour l'état $\ket{\Psi^-}$, l'énergie est
+de $E \approx -4.41 \cdot 10^{-6} \ [eV]$.
+Cela correspond bien aux valeurs théoriques attendues, de $E = A$ pour les trois premiers états et
+$E = -3A$ pour le dernier état~\cite{feynmann-lectures}.\\
+Cette différence d'énergie est visible par exemple dans les radiations émises par les atomes
+d'hydrogène, qui crée une onde particulière de $21 \ [cm]$ de longueur d'onde.
+Cette onde peut être déduite de la formule $E = \hbar f$ avec $E$ la différence d'énergie entre
+ces états hyperfins, soit $E = 4A$ et $f$ la fréquence de l'onde émise.
+Les radiations se propageant à la vitesse de la lumière, on peut déduire la longueur d'onde
+via $f = \frac{c}{\omega}$ avec $c$ la vitesse de la lumière et $\omega$ la longueur d'onde.
+Ainsi, on obtient $\omega = \frac{c}{f} = \frac{c \hbar}{E} = \frac{c \hbar}{4A} \approx 21 \ [cm]$.\\ \\
+Cette simulation simple à de plus l'avantage de pouvoir être menée sur un ordinateur quantique
+actuel, qui via les technologies de réductions d'erreur permet des résultats avec une différence
+de $\pm 2 \ \%$\footnote{Résultat basé sur une simulation du bruit d'un ordinateur quantique selon le modèle \textit{FakeVigo}}.
+Cela permet de donner de bons espoirs pour des simulations plus complexes, comme par exemple
+des molécules ou des propriétés quantiques des matériaux, sur des ordinateurs quantiques dans un futur proche,
+en ne resolvant plus le système mathématiquement ou en effectuant des calculs qui grossissent de manière exponentielle
+sur un ordinateur classique, mais en le simulant sur un ordinateur quantique.
+
+\section{Évolution temporelle d'un système}\label{sec:evolution-temporel-d'un-systeme}
+
+Nous pouvons également étudier l'évolution temporelle d'un système quantique.
+Si l'on considère un hamiltonien $\hat{H}$ qui ne dépend pas du temps, l'équation de Schrödinger
+\[
+    \hat{H} \ket{\Psi} = i \hbar \pdv{t} \ket{\Psi}
+\]
+implique, connaissant l'état du système pour une valeur initiale $t = 0$, l'opérateur d'évolution
+temporelle sera donné par $U(t) = e^{-iHt/\hbar}$ et on a donc
+\[
+    \ket{\Psi(t)} = U(t) \ket{\Psi(0)} = e^{-iHt/\hbar} \ket{\Psi(0)}
+\]
+avec l'exponentielle définie généralement par la série de Taylor, ce qui permet de l'étendre à d'autres
+objets que des scalaires.\\ \\
+Étudions par exemple un système de particules quantiques dont on désire étudier l'évolution de leur
+spin.
+Ce genre de système est très vite coûteux à simuler classiquement, car chaque particule intéragit avec
+les autres et donc le vecteur d'état du système est de dimension $2^n$ avec $n$ le nombre de particules,
+ce qui est une croissance exponentielle.
+En revanche, on peut sur un ordinateur quantique utiliser un qubit pour représenter le spin de chaque
+particule, et faire correspondre l'état $\ket{0}$ du qubit à un spin négatif et l'état $\ket{1}$ à un
+spin positif, ce qui nous permet de simuler le système avec $n$ qubits, soit une croissance linéaire.\\
+On peut étudier cela avec un modèle simple, le modèle d'Ising de champ transverse, qui est un modèle
+de spins quantiques qui interagissent entre eux sur un réseau.
+L'hamiltonien de ce modèle est donné par
+\[
+    H = \sum_{i=1}^{N} a_i X_i + \sum_{i=1}^{N} \sum_{j=1}^{i-1}J_{ij}Z_i Z_j
+\]
+avec $X_i$ et $Z_i$ les matrices de Pauli pour le qubit $i$, et $a_i$, $J_{ij}$ des coefficients
+qui dépendent du système étudié.
+L'évolution temporelle de ce système est donnée par l'opérateur d'évolution
+\[
+    U(t) = e^{-iHt/\hbar} = e^{-it/\hbar \sum_{i=1}^{N} a_i X_i + \sum_{i=1}^{N} \sum_{j=1}^{i-1}J_{ij}Z_i Z_j}
+\]
+et en posant pour simplifier $a_i/\hbar = 1$ et $J_{ij}/\hbar = 1$, on peut décomposer cet opérateur en
+\[
+    U(t) = e^{-it \sum_{i=1}^{N} X_i} e^{-it \sum_{i=1}^{N} \sum_{j=1}^{i-1}Z_i Z_j}
+\]
+qui peut être résumé en une série de portes quantiques et d'intéractions entre qubits.\\
+La première partie de l'opérateur d'évolution est une rotation autour de l'axe $X$ pour chaque qubit,
+qui est $e^{-it \sum_{i=1}^{N} X_i}$ et peut-être simulée par une porte $R_x(\theta)$ pour chaque qubit,
+sachant que $R_x(\theta) = e^{-i\theta/2 X}$.
+En posant $\theta = 2t$, on obtient donc la porte $R_x(2t)$ pour chaque qubit.
+Pour la seconde partie de l'opérateur d'évolution, on peut la décomposer en portes $CX$ pour lier les qubits
+et une porte $R_z(\theta)$ pour chaque qubit, sachant que $R_z(\theta) = e^{-i\theta/2 Z}$, avec $\theta = 2t$~\cite{cqp-ethz}.\\ \\
+Voyons donc ce que cela donne en pratique pour un système de 3 particules dont on veut étudier l'évolution
+par étapes de $\Delta t = 0.1$.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+        \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+                \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{R_X}\,(\mathrm{-0.2})} & \ctrl{1} & \qw & \ctrl{1} & \ctrl{2} & \qw & \ctrl{2} & \qw & \qw & \qw & \qw & \qw\\
+                \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{R_X}\,(\mathrm{-0.2})} & \targ & \gate{\mathrm{R_Z}\,(\mathrm{0.2})} & \targ & \qw & \qw & \qw & \ctrl{1} & \qw & \ctrl{1} & \qw & \qw\\
+                \nghost{{q}_{2} :  } & \lstick{{q}_{2} :  } & \gate{\mathrm{R_X}\,(\mathrm{-0.2})} & \qw & \qw & \qw & \targ & \gate{\mathrm{R_Z}\,(\mathrm{0.2})} & \targ & \targ & \gate{\mathrm{R_Z}\,(\mathrm{0.2})} & \targ & \qw & \qw\\
+        \\ }}
+    \]
+    \caption{Opérateur d'évolution temporelle pour un système de 3 particules selon le modèle d'Ising, avec $\Delta t = 0.1$ et autres paramètres égaux à 1}
+    \label{fig:ising-evol}
+\end{figure}
+En l'appliquant successivement, on obtient l'évolution temporelle du système à chaque étape selon ce modèle.
+Sur la figure~\ref{fig:ising-evol-plot}, on peut voir l'évolution en partant de l'état $\ket{101}$, avec
+la mesure des qubits selon la base $Z$.
+Il faut donc interpréter les résultats comme la projection du spin de la particule selon l'axe $Z$,
+avec un spin $\ket{-}$ si la mesure est 0 et un spin $\ket{+}$ si la mesure est 1, avec les états
+de superposition pour les autres états.
+On note que pour avoir une telle évolution, il faut réaliser plusieurs mesures du circuit pour avoir un
+résultat plus précis, car chaque mesure donne $\ket{0}$ ou $\ket{1}$, et donc pour avoir
+une bonne représentation de la superposition, il faut réaliser plusieurs mesures et faire des statistiques.
+Via la relation évoquée plus haut $\langle Z \rangle = |\langle 0|q \rangle|^2-|\langle 1|q \rangle|^2$, et
+comme on a utilisé la convention $\ket{1} \sim \ket{+}$, on traite les mesures pour un qubit comme
+$\expval{Z} = \frac{\#1-\#0}{N} = \frac{2 \cdot \#1}{N} - 1$ par $\#1+\#0=N$ avec $N$ le nombre de mesures et
+$\#1$ le nombre de mesures de $\ket{1}$ (resp. $\#0$ pour $\ket{0}$).
+\begin{figure}[H]
+    \centering
+    \scalebox{0.3}{\import{images/algo/mod}{ising.tex}}
+    \caption{Évolution temporelle du système de 3 particules selon le modèle d'Ising, avec $\Delta t = 0.1$ et autres paramètres égaux à 1}
+    \label{fig:ising-evol-plot}
+\end{figure}
+Une telle simulation de système quantique peut être d'un intérêt majeur pour l'étude de matériaux~\cite{Ma2020}
+ou de molécules~\cite{Ollitrault2021}, car elle permet de simuler des systèmes complexes de manière efficace et
+moins coûteuse que sur un ordinateur classique pour des systèmes de grande taille.

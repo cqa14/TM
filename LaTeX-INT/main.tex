@@ -1,0 +1,27 @@
+\documentclass[11pt, a4paper]{report}
+% Basic Packages for Encoding (Input AND Output) and Language Support
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french, english]{babel}
+\usepackage{lmodern}
+
+% Importer un document externe 
+\usepackage{import}
+\usepackage{mdwtab}
+
+% Packages
+\import{imports/}{imports-general.tex}
+
+% Bibliographie
+\import{sources/}{bibliography-imports.tex}
+
+% Style de pages
+\import{imports/}{styles-imports.tex}
+
+\begin{document}
+
+% Compilation finale sur TexMaker
+%     -> Permet le rendu correctes des images
+\import{corps-texte/}{texte-comp.tex}
+
+\end{document}

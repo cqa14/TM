@@ -1,0 +1,163 @@
+\chapter{Algorithme de Deutsch-Jozsa}\label{ch:algorithme-de-deutsch-jozsa}
+
+Premièrement introduit par David Deutsch et Richard Jozsa~\cite{deutsch-josza-ori}, c'est un des premiers
+algorithmes quantiques qui montre un avantage exponentiel sur un algorithme classique.
+Il en demeure un faible intérêt pratique, mais il est important pour comprendre
+comment exploiter la superposition et l'interférence quantique.\\ \\
+Le problème de Deutsch-Jozsa est une histoire de boites noires.
+On a une boite noire qui prend en entrée un certain nombre de bits et qui renvoie
+un bit.
+On sait que cette boite noire est soit constante, soit équilibrée, i.e.\ soit elle
+renvoie toujours 0, soit elle renvoie 0 pour la moitié des entrées et 1 pour l'autre
+moitié.
+Analytiquement, on peut dénoter la boite noire par une fonction $f:\{0,1\}^n \rightarrow \{0,1\}$.
+Le but de l'algorithme est de déterminer si la boite noire est constante ou équilibrée.\\
+Commençons par l'algorithme classique.
+Afin d'être sûr de notre réponse, il faut tester la boite noire pour la moitié des
+entrées possibles plus une.
+En effet, si on a une boite noire qui renvoie 0 pour la moitié des entrées et 1 pour
+l'autre moitié, il est possible que les entrées testées soient toutes dans la moitié
+qui renvoie 0.
+De fait, tant que cela n'est pas fait, on ne peut pas conclure.
+Le nombre d'entrées à tester est donc $2^{n-1}+1$ pour $n$ le nombre d'entrées, ce qui
+est donc une complexité exponentielle, $\order{2^n}$.
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+    %Environment config
+        font=\sffamily,
+        thick,
+    %Environment styles
+        GateCfg/.style={
+            logic gate inputs={normal,normal,normal},
+            draw,
+            scale=1
+        }
+    ]
+        \node (x) at (0,0) {$1$};
+        \node (y) at (0,1) {$0$};
+        \draw (x) -- (1,0);
+        \draw (y) -- (1,1);
+        \node (f1) at (1.2,0) {$f$};
+        \node (f2) at (1.2,1) {$f$};
+        \draw[draw=black] (1,-0.3) rectangle (1.4,0.3);
+        \draw[draw=black] (1,0.7) rectangle (1.4,1.3);
+        \node[xor gate US, draw, logic gate inputs={normal,normal},scale=1] (xor) at (3,0.5) {};
+        \draw (f1) -- (xor.input 2);
+        \draw (f2) -- (xor.input 1);
+        \draw (xor.output) -- (4,0.5) node[right] {$s$};
+    \end{tikzpicture}
+    \caption{Résolution classique du problème de Deutsch-Jozsa, $n=2$ (si $f(0) = f(1)$, alors $s = 0$, sinon $s = 1$)}
+    \label{fig:clas-dj}
+\end{figure}
+La version quantique de l'algorithme que nous allons présenter n'est pas la version
+originale de Deutsch et Jozsa, mais une version améliorée par Cleve, Ekert, Macchiavello
+et Mosca~\cite{deutsch-jozsa-discu}.\\
+L'idée de l'algorithme~\cite{wiki:deutsch-josza} est de mettre tous les qubits en superposition, en notant que
+celui qui percevra la réponse de la boite noire doit être initialement à 1.
+Ensuite, on applique la boite noire sur tous les qubits.
+Cela va avoir pour effet de modifier tous les qubits, comme la base n'est plus la base
+computationnelle, mais la base d'Hadamard.
+En revenant dans la base computationnelle, via une autre transformation d'Hadamard, car
+elle est sa propre inverse, la mesure des qubits d'entrée nous donnera la réponse quant
+à la nature de la boite noire.
+\begin{figure}[H]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{entrée} :  } & \lstick{{entrée} :  } & \qw \barrier[0em]{1} & \qw & \gate{\mathrm{H}} & \multigate{1}{\mathrm{Oracle}}_<<<{0} & \gate{\mathrm{H}} & \meter & \qw & \qw\\
+        \nghost{{sortie} :  } & \lstick{{sortie} :  } & \gate{\mathrm{X}} & \qw & \gate{\mathrm{H}} & \ghost{\mathrm{Oracle}}_<<<{1} & \qw & \qw & \qw & \qw\\
+        \nghost{\mathrm{{mesure} :  }} & \lstick{\mathrm{{mesure} :  }} & \lstick{/_{_{1}}} \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-2,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Algorithme de Deutsch}
+    \label{fig:alg-deutsch}
+\end{figure}
+La figure~\ref{fig:alg-deutsch} montre l'algorithme de Deutsch, qui est la version
+à une entrée de l'algorithme de Deutsch-Jozsa.
+On considère que l'oracle applique la fonction $f$ sur les qubits d'entrée et renvoie
+le résultat sur le qubit de sortie sans créer de décohérence.\\
+Pour résoudre le problème de manière classique, on voit qu'il faut appeler la fonction
+deux fois, une fois avec 0 en entrée et une fois avec 1 en entrée.
+Dans ce schéma, on voit que l'on appelle la fonction une seule fois, qui est déjà un
+avantage.\\
+On commence donc après la barrière avec les qubits dans l'état $\ket{0}\ket{1}$, qui
+deviennent $\frac{1}{2}(\ket{0}+\ket{1})(\ket{0}-\ket{1})$ après l'application de la
+première porte d'Hadamard sur chacun des qubits.
+Ensuite, on applique l'oracle, qui va modifier les qubits d'entrée en fonction de la
+fonction $f$ comme suit :
+\[
+    \ket{x}\ket{y} \rightarrow \ket{x}\ket{f(x) \oplus y}
+\]
+En l'appliquant sur le circuit, on obtient :
+\[
+    \frac{1}{2}(\ket{0} (\ket{f(0) \oplus 0}-\ket{f(0) \oplus 1}) + \ket{1}(\ket{f(1) \oplus 0}-\ket{f(1) \oplus 1}))
+\]
+En séparant les cas, on observe que
+\[
+    \begin{cases}
+        f(0) = 0 \Rightarrow f(0) \oplus 0 = 0 \text{ et } f(0) \oplus 1 = 1 \Rightarrow (\ket{f(0) \oplus 0}-\ket{f(0) \oplus 1}) = (\ket{0}-\ket{1})\\
+        f(0) = 1 \Rightarrow f(0) \oplus 0 = 1 \text{ et } f(0) \oplus 1 = 0 \Rightarrow (\ket{f(0) \oplus 0}-\ket{f(0) \oplus 1}) = (\ket{1}-\ket{0}) = -(\ket{0}-\ket{1})
+    \end{cases}
+\]
+et similairement pour $f(1)$.\\
+On peut donc réécrire $\ket{f(0) \oplus 0}-\ket{f(0) \oplus 1}$ comme $(-1)^{f(0)}(\ket{0}-\ket{1})$
+et $\ket{f(1) \oplus 0}-\ket{f(1) \oplus 1}$ comme $(-1)^{f(1)}(\ket{0}-\ket{1})$,
+ce qui nous donne :
+\[
+    \frac{1}{2}((-1)^{f(0)} \ket{0} (\ket{0}-\ket{1}) + (-1)^{f(1)} \ket{1}(\ket{0}-\ket{1}))
+\]
+Mettons ensuite $(-1)^{f(0)}$ en évidence, et comme $(-1)^n$ alterne, on peut écrire
+$(-1)^{f(1) - f(0)} = (-1)^{f(0) \oplus f(1)}$, ainsi que $(\ket{0}-\ket{1})$ mis en évidence :
+\[
+    (-1)^{f(0)} \frac{1}{2} (\ket{0} + (-1)^{f(0) \oplus f(1)} \ket{1})(\ket{0}-\ket{1})
+\]
+L'opérateur $\oplus$, qui est l'addition modulo 2, est équivalent à l'opérateur XOR, comme évoqué dans la section~\ref{ch:un-ordinateur-classique}.
+Or, si $f(0) = f(1)$, l'oracle est constant, ce qui est équivalent à dire que $f(0) \oplus f(1) = 0$.
+Essayons donc d'extraire cette information du circuit.\\
+Pour la suite on ne se soucie plus du qubit de sortie, car on le voit dans l'équation,
+ce n'est pas lui qui va nous donner l'information.
+De plus, la phase globale $(-1)^{f(0)}$ n'est pas observable, car elle ne change pas
+la probabilité de mesure, on peut donc l'ignorer également.
+Nous ne soucions donc plus que des qubits d'entrée, et on peut réécrire l'équation
+comme suit :
+\[
+    \frac{1}{\sqrt{2}} (\ket{0} + (-1)^{f(0) \oplus f(1)} \ket{1})
+\]
+qui devient ensuite par la porte d'Hadamard :
+\[
+    \frac{1}{2} (\ket{0} + \ket{1} + (-1)^{f(0) \oplus f(1)} \ket{0} - (-1)^{f(0) \oplus f(1)} \ket{1}) = \frac{1}{2} ((1 + (-1)^{f(0) \oplus f(1)}) \ket{0} + (1 - (-1)^{f(0) \oplus f(1)}) \ket{1})
+\]
+On constate alors que si $f(0) \oplus f(1) = 0$, alors la probabilité de mesure de
+$\ket{0}$ est de 1, et si $f(0) \oplus f(1) = 1$, alors la probabilité de mesure de
+$\ket{1}$ est de 1, ainsi, en mesurant le qubit d'entrée, on peut déterminer si
+l'oracle est constant ou équilibré.\\
+On peut démontrer le même résultat en prenant $n$ entrées, et en mesurant les $n$
+qubits d'entrée, on peut déterminer si l'oracle est constant ou équilibré.
+Néanmoins, on ne le fera pas ici, car c'est sensiblement la même démonstration à part
+que l'on traite des sommes sur toutes les entrées plutôt que des valeurs plus concrètes
+comme dans ce cas-ci.\\ \\
+Il est amusant de l'essayer avec un circuit réel, comme celui de la figure~\ref{fig:alg-deutsch},
+en utilisant comme oracle constant aucune porte, et comme oracle équilibré une porte
+$CX$ avec comme contrôle l'entrée et comme cible le qubit de sortie.
+On obtient après exécution de l'algorithme 1024 fois des résultats satisfaisants,
+soit 51 mesures de 0 pour 973 mesures de 1 pour l'oracle équilibré, et 1017 mesures
+de 0 pour 7 mesures de 1 pour l'oracle constant.
+Cela correspond bien à ce que l'on attendait, néanmoins les calculs prédisaient un résultat
+parfait, ce qui n'est pas le cas ici, mais cela est dû à d'autres facteurs propres
+aux ordinateurs quantiques, comme les erreurs de portes, les erreurs de mesure, etc.\\ \\
+Ce circuit présente une première idée de ce que permettent la superposition et l'interférence
+quantique.
+On voit dans cet algorithme que l'on peut traiter plusieurs cas en même temps, et
+que l'on peut ensuite extraire l'information de manière constructive.
+Cela permet aussi de voir que par rapport à un ordinateur classique, on peut avoir
+un temps constant pour résoudre un problème, alors que l'ordinateur classique a besoin
+d'un temps exponentiel, comme c'est déjà visible pour le cas de deux entrées, où on
+voit que sur la figure~\ref{fig:clas-dj} on a besoin de deux appels de la fonction
+pour résoudre le problème, alors que l'algorithme quantique n'en a besoin que d'un
+(cf. figure~\ref{fig:alg-deutsch}).
+Cela peut être significatif si la fonction est coûteuse à évaluer, et quand on a plus
+de deux entrées, cela devient un appel pour le quantique et $2^{n-1}+1$ appels pour
+le classique.
+De fait, cela peut apparaître comme un avantage non-négligeable sur des problèmes
+plus complexes.

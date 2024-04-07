@@ -1,0 +1,66 @@
+\chapter{Introduction}\label{ch:introduction}
+
+``C'est quoi un projet que tu trouves particulièrement intéressant que t'as vu ?'' est la question posée
+à Octave Klaba \footnote{De \href{https://www.youtube.com/watch?v=GRnWBIJb_Oo}{\textbf{Underscore\textunderscore} :
+\textit{On a recu le milliardaire qui fait trembler amazon}}}, président d'\href{https://www.ovhcloud.com/fr/}{OVH}, l'un des plus gros hébergeurs
+de sites web d'Europe.
+Il y répond ``[\ldots] Mais s'il y a un sujet, c'est vraiment quantique.
+En fait, il faut bien voir, c'est que tout le siècle dernier était basé sur l'atome [\ldots] Celui-là,
+c'est le quantique.'' \\
+Cette citation est un bon exemple de l'importance de la physique quantique dans le domaine
+de l'informatique.
+En effet, parmi tous les domaines de recherches technologiques, comme l'amélioration des machines
+existantes, les recherches en informatique biologique avec par exemple le stockage de l'information
+dans l'ADN~\cite{wiki:natural-computing}, ou encore les recherches en informatique quantique, c'est cette dernière qui est la plus
+mise en avant par un homme aussi bien placé dans le domaine de l'innovation technologique. \\ \\
+L'idée d'utiliser la physique quantique pour améliorer l'informatique est apparue dans les années 1980,
+proposée indépendamment par Richard Feynman, prix Nobel de physique en 1965, et Yuri Manin.
+Ce fut par la demande exponentielle de ressources informatiques, pour faire de la simulation de systèmes quantiques
+dynamiques, qu'émergea l'idée d'utiliser des ordinateurs basés sur des phénomènes quantiques.\\
+Entre 1980 et 2000, le domaine de l'informatique et plus précisément de l'algorithmie quantique
+voit apparaître de nombreux résultats théoriques très prometteurs.
+Le premier cas d'un avantage théorique est montré par David Deutsch en 1985, via un cas de problème
+dit de ``boite noire'', puis ces problèmes vont être très étudié, comme la généralisation de celui étudié
+par Deutsch avec l'aide de Richard Jozsa.\\
+Les idées d'applications concrètes apparaissent tout d'abord en 1984, avec la proposition d'utiliser les
+propriétés quantiques afin d'améliorer la sécurité des communications, via de potentiels nouveaux protocoles
+de cryptographie qui utiliserait des clés dites ``quantiques''.\\
+D'un autre côté, en 1994, Peter Shor crée, en s'appuyant sur les résultats de ses prédécesseurs, un algorithme
+de factorisation des nombres entiers en facteurs premiers qui pourrait casser le système de sécurité alors très répandu
+\textit{RSA}.
+Cela inquiéta suffisamment les spécialistes de la sécurité informatique pour que l'on crée des protocoles
+de cryptographie plus sûrs, et surtout résistant ces potentielles nouvelles technologies.\\
+Les dernières avancées majeures de cette période sont dues à Lov Grover, proposant un algorithme
+quantique plus rapide que celui classique dans la résolution d'une catégorie de problèmes assez répandu.
+Dans cette même année 1996, Seth Lloyd prouve que les ordinateurs quantiques permettent de simuler
+des systèmes quantiques avec un gros avantage sur les simulations classiques~\cite{wiki:hisotry-qc}.\\ \\
+En pratique, la première démonstration que la technologie est réalisable est la construction d'un ordinateur
+quantique à deux qubits - unité en informatique quantique, équivalent au bit classique - en 1998.
+Au fur et à mesure, le nombre de qubits a augmenté et l'erreur devient de plus en plus réduite, à tel
+point que Google et la Nasa annoncent en 2019 qu'ils auraient atteint la suprématie quantique.
+Cette suprématie désigne le moment où un ordinateur quantique peut effectuer une tâche bien choisie en moins de temps
+qu'un ordinateur classique.\\
+Néanmoins, cette affirmation est très controversée et il est actuellement admis que l'affirmation
+était prématurée.
+Depuis cet ordinateur à 54 qubits, la recherche continue et aujourd'hui, en 2023, il existe certains
+ordinateurs à plus de 400 qubits, et l'objectif d'IBM, par exemple, est d'atteindre 4000 qubits d'ici
+à 2025~\cite{ibm-plans} (un processeur actuel possède des milliards de transistors - autour de 2 milliards - néanmoins
+cela correspondrait à une trentaine de qubits parfaits, mais ce n'est pas du tout réaliste, car en
+pratique, il faudrait peut-être plusieurs milliers de qubits réels pour un seul qubit logique~\cite{qubit-error-correction,qubit-logique}).\\ \\
+On voit donc de nos jours que la recherche en informatique quantique est très active et que les
+plus grands acteurs de l'informatique, comme Google, IBM, Microsoft, Intel, ou encore la Nasa, sont
+très impliqués dans ce domaine.
+Cette recherche mobilise de nombreuses compétences, des ingénieurs qui créent les machines,
+des physiciens qui étudient les phénomènes quantiques, des mathématiciens qui développent les algorithmes,
+des informaticiens qui créent les logiciels, et des chercheurs qui étudient les applications possibles.
+Ces grandes entreprises cherchent aussi à attirer des jeunes dans ce domaine, en mettant à
+disposition des outils de simulation, des tutoriels, des formations, et en organisant des concours.
+L'accès à ces outils est aussi une manière pour les entreprises d'essayer de se garantir une place
+dans ce secteur si prometteur.
+Citons par exemple la création de langage de programmation spécifique comme le Q\#~\cite{microsoft-qsharp} de Microsoft~\cite{microsoft-quantum} ou le
+module Qiskit~\cite{qiskit-web} d'IBM~\cite{ibm-quantum-web}, en plus des solutions open sources existantes, ou la mise à disposition de
+simulateurs ou d'ordinateur quantique réel à des gens qui ne sont pas dans la recherche.\\ \\
+Ce travail vise à poser les bases des ordinateurs quantiques, ainsi que d'en présenter
+certains exemples qui montrent l'origine de l'intérêt pour cette technologie.
+Il faut malgré tout garder à l'esprit que cela demeure un domaine très jeune et qu'il demeure principalement
+théorique, et que les machines existantes actuellement sont encore soumis à des erreurs importantes.

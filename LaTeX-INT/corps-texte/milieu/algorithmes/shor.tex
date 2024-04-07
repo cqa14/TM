@@ -1,0 +1,319 @@
+\chapter{Algorithme de Shor}\label{ch:algorithme-de-shor}
+
+L'algorithme de Shor fut développé en 1994 par Peter Shor~\cite{shor-article}.
+Il permet de factoriser un nombre entier $N$ en un produit de deux nombres premiers avec
+une complexité temporelle en $\order{(\log N)^3}$ et spatiale en $\order{\log N}$.
+En comparaison, de manière classique, on est supérieur à $\order{N^k}$, plus autour
+de $\order{e^{N}}$~\cite{wiki:int-fact}.
+L'intérêt de cet algorithme est donc évident pour la cryptographie, qui s'appuie sur cette
+complexité afin de garantir la sécurité des communications, via des codes comme RSA\@.
+Néanmoins, son impact est quand même à modérer, car même s'il revenait à être implémenté,
+il existe d'autres méthodes de cryptographie dite post-quantiques, qui ne sont pas sensibles
+à ces découvertes.
+
+\section{Principe}\label{sec:principe}
+
+L'algorithme de Shor~\cite{wiki:shor} se base sur une partie classique, et une partie quantique.
+La partie classique est la génération d'un nombre aléatoire $a$ inférieur à $N$.
+Ensuite calculer le plus grand diviseur commun de $a$ et $N$, si celui-ci est différent de 1,
+alors on a trouvé un facteur de $N$.
+Sinon, on passe à la partie quantique.
+Le calcul du PGDC peut se faire via l'algorithme d'Euclide par exemple.
+
+\begin{algorithm}[H]
+    \caption{Algorithm d'Euclide}
+    \label{alg:euclide}
+
+    \Entree{Deux entiers $a$ et $b$}
+    \Sortie{Le PGDC de $a$ et $b$}
+    \Tq{$a \neq b$}{
+        \eSi{$a > b$}{
+            $a \gets a-b$ \;
+        }{
+            $b \gets b-a$ \;
+        }
+    }
+    \Retour $a$\;
+\end{algorithm}
+
+La partie quantique vise à calculer la période d'une fonction $f(x) = a^x \mod N$,
+autrement dit, le plus petit entier $r$ tel que $f(x+r) = f(x)$.
+Si $r$ est impair, ou que $a^{r/2} \mod N = -1$, alors on recommence avec un autre $a$.
+Sinon, on peut tirer les conclusions suivantes :
+\begin{enumerate}
+    \item Comme pour $x=0$, $f(0) = a^0 \mod N = 1$ donc $f(0 + r)=f(r)=1$, on obtient $a^r \mod N = 1$
+    \item Cela implique $a^r - 1 \mod N = 0$, ainsi $N$ divise $a^r - 1$.
+    \item Comme $r$ est pair, on peut écrire $a^r - 1 = (a^{r/2} - 1)(a^{r/2} + 1)$.
+    \item Comme $r$ est la plus petite période, $a^{r/2} - 1$ n'est pas divisible par $N$.
+    On peut donc calculer le PGDC de $a^{r/2} - 1$ et $N$ afin de trouver un facteur de $N$.
+    Si celui-ci vaut 1, alors on recommence avec un autre $a$, et sinon, on a réussi.
+\end{enumerate}
+Il a été prouvé que cette méthode devrait fonctionner après quelques essais.\\ \\
+La partie quantique est principalement une estimation de phase, voir~\ref{sec:estimation-de-phase-quantique}.
+L'astuce consiste à utiliser un opérateur $U$ tel que $U\ket{x} = \ket{ax \mod N}$.
+Dans ce cas, nous avons $U^n\ket{x} = \ket{a^n x \mod N}$.\\
+Deux problèmes se posent alors, premièrement, il faut un vecteur propre de $U$ afin de pouvoir
+utiliser l'algorithme d'estimation de phase, et deuxièmement, il faut pouvoir implémenter $U$.
+Le premier problème peut être résolu en définissant des états comme suit :
+\[
+    \ket{u_s} = \frac{1}{\sqrt{r}} \sum_{k=0}^{r-1} e^{-\frac{2 \pi i s k}{r}} \ket{a^k \mod N}
+\]
+qui sont des vecteurs propres de $U$ associés à la valeur propre $e^{\frac{2 \pi i s}{r}}$.
+On peut s'en convaincre car dans l'anneau $\mathbb{Z}_N$, on a $a^r = a^0 = 1$ et appliquer
+$U \ket{u_s}$ revient globalement à faire la somme de $k=1$ à $r$ mais par la remarque précédente,
+c'est équivalent à faire la somme de $k=0$ à $r-1$.
+De plus, la somme de vecteurs propres de $U$ est aussi un vecteur propre de $U$.
+Si l'on choisit de faire
+\[
+    \frac{1}{\sqrt{r}} \sum_{s=0}^{r-1} \ket{u_s} = \ket{1}
+\]
+car les différentes phases s'annulent.
+De fait, nous avons un vecteur propre de $U$.\\
+Notons via cela que la phase obtenue sera $\theta = \frac{s}{r}$, et que pour déduire $r$ il faudra
+transformer la phase en une fraction avec le dénominateur inférieur à $N$, et celui-ci sera $r$.\\
+Le second problème est de construire $U$.
+Pour ce faire on peut implémenter l'algorithme classique pour l'exponentiation modulaire,
+de complexité polynomiale, néanmoins comme la construction concrète n'est pas évidente et
+demeure la raison principale de ralentissement de l'algorithme, nous ne la détaillerons pas ici.
+Nous utiliserons celle construite dans le module \texttt{Qiskit}.
+Notons que nous utilisons à chaque fois des portes $U^{2^j}$, sachant que si $a \mod N = b$, alors
+$a^c \mod N = b^c$.
+
+\begin{algorithm}[H]
+    \caption{Exponentiation modulaire}
+    \label{alg:exp-mod}
+
+    \Entree{Trois entiers $a$, $j$ et $N$}
+    \Sortie{$a^{2^j} \mod N$}
+    \Pour{$i \gets 1$ à $j$}{
+        $a \gets a^2 \mod N$ \;
+    }
+    \Retour $a$\;
+\end{algorithm}
+
+\section{Implémentation simple}\label{sec:implementation-simple}
+
+Pour montrer le fonctionnement de l'algorithme, nous allons implémenter une version simple
+de celui-ci, afin de factoriser $N=15$ à partir de $a=7$.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{0.45}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{H}} & \ctrl{8} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \multigate{7}{\mathrm{QFT^\dagger}}_<<<{0} & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{H}} & \qw & \ctrl{7} & \qw & \qw & \qw & \qw & \qw & \qw & \ghost{\mathrm{QFT^\dagger}}_<<<{1} & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{2} :  } & \lstick{{q}_{2} :  } & \gate{\mathrm{H}} & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \ghost{\mathrm{QFT^\dagger}}_<<<{2} & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{3} :  } & \lstick{{q}_{3} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \ctrl{5} & \qw & \qw & \qw & \qw & \ghost{\mathrm{QFT^\dagger}}_<<<{3} & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{4} :  } & \lstick{{q}_{4} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \ctrl{4} & \qw & \qw & \qw & \ghost{\mathrm{QFT^\dagger}}_<<<{4} & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{5} :  } & \lstick{{q}_{5} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \ctrl{3} & \qw & \qw & \ghost{\mathrm{QFT^\dagger}}_<<<{5} & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{6} :  } & \lstick{{q}_{6} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{2} & \qw & \ghost{\mathrm{QFT^\dagger}}_<<<{6} & \qw & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw\\
+        \nghost{{q}_{7} :  } & \lstick{{q}_{7} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{1} & \ghost{\mathrm{QFT^\dagger}}_<<<{7} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw\\
+        \nghost{{q}_{8} :  } & \lstick{{q}_{8} :  } & \gate{\mathrm{X}} & \multigate{3}{\mathrm{7\string^1\,mod\,15}}_<<<{0} & \multigate{3}{\mathrm{7\string^2\,mod\,15}}_<<<{0} & \multigate{3}{\mathrm{7\string^4\,mod\,15}}_<<<{0} & \multigate{3}{\mathrm{7\string^8\,mod\,15}}_<<<{0} & \multigate{3}{\mathrm{7\string^16\,mod\,15}}_<<<{0} & \multigate{3}{\mathrm{7\string^32\,mod\,15}}_<<<{0} & \multigate{3}{\mathrm{7\string^64\,mod\,15}}_<<<{0} & \multigate{3}{\mathrm{7\string^128\,mod\,15}}_<<<{0} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{9} :  } & \lstick{{q}_{9} :  } & \qw & \ghost{\mathrm{7\string^1\,mod\,15}}_<<<{1} & \ghost{\mathrm{7\string^2\,mod\,15}}_<<<{1} & \ghost{\mathrm{7\string^4\,mod\,15}}_<<<{1} & \ghost{\mathrm{7\string^8\,mod\,15}}_<<<{1} & \ghost{\mathrm{7\string^16\,mod\,15}}_<<<{1} & \ghost{\mathrm{7\string^32\,mod\,15}}_<<<{1} & \ghost{\mathrm{7\string^64\,mod\,15}}_<<<{1} & \ghost{\mathrm{7\string^128\,mod\,15}}_<<<{1} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{10} :  } & \lstick{{q}_{10} :  } & \qw & \ghost{\mathrm{7\string^1\,mod\,15}}_<<<{2} & \ghost{\mathrm{7\string^2\,mod\,15}}_<<<{2} & \ghost{\mathrm{7\string^4\,mod\,15}}_<<<{2} & \ghost{\mathrm{7\string^8\,mod\,15}}_<<<{2} & \ghost{\mathrm{7\string^16\,mod\,15}}_<<<{2} & \ghost{\mathrm{7\string^32\,mod\,15}}_<<<{2} & \ghost{\mathrm{7\string^64\,mod\,15}}_<<<{2} & \ghost{\mathrm{7\string^128\,mod\,15}}_<<<{2} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{11} :  } & \lstick{{q}_{11} :  } & \qw & \ghost{\mathrm{7\string^1\,mod\,15}}_<<<{3} & \ghost{\mathrm{7\string^2\,mod\,15}}_<<<{3} & \ghost{\mathrm{7\string^4\,mod\,15}}_<<<{3} & \ghost{\mathrm{7\string^8\,mod\,15}}_<<<{3} & \ghost{\mathrm{7\string^16\,mod\,15}}_<<<{3} & \ghost{\mathrm{7\string^32\,mod\,15}}_<<<{3} & \ghost{\mathrm{7\string^64\,mod\,15}}_<<<{3} & \ghost{\mathrm{7\string^128\,mod\,15}}_<<<{3} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{\mathrm{{c} :  }} & \lstick{\mathrm{{c} :  }} & \lstick{/_{_{8}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-12,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-11,0] & \dstick{_{_{\hspace{0.0em}2}}} \cw \ar @{<=} [-10,0] & \dstick{_{_{\hspace{0.0em}3}}} \cw \ar @{<=} [-9,0] & \dstick{_{_{\hspace{0.0em}4}}} \cw \ar @{<=} [-8,0] & \dstick{_{_{\hspace{0.0em}5}}} \cw \ar @{<=} [-7,0] & \dstick{_{_{\hspace{0.0em}6}}} \cw \ar @{<=} [-6,0] & \dstick{_{_{\hspace{0.0em}7}}} \cw \ar @{<=} [-5,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Algorithmes de Shor pour $N=15$ et $a=7$}
+    \label{fig:shor-15-7}
+\end{figure}
+Nous distinguons deux parties au circuit.
+La première partie, en haut, est le même que pour l'estimation de phase, la partie avec la mesure.
+La seconde partie, en bas, est initialisée dans l'état $\ket{1}$, et est composée de l'application
+successive des portes $U$, et notons également que nous utilisons dans ce cas une porte $U$
+spécialisée pour $a=7$ et $N=15$, néanmoins, il est possible de construire une porte $U$ pour
+n'importe quel $a$ et $N$ en prenant quelques considérations supplémentaires (principalement
+la taille des deux nombres).
+
+\subsection{Simulation}\label{subsec:simulation}
+
+La simulation du circuit fait apparaître, dans ce cas, quatre valeurs possibles pour la mesure
+de la partie supérieure du circuit.
+\begin{figure}[H]
+    \centering
+    \import{images/algo/shor/}{shor_plot_sim.tex}
+    \caption{Simulation du circuit de Shor pour $N=15$ et $a=7$}
+    \label{fig:shor-15-7-sim}
+\end{figure}
+En convertissant en décimal, nous obtenons les valeurs 0, 64, 128 et 192.
+En divisant par $2^8 = 256$, on obtient des phases de 0, 0.25, 0.5 et 0.75 qui correspondent
+aux fractions $\frac{0}{1}$, $\frac{1}{4}$, $\frac{1}{2}$ et $\frac{3}{4}$.
+De fait, deux mesures nous donnent la bonne valeur de $r = 4$, car l'algorithme de Shor
+peut échouer si $s=0$ ou $s$ et $r$ ne sont pas premiers entre eux, où il faut alors essayer d'amplifier
+les fractions également.\\ \\
+En effet, $a^{r/2} - 1 = 7^{4/2} - 1 = 49 - 1 = 48$ et ensuite le PGDC de $48$ et $15$ est $3$,
+qui est un facteur de $15$.
+
+\subsection{Hardware réel}\label{subsec:hardware-reel}
+
+Nous avons également exécuté le circuit sur un hardware réel, en prenant , et nous avons obtenu les
+résultats suivants.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+        \scalebox{1.0}{
+            \Qcircuit @C=1.0em @R=0.2em @!R { \\
+            \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{H}} & \ctrl{3} & \qw & \qw & \multigate{2}{\mathrm{QFT^\dagger}}_<<<{0} & \meter & \qw & \qw & \qw & \qw\\
+            \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{H}} & \qw & \ctrl{2} & \qw & \ghost{\mathrm{QFT^\dagger}}_<<<{1} & \qw & \meter & \qw & \qw & \qw\\
+            \nghost{{q}_{2} :  } & \lstick{{q}_{2} :  } & \gate{\mathrm{H}} & \qw & \qw & \ctrl{1} & \ghost{\mathrm{QFT^\dagger}}_<<<{2} & \qw & \qw & \meter & \qw & \qw\\
+            \nghost{{q}_{3} :  } & \lstick{{q}_{3} :  } & \gate{\mathrm{X}} & \multigate{3}{\mathrm{7\string^1\,mod\,15}}_<<<{0} & \multigate{3}{\mathrm{7\string^2\,mod\,15}}_<<<{0} & \multigate{3}{\mathrm{7\string^4\,mod\,15}}_<<<{0} & \qw & \qw & \qw & \qw & \qw & \qw\\
+            \nghost{{q}_{4} :  } & \lstick{{q}_{4} :  } & \qw & \ghost{\mathrm{7\string^1\,mod\,15}}_<<<{1} & \ghost{\mathrm{7\string^2\,mod\,15}}_<<<{1} & \ghost{\mathrm{7\string^4\,mod\,15}}_<<<{1} & \qw & \qw & \qw & \qw & \qw & \qw\\
+            \nghost{{q}_{5} :  } & \lstick{{q}_{5} :  } & \qw & \ghost{\mathrm{7\string^1\,mod\,15}}_<<<{2} & \ghost{\mathrm{7\string^2\,mod\,15}}_<<<{2} & \ghost{\mathrm{7\string^4\,mod\,15}}_<<<{2} & \qw & \qw & \qw & \qw & \qw & \qw\\
+            \nghost{{q}_{6} :  } & \lstick{{q}_{6} :  } & \qw & \ghost{\mathrm{7\string^1\,mod\,15}}_<<<{3} & \ghost{\mathrm{7\string^2\,mod\,15}}_<<<{3} & \ghost{\mathrm{7\string^4\,mod\,15}}_<<<{3} & \qw & \qw & \qw & \qw & \qw & \qw\\
+            \nghost{\mathrm{{c5} :  }} & \lstick{\mathrm{{c5} :  }} & \lstick{/_{_{3}}} \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-7,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-6,0] & \dstick{_{_{\hspace{0.0em}2}}} \cw \ar @{<=} [-5,0] & \cw & \cw\\
+            \\ }}
+    \]
+    \caption{Algorithmes de Shor pour $N=15$ et $a=7$, version à 3 qubits pour encoder l'angle}
+    \label{fig:shor-15-7-reel}
+\end{figure}
+Afin de donner une idée de la qualité des résultats, nous avons également appliqué une
+réduction d'erreur automatique, calibrée pour le hardware utilisé.
+\begin{figure}[H]
+    \centering
+    \import{images/algo/shor/}{shor_plot_mitigated.tex}
+    \caption{Execution du circuit de Shor pour $N=15$ et $a=7$ sur un hardware réel, avec en rouge les valeurs brutes, et en bleu après une atténuation d'erreur \protect\footnotemark}
+    \label{fig:shor-15-7-re}
+\end{figure}
+\footnotetext{Executé le 31.08.2023 sur la machine 'ibm\_nairobi', \textit{job id : cjo1svhpthn588jkkphg} ; avec pour la réduction d'erreur automatique, \textit{job id : cjo1ngpdll3gjfa1lne0}}
+Sur les machines à dispositions, nous voyons que les résultats sont peu encourageants, car outre la solution
+triviale 000, celle qui ressort le plus est 100, qui correspond à $r=2$, parce que cela revient à $\frac{4}{2^3} = \frac{1}{2}$, hors comme dit plus haut ce n'est pas
+la bonne solution, car $7^2 \mod 15 = 4 $ alors que l'on recherche $7^r \mod 15 = 1$.
+Les mesures pour $r=4$ ne ressortent pas à cause du bruit, néanmoins la solution $\theta = \frac{1}{2}$ est
+liée au fait que $s=2$, et donc que cela se simplifie en $\frac{2}{4} = \frac{1}{2}$.\\ \\
+Une explication à l'apparition des mesures de type $b_1 b_2 1$, qui sont forcéments fausses, car cela donnerait
+une fraction au dénominateur de $2^3$, qui est supérieur au $r$ recherché.
+Cela est dû à l'erreur sur la porte $U^4$, qui est la porte la plus grande et donc avec le plus d'erreur.
+Or dans les bons résultats, ce bit est nul, ce qui nous indique qu'en simulant le circuit cette porte devrait
+avoir aucun effet, mais en l'exécutant sur un hardware réel, cela n'est pas le cas, et donc cela crée de l'erreur
+de manière non négligeable, comme on le voit en comparant les résultats~\ref{fig:shor-15-7-re} et~\ref{fig:shor-15-7-re-sim}.
+\begin{figure}[H]
+    \centering
+    \import{images/algo/shor/}{shor_plot_mitigated_sim.tex}
+    \caption{Simulation du circuit de Shor pour $N=15$ et $a=7$ utilisé sur un vrai ordinateur}
+    \label{fig:shor-15-7-re-sim}
+\end{figure}
+Sur ce dernier diagramme, on observe néanmoins effectivement les mesures 110 et 010 qui donnent après traitement $r=4$,
+et donc qui sont les bonnes mesures.
+
+\section{Application à un problème concret}\label{sec:application-a-un-probleme-concret}
+
+La factorisation d'un nombre en un produit de deux nombres premiers est d'une importance
+majeure en cryptographie.
+La plupart des systèmes de cryptographie actuels reposent sur la difficulté de factoriser
+les grands nombres, tel que le célèbre RSA.\\ \\
+Le système RSA fonctionne comme suit~\cite{wiki:rsa}.
+Prenons deux personnes Alice et Bob.
+Alice crée les clés de chiffrement en choisissant deux nombres premiers $p$ et $q$ distincts.
+Alors, elle calcule le nombre $n = pq$, puis $\phi (n) = (p-1)(q-1)$, où $\phi$ est la fonction
+qui retourne la valeur de l'indicatrice d'Euler en $n$, soit le nombre de nombres premiers
+avec $n$ inférieurs à $n$.
+Cette fonction est multiplicative, c'est-à-dire que $\phi (uv) = \phi (u) \phi (v)$, et si $p$ est
+premier, alors $\phi (p) = p-1$.
+Après cela, Alice choisit un nombre $e$ premier avec $\phi (n)$, et calcule $d$ tel que
+$ed \mod \phi (n) = 1$.\\
+Alors la clé publique est le couple $(n, e)$, et la clé privée est $d$.
+Pour chiffrer un message $M$ inférieur à $n$, Bob calcule $C = M^e \mod n$, et pour déchiffrer,
+Alice calcule $M = C^d \mod n$.\\
+Cela se démontre en utilisant le petit théorème de Fermat, qui dit que si $p$ est premier,
+$M^{p-1} \mod p = 1$.
+Alors, on a $C^d \mod n = (M^e)^d \mod n = M^{ed} \mod n$.
+Or $ed \mod (p-1)(q-1) = 1$, ce qui est équivalent à $ed = 1 + k(p-1)(q-1)$ pour un certain
+$k \in \mathbb{N}$.
+De fait, d'après le petit théorème de Fermat, $M^{ed} \mod p = M^{1+k(p-1)(q-1)} \mod p = M (M^{p-1})^{k(q-1)} \mod p = M \mod p$
+et de même $M^{ed} \mod q = M \mod q$.
+De fait, $M^{ed} - M$ est congru à 0 modulo $p$ et $q$, et donc divisible par $p$ et $q$, et
+comme $p$ et $q$ sont premiers entre eux, $M^{ed} - M$ est divisible par $pq = n$,
+ce qui implique que $M^{ed} \mod n = M$.\\
+Le système repose donc sur la difficulté de factoriser $n$ en $p$ et $q$, et donc de  calculer
+$\phi (n)$.\\ \\
+Prenons un exemple concret.
+Issu du cours de mathématiques appliquées de deuxième année de monsieur Klose, gymnase Auguste
+Piccard.\\ \\
+\textit{On donne le couple $(E;n) = (17;143)$, ainsi que le message chiffré (en blocs)
+$$14;112;49;117;17;81;53;37;49$$ Déchiffrez ce message.}\\ \\
+Ce problème peut être pris comme un exemple réduit de quelqu'un voulant craquer un message
+en connaissant la clé publique.\\ \\
+On va donc construire un circuit qui va calculer la factorisation de $N=n=143$  via l'algorithme
+de Shor.
+En générant $a=12$, via le constructeur de circuits de Shor proposé par Qiskit~\cite{Qiskit,shor-imp}, on obtient
+le circuit suivant.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{0.6}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{up}_{0} :  } & \lstick{{up}_{0} :  } & \gate{\mathrm{H}} & \multigate{33}{\mathrm{17\string^x\,mod\,143}}_<<<{0} & \multigate{15}{\mathrm{QFT^\dagger}}_<<<{0} & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{up}_{1} :  } & \lstick{{up}_{1} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<{1} & \ghost{\mathrm{QFT^\dagger}}_<<<{1} & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{up}_{2} :  } & \lstick{{up}_{2} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<{2} & \ghost{\mathrm{QFT^\dagger}}_<<<{2} & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{up}_{3} :  } & \lstick{{up}_{3} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<{3} & \ghost{\mathrm{QFT^\dagger}}_<<<{3} & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{up}_{4} :  } & \lstick{{up}_{4} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<{4} & \ghost{\mathrm{QFT^\dagger}}_<<<{4} & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{up}_{5} :  } & \lstick{{up}_{5} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<{5} & \ghost{\mathrm{QFT^\dagger}}_<<<{5} & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{up}_{6} :  } & \lstick{{up}_{6} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<{6} & \ghost{\mathrm{QFT^\dagger}}_<<<{6} & \qw & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{up}_{7} :  } & \lstick{{up}_{7} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<{7} & \ghost{\mathrm{QFT^\dagger}}_<<<{7} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{up}_{8} :  } & \lstick{{up}_{8} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<{8} & \ghost{\mathrm{QFT^\dagger}}_<<<{8} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{up}_{9} :  } & \lstick{{up}_{9} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<{9} & \ghost{\mathrm{QFT^\dagger}}_<<<{9} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{up}_{10} :  } & \lstick{{up}_{10} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{10} & \ghost{\mathrm{QFT^\dagger}}_<<<<{10} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{up}_{11} :  } & \lstick{{up}_{11} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{11} & \ghost{\mathrm{QFT^\dagger}}_<<<<{11} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{up}_{12} :  } & \lstick{{up}_{12} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{12} & \ghost{\mathrm{QFT^\dagger}}_<<<<{12} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{up}_{13} :  } & \lstick{{up}_{13} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{13} & \ghost{\mathrm{QFT^\dagger}}_<<<<{13} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw\\
+        \nghost{{up}_{14} :  } & \lstick{{up}_{14} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{14} & \ghost{\mathrm{QFT^\dagger}}_<<<<{14} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw\\
+        \nghost{{up}_{15} :  } & \lstick{{up}_{15} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{15} & \ghost{\mathrm{QFT^\dagger}}_<<<<{15} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw\\
+        \nghost{{down}_{0} :  } & \lstick{{down}_{0} :  } & \gate{\mathrm{X}} & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{16} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{down}_{1} :  } & \lstick{{down}_{1} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{17} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{down}_{2} :  } & \lstick{{down}_{2} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{18} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{down}_{3} :  } & \lstick{{down}_{3} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{19} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{down}_{4} :  } & \lstick{{down}_{4} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{20} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{down}_{5} :  } & \lstick{{down}_{5} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{21} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{down}_{6} :  } & \lstick{{down}_{6} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{22} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{down}_{7} :  } & \lstick{{down}_{7} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{23} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{aux}_{0} :  } & \lstick{{aux}_{0} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{24} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{aux}_{1} :  } & \lstick{{aux}_{1} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{25} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{aux}_{2} :  } & \lstick{{aux}_{2} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{26} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{aux}_{3} :  } & \lstick{{aux}_{3} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{27} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{aux}_{4} :  } & \lstick{{aux}_{4} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{28} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{aux}_{5} :  } & \lstick{{aux}_{5} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{29} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{aux}_{6} :  } & \lstick{{aux}_{6} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{30} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{aux}_{7} :  } & \lstick{{aux}_{7} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{31} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{aux}_{8} :  } & \lstick{{aux}_{8} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{32} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{aux}_{9} :  } & \lstick{{aux}_{9} :  } & \qw & \ghost{\mathrm{17\string^x\,mod\,143}}_<<<<{33} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{\mathrm{{m} :  }} & \lstick{\mathrm{{m} :  }} & \lstick{/_{_{16}}} \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-34,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-33,0] & \dstick{_{_{\hspace{0.0em}2}}} \cw \ar @{<=} [-32,0] & \dstick{_{_{\hspace{0.0em}3}}} \cw \ar @{<=} [-31,0] & \dstick{_{_{\hspace{0.0em}4}}} \cw \ar @{<=} [-30,0] & \dstick{_{_{\hspace{0.0em}5}}} \cw \ar @{<=} [-29,0] & \dstick{_{_{\hspace{0.0em}6}}} \cw \ar @{<=} [-28,0] & \dstick{_{_{\hspace{0.0em}7}}} \cw \ar @{<=} [-27,0] & \dstick{_{_{\hspace{0.0em}8}}} \cw \ar @{<=} [-26,0] & \dstick{_{_{\hspace{0.0em}9}}} \cw \ar @{<=} [-25,0] & \dstick{_{_{\hspace{0.0em}10}}} \cw \ar @{<=} [-24,0] & \dstick{_{_{\hspace{0.0em}11}}} \cw \ar @{<=} [-23,0] & \dstick{_{_{\hspace{0.0em}12}}} \cw \ar @{<=} [-22,0] & \dstick{_{_{\hspace{0.0em}13}}} \cw \ar @{<=} [-21,0] & \dstick{_{_{\hspace{0.0em}14}}} \cw \ar @{<=} [-20,0] & \dstick{_{_{\hspace{0.0em}15}}} \cw \ar @{<=} [-19,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Algorithmes de Shor pour $N=143$ et $a=12$}
+    \label{fig:shor-143-12}
+\end{figure}
+Un tel circuit étant trop gros pour être simulé par un ordinateur privé, on compte sur le simulateur
+par produit matriciel d'IBM.
+On obtient alors la sortie suivante :\\ \\
+\textit{The list of factors of 143 as computed by the Shor's algorithm is [11, 13]}\\ \\
+qui est bien la factorisation de 143.\\
+Notons donc plusieurs choses.
+Tout d'abord la difficulté de simulation de tels circuits.
+En effet, on considère ici un circuit de taille 34, or le maximum envisageable pour un ordinateur
+de tout un chacun est de l'ordre de 32, et la ressource nécessaire pour le simuler est exponentielle
+en la taille du circuit.
+De plus, l'exécution de ce circuit sur un ordinateur quantique est difficilement envisageable
+car il nécessite des ordinateurs reservés à la recherche.
+Ensuite, on peut noter l'utilisation de $a=12$ qui est un choix pratique, car d'autres essais
+avec par exemple $a=2$ ou $a=17$ ne permettent pas d'obtenir la factorisation de $N$.\\ \\
+Après avoir obtenu la factorisation de 143, il est aisé de finir le problème proposé plus haut.
+On commence par calculer $\phi(143)$, qui vaut $(11-1)(13-1)=120$.
+Puis on cherche $17 \cdot d \mod 120 = 1$, qui peut se calculer par exemple en utilisant
+le fait que $a^{\phi (n)} \mod n = 1$ et donc l'inverse est $a^{-1} \mod n = a^{\phi (n)-1} \mod n$,
+ce qui donne $17^{119} \mod 120 = 113 = d$.
+En utilisant la méthode de décodage, nous obtenons alors le message suivant :
+$$27; 8; 4; 13; 62; 9; 14; 20; 4$$
+qui correspond selon la table alphabétique du cours en question à :\\ \\
+\textit{Bien joue}\\ \\
+et donc le message est bien décodé.\\ \\
+Par là, on voit un avantage possible de l'ordinateur quantique, déjà dans la réalisation de
+calculs avec une complexité moindre qu'un ordinateur classique, mais aussi dans la possibilité
+de travailler en complémentarité avec un ordinateur classique, en utilisant l'ordinateur quantique
+pour des calculs spécifiques, et l'ordinateur classique pour des calculs plus simples, dans ce cas
+toute la préparation de l'algorithme par ordinateur classique, et la recherche de la période
+par ordinateur quantique.
+De plus, on entre dans un des domaines dans lequel l'ordinateur quantique est le plus étudié,
+la cryptographie, et dans ce cas la remise en question de nos méthodes de chiffrement actuelles,
+qui se base sur la complexité nécessaire à factoriser un nombre de manière classique, et qui
+serait mis en danger par un ordinateur quantique.

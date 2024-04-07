@@ -1,0 +1,265 @@
+\chapter{Un qubit}\label{ch:un-qubit}
+
+L'informatique quantique est basée, similairement à l'informatique classique, sur un système pouvant prendre deux états,
+dénommés 0 et 1, que l'on nomme un qubit.
+La différence clé est que, dans le cas quantique, le système n'est pas décrit par la logique booléenne, mais suit les
+lois de la mécanique quantique.
+On a déjà vu un système à deux états, le spin dans la section~\ref{sec:physique}.
+Comme dans ce cas, un qubit n’est pas dans un état bien défini par rapport à une observable donnée, mais peut être dans une superposition d'états,
+soit et dans l'état 0 et celui 1, chacun avec une probabilité bien définie.
+
+\section{Superposition d'états}\label{sec:superposition-d'etats}
+
+Afin de décrire cette superposition du système, on utilise la notation de Dirac, ou notation bra-ket, qui est une
+notation mathématique permettant de décrire les états d'un système quantique.
+Nous n'introduirons ici que les principes utiles à la compréhension de l'informatique quantique.
+Comme présenté préalablement un système quantique peut être dans un état qui n’est pas défini par rapport
+à une observable donnée.
+Par exemple dans le cas d’un spin, si pour cet état on mesure le spin dans la direction $z$ (définie par un
+système d’axes cartésiens) on observera soit le résultat +1/2 avec une probabilité $\abs{\lambda_0}^2$ et, après la mesure,
+le spin sera dans la direction $z$ notée 0, soit le résultat -1/2 avec une probabilité $\abs{\lambda_1}^2$ et après la mesure le
+spin sera dans la direction $-z$ notée 1.
+On dira alors qu’avant la mesure le spin était dans un état de superposition de 0 et 1 avec un coefficient
+$\lambda_0$ et $\lambda_1$.
+On va alors mettre ces coefficients dans un vecteur colonne, et nommé celui-ci un ket, noté $\ket{\psi}$ :
+\[
+    \ket{\psi} = \begin{pmatrix} \lambda_0 \\ \lambda_1 \end{pmatrix}
+\]
+Rappelons que les coefficients sont complexes, et que la somme des amplitudes doit être égale à 1, où l'amplitude est
+le carré du coefficient, soit $\abs{\lambda_0}^2 + \abs{\lambda_1}^2 = 1$.\\ \\
+Posons maintenant les états de base $\ket{0}$ et $\ket{1}$, qui sont les états dans lesquels le système peut être
+déterministiquement, soit $\ket{0} = \begin{pmatrix} 1 \\ 0 \end{pmatrix}$ et $\ket{1} = \begin{pmatrix} 0 \\ 1
+\end{pmatrix}$.
+Ainsi, tout qubit d'état $\ket{\psi}$ peut être écrit comme une combinaison linéaire des états de base :
+\[
+    \ket{\psi} = \lambda_0 \ket{0} + \lambda_1 \ket{1}
+\]
+On définit également le bra, noté $\bra{\psi}$, comme le conjugué transposé du ket $\ket{\psi}$ :
+\[
+    \bra{\psi} = \begin{pmatrix} \lambda_0^* & \lambda_1^* \end{pmatrix}
+\]
+ce qui permet de définir le produit scalaire entre deux états $\ket{u}$ et $\ket{v}$ comme $\bra{u}\ket{v}$.\\
+Via cette opération, on observe que l'on peut obtenir mathématiquement les coefficients d'un état en le multipliant
+par un état de base :
+\begin{gather*}
+    \bra{0}\ket{\psi} = \lambda_0 \bra{0}\ket{0} + \lambda_1 \bra{0}\ket{1} = \lambda_0\\
+    \bra{1}\ket{\psi} = \lambda_0 \bra{1}\ket{0} + \lambda_1 \bra{1}\ket{1} = \lambda_1
+\end{gather*}
+car $\bra{0}\ket{0} = 1$ comme les états de base sont normalisés, et $\bra{0}\ket{1} = 0$ car les états de base sont
+orthogonaux.\\ \\
+Notons que l'on pourrait choisir d'autres états de base, par exemple $\ket{+} = \frac{1}{\sqrt{2}} \ket{0} +
+\frac{1}{\sqrt{2}} \ket{1}$ et $\ket{-} = \frac{1}{\sqrt{2}} \ket{0} - \frac{1}{\sqrt{2}} \ket{1}$, qui sont
+orthogonaux, et donc forment une base ($\bra{+}\ket{-} = \left(\frac{1}{\sqrt{2}} \bra{0} + \frac{1}{\sqrt{2}} \bra{1}\right)
+\left(\frac{1}{\sqrt{2}} \ket{0} - \frac{1}{\sqrt{2}} \ket{1}\right) = \frac{1}{2} \bra{0}\ket{0} - \frac{1}{2} \bra{0}\ket{1} +
+\frac{1}{2} \bra{1}\ket{0} - \frac{1}{2} \bra{1}\ket{1} = 0$).
+Cette notion de base sera plus détaillée ultérieurement, ainsi que la dénomination $\ket{+}$ et $\ket{-}$.
+
+\section{Opérations sur un qubit}\label{sec:operations-sur-un-qubit}
+
+Similairement à l'informatique classique, on peut effectuer des opérations sur un qubit, que l'on nomme des portes~\cite{wiki:qantum-gates}.
+Ces portes décrivent l'évolution du système, et similairement aux qubits, on peut les décrire via la notation de Dirac,
+mais également via de l'algèbre linéaire, comme des matrices unitaires, comme les coefficients d'un état sont
+multipliés par un nombre complexe de module 1, et donc la norme du vecteur reste la même.
+Cette section est aussi l'occasion de présenter les diagrammes de circuits quantiques, qui sont une représentation
+graphique des opérations effectuées sur un qubit.\\ \\
+La plus simple est comme toujours l'identité, qui ne fait rien, et est représentée par la matrice identité :
+\[
+    I = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}
+\]
+et sont effet sur un qubit est de le laisser inchangé, soit $\ket{\psi} = I \ket{\psi}$, et se calcule via le produit matriciel :
+\[
+    \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} \begin{pmatrix} \lambda_0 \\ \lambda_1 \end{pmatrix} =
+    \begin{pmatrix} \lambda_0 \\ \lambda_1 \end{pmatrix}
+\]
+qui revient schématiquement à juste avoir un qubit :
+
+\begin{figure}[H]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=1.0em @!R { \\
+        \lstick{\ket{\psi}} & \qw & \qw\\
+        \\ }}
+    \]
+    \caption{Circuit quantique de l'identité}
+    \label{fig:identite}
+\end{figure}
+
+pour lequel on ne dessine aucune porte, car l'état ne change pas.
+Notons aussi que la porte peut être décrite par la notation de Dirac, soit $I = \ket{0}\bra{0} + \ket{1}\bra{1}$, car
+$I \ket{\psi} = (\ket{0}\bra{0} + \ket{1}\bra{1}) \ket{\psi} = \ket{0} \bra{0}\ket{\psi} + \ket{1}
+\bra{1}\ket{\psi} = \ket{0} \lambda_0 + \ket{1} \lambda_1 = \ket{\psi}$.\\ \\
+On va passer ensuite aux portes dites de Pauli~\cite{wiki:pauli-matrices}, qui sont les portes de base de l'informatique quantique, et qui sont
+les matrices de Pauli.
+Celles-ci servent à la description du spin d'une particule, un système quantique à deux états, et il y en a trois,
+une pour chaque axe de l'espace, soit $X$, $Y$ et $Z$.\\
+La première est la porte $X$, qui est la plus simple car assimilable à la porte NOT de l'informatique classique, et
+est représentée par la matrice suivante :
+\[
+    X = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}
+\]
+ou encore $X = \ket{0}\bra{1} + \ket{1}\bra{0}$, et son effet sur un qubit est de permuter les coefficients de
+probabilité, soit $X \ket{\psi} = \ket{1}\bra{0} \ket{\psi} + \ket{0}\bra{1} \ket{\psi} = \ket{1} \lambda_0 +
+\ket{0} \lambda_1 $ qui est bien l'inverse du qubit de départ.
+On représente cette porte par le circuit quantique suivant :
+\begin{figure}[H]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \lstick{\ket{\psi}} & \gate{\mathrm{X}} & \qw & \qw\\
+        \\ }}
+    \]
+    \caption{Circuit de la porte $X$}
+    \label{fig:x-gate}
+\end{figure}
+La porte $Z$ parait un peu plus étrange, car elle change le signe, dit de phase, du coefficient de l'état 1,
+soit $Z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}$, et son effet sur un qubit est $Z \ket{\psi} =
+(\ket{0}\bra{0} - \ket{1}\bra{1}) \ket{\psi} = \ket{0} \lambda_0 - \ket{1} \lambda_1 $.\\
+La troisième porte est la porte $Y$, qui semble structurellement à un mélange des deux précédentes, avec une
+unité imaginaire, soit $Y = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}$, et son effet sur un qubit est
+$Y \ket{\psi} = (i \ket{0}\bra{1}-i \ket{1}\bra{0}) \ket{\psi} = i \ket{0} \lambda_1 -i \ket{1} \lambda_0$.\\ \\
+Définissons la notion de vecteur propre afin d'expliquer une des notions de visualisation de l'informatique quantique.
+Un vecteur propre est un vecteur qui, lorsqu'il est multiplié par une matrice, donne un vecteur colinéaire au vecteur
+de départ.
+Posant une matrice $M$ et un vecteur $\vec{v}$, on a $M \vec{v} = \lambda \vec{v}$, avec $\lambda$ un scalaire.\\
+Notons que les différentes portes de Pauli ont des vecteurs propres, pour $X$, on a $\ket{+} = \frac{1}{\sqrt{2}}
+(\ket{0} + \ket{1})$ et $\ket{-} = \frac{1}{\sqrt{2}} (\ket{0} - \ket{1})$, pour $Y$, on a $\ket{\circlearrowleft} = \frac{1}{\sqrt{2}}
+(\ket{0} + i \ket{1})$ et $\ket{\circlearrowright} = \frac{1}{\sqrt{2}} (\ket{0} - i \ket{1})$, et pour $Z$, on a $\ket{0}$ et
+$\ket{1}$.
+\begin{proof}
+    Montons que $\ket{+}$ est un vecteur propre de $X$.
+    On a $X \ket{+} = (\ket{0}\bra{1} + \ket{1}\bra{0}) \frac{1}{\sqrt{2}} (\ket{0} + \ket{1}) = \frac{1}{\sqrt{2}}
+    (\ket{0}\bra{1}\ket{0} + \ket{0}\bra{1}\ket{1} + \ket{1}\bra{0}\ket{0} + \ket{1}\bra{0}\ket{1}) =
+    \frac{1}{\sqrt{2}} (\ket{0} + \ket{1}) = \ket{+}$, donc $\ket{+}$ est bien un vecteur propre de $X$.
+    On peut faire de même pour les autres vecteurs propres.
+\end{proof}
+Afin de visualiser l'état d'un qubit, on peut utiliser une sphère de Bloch~\cite{wiki:bloch-sphere}, qui est une sphère unitaire, et qui
+est dans un espaces à trois dimensions, avec les axes $x$, $y$ et $z$ qui correspondent aux vecteurs propres de
+$X$, $Y$ et $Z$ respectivement.
+\begin{figure}[H]
+    \centering
+    \begin{blochsphere}[radius=2.5 cm,tilt=15,rotation=-30,opacity=0]
+        \drawBallGrid[style={opacity=0.1}]{30}{180}
+
+        \drawStatePolar[axisarrow = true, statewidth = 0.3]{x-Achse}{90}{90}
+        \drawStatePolar[axisarrow=true, statewidth = 0.3]{y-Achse}{90}{0}
+        \drawStatePolar[axisarrow = true, statewidth = 0.3]{z-Achse}{0}{0}
+
+        \node[below] at (x-Achse) {\fontsize{0.15cm}{1em} \large $x$};
+        \node[below] at (y-Achse) {\fontsize{0.15cm}{1em} \large $y$};
+        \node[below] at (z-Achse) {\fontsize{0.15cm}{1em} \large $z$};
+
+        \drawStatePolar[statecolor = red]{State}{150}{150}
+        \labelLatLon{rightstate}{-20}{90};
+        \node[text=red, below=0.7] at (rightstate) { \Large$\ket{\psi}$};
+
+        \labelLatLon{up}{90}{0};
+        \labelLatLon{down}{-90}{90};
+        \node[above] at (up) {$\ket{0}$};
+        \node[below] at (down) {$\ket{1}$};
+    \end{blochsphere}
+    \caption{Sphère de Bloch}
+    \label{fig:bloch-sphere}
+\end{figure}
+L'effet des portes de Pauli sur la sphère de Bloch est de faire une symétrie par rapport à l'axe correspondant
+à la porte.
+Cette intuition par symétrie et rotation est très utile pour visualiser les portes quantiques.\\ \\
+La suivante est justement la porte de Hadamard, qui est définie par $H = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}$,
+et son effet sur la sphère de Bloch est de faire une rotation de $180^\circ$ autour de l'axe $y$ et de $90^\circ$
+autour de l'axe $x$.
+Cela à un effet intéressant sur les états de base, car $\ket{0}$ est envoyé sur $\ket{+}$ et $\ket{1}$ est envoyé
+sur $\ket{-}$.
+\begin{proof}
+    On a $H \ket{0} = \frac{1}{\sqrt{2}} ((\ket{0}+\ket{1})\bra{0} + (\ket{0}-\ket{1})\bra{1}) \ket{0} =
+    \frac{1}{\sqrt{2}} ((\ket{0}+\ket{1})\bra{0}\ket{0} + (\ket{0}-\ket{1})\bra{1}\ket{0}) =
+    \frac{1}{\sqrt{2}} (\ket{0}+\ket{1} + 0) = \frac{1}{\sqrt{2}} \ket{0} + \frac{1}{\sqrt{2}} \ket{1} =
+    \ket{+}$, et un raisonnement similaire pour $\ket{1}$.
+\end{proof}
+On remarque donc que cette porte permet de créer une superposition équilibrée.
+On note aussi que $H^2 = I$, donc $H$ est sa propre inverse.
+On étudiera des effets plus concrets de cette porte dans la section~\ref{sec:mesure}.\\ \\
+Finalement, on évoquera rapidement les portes plus générales, les autres noms spécifiques de portes seront définis
+si besoin.\\
+La première est la porte de phase, qui est définie par $P(\phi) = \begin{pmatrix} 1 & 0 \\ 0 & e^{i \phi} \end{pmatrix}$.
+Elle a pour effet de changer la phase du qubit de $\phi$, et est donc une généralisation de la porte $Z$ en générant
+une rotation autour de l'axe $z$.\\
+La seconde est la porte de rotation autour d'un axe sur la sphère de Bloch, qui est définie par
+\[ R_x = \begin{pmatrix} \cos \frac{\theta}{2} & -i \sin \frac{\theta}{2} \\ -i \sin \frac{\theta}{2} & \cos \frac{\theta}{2} \end{pmatrix} \]
+\[ R_y = \begin{pmatrix} \cos \frac{\theta}{2} & -\sin \frac{\theta}{2} \\ \sin \frac{\theta}{2} & \cos \frac{\theta}{2} \end{pmatrix} \]
+\[ R_z = \begin{pmatrix} e^{-i \frac{\theta}{2}} & 0 \\ 0 & e^{i \frac{\theta}{2}} \end{pmatrix} \]
+qui ont pour effet de faire une rotation de $\theta$ autour de l'axe $x$, $y$ et $z$ respectivement
+(le travail de trigonométrie est laissé au lecteur, car l'exponentielle revient à cela par la formule d'Euler
+$e^{i \theta} = \cos \theta + i \sin \theta$).\\ \\
+Notons qu'un qubit est par définition une combinaison linéaire $\ket{\psi} = \alpha \ket{0} + \beta \ket{1}$,
+ce qui sans perte de généralité peut être écrit comme $\ket{\psi} = \cos \frac{\theta}{2} \ket{0} + e^{i \phi} \sin \frac{\theta}{2} \ket{1}$.
+Cela revient au même que de passer des coordonnées cartésiennes aux coordonnées sphériques, comme on peut le voir
+via la sphère de Bloch.\\
+La porte générale sur un qubit est donc définie par des angles, qui ressemble à une combinaison de rotation autour
+des axes $x$, $y$ et $z$ :
+\[
+    U(\theta, \phi, \lambda) = \begin{pmatrix} \cos \frac{\theta}{2} & -e^{i \lambda} \sin \frac{\theta}{2} \\ e^{i \phi} \sin \frac{\theta}{2} & e^{i (\phi + \lambda)} \cos \frac{\theta}{2} \end{pmatrix}
+\]
+mais l'on se rend compte qu'il y a trois paramètres alors que plus haut, on a vu qu'il fallait deux angles pour
+définir un qubit.
+Néanmoins, on peut y donner une intuition, en appliquant la porte $U$ à un qubit $\ket{0}$, on obtient bien
+$\cos \frac{\theta}{2} \ket{0} + e^{i \phi} \sin \frac{\theta}{2} \ket{1}$ comme énoncé plus haut, et sur $\ket{1}$,
+on obtient $e^{i \lambda}(-\sin \frac{\theta}{2} \ket{1} + e^{i \phi} \cos \frac{\theta}{2} \ket{0})$.
+Le facteur devant $\ket{1}$ est $e^{i \lambda}$, qui est une phase, et donc n'a pas d'effet sur la sphère de Bloch,
+néanmoins n'étant présent que sur l'état $\ket{1}$, il va avoir un effet dès que l'on va traiter avec un état
+superposé.\\ \\
+Les portes se représentent par des carrés avec un symbole à l'intérieur, similairement à la porte $X$ dans le
+cadre des diagrammes de circuits.
+De plus on peut noter que pour toutes les portes, il existe une porte inverse, qui est la porte qui annule l'effet
+de la porte, pour une porte générale $U$, sa porte inverse est $U^\dagger$ et on a $U U^\dagger = I$.
+
+\section{Mesure}\label{sec:mesure}
+
+Une fois que le système a subi des transformations, il faut récupérer l'information.
+À la différence des opérations précédentes, la mesure est une opération irréversible, et qui va détruire
+l'information contenue dans le qubit en vertu de la mécanique quantique.
+Elle peut être interprétée comme la projection du vecteur état initial sur le vecteur de la sphère de Bloch
+correspondant à la direction de la mesure ce qui fait perdre une partie de l'information.\\
+De plus, lorsque l'on mesure un qubit en pratique, on va répéter l'expérience plusieurs fois, et on va selon les
+cas obtenir des résultats différents qu'on va pouvoir analyser statistiquement.\\ \\
+Prenons l'exemple d'un qubit dans l'état $\ket{+} = \frac{1}{\sqrt{2}} (\ket{0} + \ket{1})$, obtenu par l'application
+de la porte $H$ sur le qubit $\ket{0}$.
+La théorie de la physique quantique décrit que si on mesure ce qubit, on a une chance sur deux d'obtenir
+$\ket{0}$ et une chance sur deux d'obtenir $\ket{1}$ (car les deux ont un coefficient de $\frac{1}{\sqrt{2}}$ qui
+donne une probabilité de $(\frac{1}{\sqrt{2}})^2 = \frac{1}{2}$).\\
+On enregistre le résultat de la mesure dans un bit classique, et tout le système peut être représenté par
+le schéma suivant :
+\begin{figure}[H]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q} :  } & \lstick{{q0} :  } & \gate{\mathrm{H}} & \meter & \qw & \qw\\
+        \nghost{\mathrm{{c} :  }} & \lstick{\mathrm{{c0} :  }} & \lstick{/_{_{1}}} \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Circuit de mesure d'un qubit dans l'état $\ket{+}$}
+    \label{fig:simple-circuit}
+\end{figure}
+Si on le fait sur une vraie machine quantique, on obtiendra parfois 0, parfois 1, dans la mesure effectuée
+dans l'exemple, 0 a été obtenu 3901 fois et 1 a été obtenu 4291 fois, ce qui nous donne une probabilité proche
+de ce qu'on attendait.
+On peut émettre plusieurs hypothèses sur les raisons de cette différence, comme le fait que la machine quantique
+soit sensible à l'environnement et donc pas parfaite, ou que l'échantillon soit trop petit pour avoir une statistique
+parfaite.
+Cela peut être utile de représenter les résultats obtenus sous forme d'histogramme, surtout lorsque l'on va
+effectuer des mesures plus complexes.
+\begin{figure}[H]
+    \centering
+    \import{images/notions-bases/quantique/}{real-mes-supp.tex}
+    \caption[Histogramme des résultats de la mesure d'un qubit dans l'état $\ket{+}$]{Histogramme des résultats de la mesure d'un qubit dans l'état $\ket{+}$ \protect\footnotemark}
+    \label{fig:measure}
+\end{figure}
+\footnotetext{Executé le 29.08.2023 sur la machine 'ibm\_quito', \textit{job id : cjmo77kvcjlre5ddj7h0}}
+De plus, la base utilisée par convention est la base $\ket{0}$ et $\ket{1}$, soit la base nommée $z$.
+Néanmoins, cela peut être intéressant de mesurer dans une autre base, par exemple la base $x$ qui est la base
+$\ket{+}$ et $\ket{-}$.
+Parfois cette mesure dans une autre base est faite avec l'ordinateur, mais on peut aussi la faire avec des
+portes quantiques, par exemple pour mesurer dans la base $x$, on applique la porte $H$ avant de mesurer.\\ \\
+Un qubit est donc un système quantique à deux états.
+De cela, on peut exploiter ses propriétés pour faire des opérations, telles que la superposition d'états.
+Ces opérations sont purement déterministes, et on peut les représenter par des portes quantiques.
+Cet état déterministe va être perdu lors de la mesure, qui va donner un résultat aléatoire selon l'état du qubit,
+et qui va détruire l'information contenue dans le qubit.

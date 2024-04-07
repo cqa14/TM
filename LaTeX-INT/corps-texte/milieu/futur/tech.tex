@@ -1,0 +1,58 @@
+\chapter{Technologies de hardware}\label{ch:technologies-de-hardware}
+
+Les ordinateurs quantiques sont des machines qui sont encore en développement.
+De fait, de nombreuses technologies sont en compétition pour devenir la technologie dominante.\\ \\
+Quelques critères ont été établi pour la technologie idéale :
+\begin{itemize}
+    \item Possibilité de l'agrandir physiquement afin d'augmenter le nombre de qubits
+    \item Les qubits doivent être initialisables à l'état que l'on souhaite
+    \item Les portes doivent être plus rapides que le temps de décohérence
+    \item Le groupe de portes doit être universel
+    \item Les qubits doivent être lisibles facilement
+\end{itemize}
+La technologie privilégiée actuellement est celle des qubits supraconducteurs,
+comme celle utilisée par IBM et Google.\\
+Cependant, d'autres technologies sont étudiées, comme les photons, sur lesquels on peut
+utiliser au choix leur polarisation, leur présence ou leur absence, ou encore leur temps d'arrivée.
+On peut aussi utiliser le spin des particules, ou encore comme dans le cas des supraconducteurs,
+la charge, le courant ou l'énergie d'une jonction Josephson.\\
+Chaque technologie présente des avantages et des inconvénients, ainsi que des défis à relever.
+Par exemple, les qubits supraconducteurs doivent être contrôlés par l'extérieur, donc il faut par
+exemple appliqué une tension précise à température ambiante, puis refroidir le tout à des températures
+proches du zéro absolu, sans pour autant détruire les propriétés de la tension appliquée afin que le
+qubit reste dans l'état voulu.
+Les qubits supraconducteurs fonctionnant autour de 20 $[mK]$, il faut dans la procédure décrite au-dessus
+refroidir de 300 $[K]$ à 20 $[mK]$, ce qui est un défi en soi.
+Il y a donc été developpé un système fonctionnant autour de 4 $[K]$ qui permet de faciliter tout le
+processus~\cite{cryo-cmos}.\\
+On peut également citer les qubits de spin, qui eux présentent l'avantage d'avoir une meilleure
+cohérence, mais qui sont plus difficiles à construire.
+Ils demeurent assez miniaturisables, et sont contrôlables par des champs magnétiques, ce qui est
+une différence majeure avec les qubits supraconducteurs.
+Finalement, leurs conditions de fonctionnement sont plus faciles à atteindre, car ils fonctionnent
+à des températures plus élevées par exemple.\\
+Quelle que soit la technologie choisie, il y aura toujours la recherche de la réduction des erreurs,
+car même si les qubits actuels sont fidèles à 99.9\%, cela n'est pas suffisant pour faire des
+calculs complexes, parce que les erreurs s'accumulent et peuvent rendre le résultat faux.
+De fait, plusieurs méthodes de correction d'erreurs sont étudiées, comme la répétition de qubits,
+ou différents codes correcteurs d'erreurs~\cite{wiki:quantum-error-correction}.\\ \\
+La recherche se fait autour de ces technologies, mais aussi autour de la manière de
+stocker les qubits, puisqu'il n'existe pas encore de moyen de stocker un qubit de manière
+stable, comme les RAM pour les bits classiques, ou encore les disques durs.
+C'est probablement la plus grande difficulté à laquelle les chercheurs sont confrontés,
+du fait de la décohérence des qubits, qui a déjà des effets sur les temps courts durant
+l'exécution d'un programme.\\
+Néanmoins, une qRAM est fondamentalement moins importante qu'une RAM classique, car
+les qubits stockent eux-mêmes l'information, et on peut la déplacer sur un autre via
+la téléportation quantique, ce qui permet d'avancer que le problème réside dans la
+capacité de maintien du qubit dans un état stable sur une longue durée.\\ \\
+Comme mentionné également dans la distribution de clés, l'envoi de qubits sur de longues
+distances est également étudié et quelques solutions ont été trouvées, comme l'envoi
+de photons sur fibre optique.
+Cette partie est une des plus développées actuellement, et certaines entreprises
+le proposent déjà en tant que produit commercial~\cite{idquantique}.
+De plus, on est aussi capable de transmettre des photons intriqués par satellite,
+ce qui a permis de faire une transmission sur plus de 1200 $[km]$~\cite{Liao2017}.\\ \\
+D'autres domaines de recherches sont aussi utiles à ce domaine, comme la recherche
+en matériaux supraconducteurs, car plus ceux-ci sont performants, plus les qubits
+pourront être améliorés.

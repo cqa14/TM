@@ -1,0 +1,72 @@
+\chapter{Cryptographie : distribution de clés}\label{ch:cryptographie-:-distribution-de-cles}
+
+On a vu dans le chapitre précédent que certains systèmes à clé publique seraient mis en danger
+par l'existence d'un ordinateur quantique.
+Cependant, il existe aussi des avantages à utiliser les propriétés quantiques de la matière
+pour sécuriser des communications.\\
+Par exemple, on peut utiliser la polarisation de photons pour envoyer des qubits d'information
+via des fibres optiques, ce qui ferait un canal de communication quantique.
+Cela peut être utilisé pour distribuer des clés de façon sécurisée, c'est-à-dire sans que
+quelqu'un puisse écouter la communication et que cela soit détecté, ce qui est impossible
+avec des moyens classiques.
+Ces clés seront ensuite secrètes et pourront être utilisées pour chiffrer des messages
+avec un algorithme symétrique classique.\\ \\
+On va prendre nos acteurs habituels pour expliquer le principe de la distribution de clés quantique.
+Donc Alice et Bob veulent se partager une clé secréte, et Eve veut écouter la communication.
+Le protocole compte sur le fait que la mesure d'un qubit modifie son état, et donc que
+si Eve écoute la communication, Alice et Bob le sauront.\\
+Avec le circuit ci-dessous, on peut voir que sans interception, Alice met son qubit dans
+un état superposé, et Bob le remet dans la base standard avant de le mesurer.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q} :  } & \lstick{{q} :  } & \gate{\mathrm{H}} \barrier[0em]{0} & \qw & \gate{\mathrm{H}} & \meter & \qw & \qw\\
+        \nghost{\mathrm{{c} :  }} & \lstick{\mathrm{{c} :  }} & \lstick{/_{_{1}}} \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Sans interception (Alice | Bob)}
+    \label{fig:wo-interception}
+\end{figure}
+Mais si Eve intercepte le qubit, elle va effectuer une mesure sur le qubit, ce qui va
+le faire passer dans la base standard, et donc Bob va le remettre en superposition avant
+la mesure et le résultat sera aléatoire.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q} :  } & \lstick{{q} :  } & \gate{\mathrm{H}} \barrier[0em]{0} & \qw & \meter \barrier[0em]{0} & \qw & \gate{\mathrm{H}} & \meter & \qw & \qw\\
+        \nghost{\mathrm{{c} :  }} & \lstick{\mathrm{{c} :  }} & \lstick{/_{_{1}}} \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-1,0] & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Avec interception (Alice | Eve | Bob)}
+    \label{fig:w-interception}
+\end{figure}
+Sachant cela, on peut établir un protocole de distribution de clés quantique comme suit :
+\begin{enumerate}
+    \item Alice choisit une liste de bits aléatoires (par exemple : 01001), et pour chaque bit,
+        elle choisit une base de mesure aléatoire (standard ou Hadamard, p.ex. : ZZXXZ).
+        Elle garde ces informations pour elle.
+    \item Alice encode ensuite chaque bit de sa liste dans un qubit, en utilisant la base
+        correspondante (ce qui donne avec les exemples précédant : $\ket{0}\ket{1}\ket{+}\ket{+}\ket{1}$).
+        Elle envoie ensuite les qubits à Bob.
+    \item Bob mesure alors chaque qubit aléatoirement dans une base standard ou Hadamard (p.ex. : ZXZXZ).
+        Il garde les résultats pour lui.
+    \item Bob et Alice partagent alors les bases utilisées pour chaque qubit, et jettent les
+        qubits pour lesquels ils n'ont pas utilisé la même base.
+        Ceux pour lesquels ils ont utilisé la même base sont alors utilisés pour générer la clé (dans notre exemple : 001).
+    \item Pour vérifier que personne n'a écouté la communication, Alice et Bob prennent une
+        partie de la clé, et la comparent.
+        Si elles sont identiques, alors personne n'a écouté la communication.
+        Sinon, ils recommencent le protocole.
+        En pratique, c'est un poil plus complexe, car il faut prendre en compte le fait que
+        les qubits peuvent être différents simplement à cause du bruit, et en pratique, on
+        doit le prendre en compte dans le partage de la clé et dans la vérification.
+\end{enumerate}
+On voit donc par cela que l'utilisation de canaux de communication quantique permettrait
+de distribuer des clés de façon sécurisée, et donc de chiffrer des messages de manière
+plus sûre.
+Les technologies quantiques ne se limitent donc pas à la puissance de calcul, mais peuvent
+aussi être utilisées dans de nombreux autres domaines, comme les communications.

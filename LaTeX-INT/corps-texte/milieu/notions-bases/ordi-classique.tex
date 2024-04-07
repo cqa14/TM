@@ -1,0 +1,241 @@
+\chapter{Un ordinateur classique}\label{ch:un-ordinateur-classique}
+
+Avant de partir dans les concepts propres à l'algorithmie quantique, il est utile de présenter les concepts
+de base de l'algorithmie classique.
+Pour commencer, on va faire un tour des idées théoriques puis de l'implémentation matérielle.
+
+\section{Logique}\label{sec:logique}
+
+Dans le cadre de l'informatique, on utilise la logique pour décrire le comportement d'un ordinateur.
+C'est une logique binaire, c'est-à-dire qu'on ne s'intéresse qu'à deux valeurs de vérité : vrai et faux.
+On la nomme logique booléenne, du nom de son inventeur, George Boole, et elle est très pratique dans le cadre
+de l'informatique, car elle permet de décrire simplement les opérations logiques de base.\\
+En effet, les ordinateurs ont été conçus pour manipuler de telles valeurs, parce qu'elles peuvent être représentées
+par un concept simple de ``on/off'' (allumé/éteint), qui peut être représenté par un courant électrique.
+On utilisera plutôt les valeurs 1 et 0, mais le principe reste le même.\\
+On peut alors définir des opérations sur ces valeurs, qui sont les opérations logiques de base.
+Dans le cadre informatique, on les appelle les portes logiques~\cite{wiki:logic-gate}, mais on peut également utiliser la notation
+mathématique de la logique afin de les décrire, ou encore les tables de vérité, qui décrivent le comportement
+de ces opérations sur toutes les valeurs possibles, ou même le langage naturel.\\ \\
+Définissons donc les opérations logiques de base, et leur comportement sur les valeurs de vérité.
+Tout d'abord, considérons une entrée $A$ et une entrée $B$, qui peuvent prendre les valeurs 0 ou 1, ainsi qu'une
+sortie $Q$, qui prendra également les valeurs 0 ou 1.
+Tout d'abord prenons une seule entrée.
+Il est utile d'avoir une opération d'identité, qui ne change pas la valeur de l'entrée, que l'on nommera
+``Buffer'', qui pour une entrée $A$ et une sortie $Q$ se définit par $Q = A$.
+On peut également définir une opération de négation, qui inverse la valeur de l'entrée, que l'on nommera
+``NOT'', qui pour une entrée $A$ et une sortie $Q$ se définit par $Q = \neg A$.
+
+\import{images/notions-bases/classique/gates/}{one-gate.tex}
+
+Mais on ne peut pas faire grand-chose avec une seule entrée.
+Ainsi, faisons de même avec deux, à commencer par la plus simple, qui est l'opération ``AND'', qui donne 1 si
+et seulement si les deux entrées sont à 1, et 0 sinon, et qui se définit par $Q = A \land B$.
+Le contraire de cette opération est l'opération ``OR'', qui donne 1 si au moins une des deux entrées est à 1,
+et 0 sinon, et qui se définit par $Q = A \lor B$.
+Pour ces deux portes, on peut également définir leur contraire, qui est l'opération ``NAND'' (NOT AND) et
+``NOR'' (NOT OR), qui sont simplement les opérations AND et OR suivies d'une opération NOT\@.
+Finalement, on peut définir l'opération ``XOR'' (eXclusive OR), qui donne 1 si et seulement si une et une seule
+des deux entrées est à 1, et qui se définit par $Q = A \oplus B$, parfois également considérée comme la somme
+par bit.
+Similairement à NAND et NOR, on peut définir l'opération ``XNOR'' (eXclusive NOR), qui est simplement l'opération
+XOR suivie d'une opération NOT\@.
+
+\import{images/notions-bases/classique/gates/}{two-gates.tex}
+
+À partir de ces opérations de bases, on peut construire tout ce que font les ordinateurs actuels.
+En effet, on peut définir des opérations plus complexes, comme l'addition, la soustraction, la multiplication,
+la division, etc.
+Mais cela demande un peu plus de travail, et on va juste montrer par exemple comment construire une addition
+de deux nombres binaires de 3 bits.\\
+Afin de sommer deux nombres binaires, on peut les additionner bit à bit, en prenant en compte la retenue.
+Par exemple, pour additionner 5 (101) et 3 (011), cela donne :
+\begin{center}
+    \begin{tabular}{cccc}
+      & 1 & 0 & 1 \\
+      + & 0 & 1 & 1 \\
+      \hline
+    \end{tabular}
+    $\Rightarrow$
+    \begin{tabular}{cccc}
+        & & \textit{1} & \\
+        & 1 & 0 & 1 \\
+        + & 0 & 1 & 1 \\
+        \hline
+        & & & 0 \\
+    \end{tabular}
+    $\Rightarrow$
+    \begin{tabular}{cccc}
+        & \textit{1} & \textit{1} & \\
+        & 1 & 0 & 1 \\
+        + & 0 & 1 & 1 \\
+        \hline
+        & & 0 & 0 \\
+    \end{tabular}
+    $\Rightarrow$
+    \begin{tabular}{cccc}
+        \textit{1} & \textit{1} & \textit{1} & \\
+        & 1 & 0 & 1 \\
+        + & 0 & 1 & 1 \\
+        \hline
+        & 0 & 0 & 0 \\
+    \end{tabular}
+    $\Rightarrow$
+    \begin{tabular}{cccc}
+        \textit{1} & \textit{1} & \textit{1} & \\
+        & 1 & 0 & 1 \\
+        + & 0 & 1 & 1 \\
+        \hline
+         1 & 0 & 0 & 0 \\
+    \end{tabular}
+\end{center}
+qui donne bien 8 (1000).\\
+Alors, pour sommer simplement deux nombres binaires, on peut utiliser une porte XOR, qui donne 1 si et seulement
+si une et une seule des deux entrées est à 1, et une porte AND, qui donne 1 si et seulement si les deux entrées
+sont à 1.
+Cela reviendrait schématiquement à :
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+    %Environment config
+        font=\sffamily,
+        thick,
+    %Environment styles
+        GateCfg/.style={
+            logic gate inputs={normal,normal,normal},
+            draw,
+            scale=1
+        }
+    ]
+        \node (x) at (0,0) {$x_0$};
+        \node (y) at (1,0) {$y_0$};
+        \node[xor gate US, draw, logic gate inputs={normal,normal},scale=1] (xor) at (2,-1) {};
+        \node[and gate US, draw, logic gate inputs={normal,normal},scale=1] (and) at (2,-2) {};
+        \draw (x) |- (xor.input 1);
+        \draw (y) |- (xor.input 2);
+        \draw (x) |- (and.input 1);
+        \draw (y) |- (and.input 2);
+        \draw (xor.output) -- (3,-1) node[above] {$s_0$};
+        \draw (and.output) -- (3,-2) node[above] {$s_1$};
+    \end{tikzpicture}
+    \caption{Schéma d'une addition de deux bits}
+    \label{fig:adder-2bits}
+\end{figure}
+
+Mais afin ensuite de pouvoir additionner des nombres de plus de 1 bit, il faut prendre en compte la retenue.
+De fait on doit construire un circuit pour sommer trois bits, qui est le même sauf que l'on répète l'opération
+avec la première sortie et si l'une donne un reste, on le note, comme suit :
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+    %Environment config
+        font=\sffamily,
+        thick,
+    %Environment styles
+        GateCfg/.style={
+            logic gate inputs={normal,normal,normal},
+            draw,
+            scale=1
+        }
+    ]
+        \node (x) at (0,-1) {$x_0$};
+        \node (y) at (1,-1) {$y_0$};
+        \node (z) at (2.2,-1) {$z_0$};
+        \node[xor gate US, draw, logic gate inputs={normal,normal},scale=1] (xor1) at (2,-6) {};
+        \node[and gate US, draw, logic gate inputs={normal,normal},scale=1] (and1) at (1.5,-5) {};
+        \draw (x) |- (xor1.input 1);
+        \draw (y) |- (xor1.input 2);
+        \draw (x) |- (and1.input 1);
+        \draw (y) |- (and1.input 2);
+        \node[xor gate US, draw, logic gate inputs={normal,normal},scale=1] (xor2) at (4,-4) {};
+        \node[and gate US, draw, logic gate inputs={normal,normal},scale=1] (and2) at (3.5,-3) {};
+        \draw (z) |- (xor2.input 1);
+        \draw (xor1.output) |- (xor2.input 2);
+        \draw (z) |- (and2.input 1);
+        \draw (xor1.output) |- (and2.input 2);
+        \draw (xor2.output) -- (7,-3) node[above] {$s_0$};
+        \node[or gate US, draw, logic gate inputs={normal,normal},scale=1] (xor3) at (6,-2) {};
+        \draw (and1.output) |- (xor3.input 1);
+        \draw (and2.output) |- (xor3.input 2);
+        \draw (xor3.output) -- (7,-2) node[above] {$s_1$};
+    \end{tikzpicture}
+    \caption{Schéma d'une addition de trois bits}
+    \label{fig:adder-3bits}
+\end{figure}
+
+qui permet bien d'obtenir les quatre sorties de l'addition de trois bits, soit 00, 01, 10 et 11.\\ \\
+Une fois ces circuits de base construits, il est possible de les combiner pour obtenir un circuit permettant
+d'additionner deux nombres, par exemple de 3 bits chacun.
+Pour cela on procède exactement comme lorsque l'on a déconstruit l'addition plus haut, en sommant les bits
+de même poids, et en prenant en compte la retenue, via notre circuit de somme de trois bits.
+
+\import{images/notions-bases/classique/circ/}{adder-comp.tex}
+
+On voit bien via cet exemple que même les choses les plus simples doivent être repensées pour être adaptées
+aux nouvelles technologies, que ce soit les ordinateurs classiques ou, comme on le verra plus tard, les
+ordinateurs quantiques.\\ \\
+Un dernier mot sur la notion d'universalité, qui se dit d'un ensemble de portes logiques qui permettent
+de construire n'importe quel circuit logique.
+En effet, cela revient à dire que matériellement, il suffit de pouvoir construire ces portes pour pouvoir
+effectuer les opérations que l'on souhaite.
+Dans le cadre des ordinateurs classiques, on peut montrer que les portes NAND et NOR sont universelles, mais on
+laissera la démonstration de ce fait pour les plus curieux, car elle n'est pas très compliquée à comprendre, mais
+assez longue.
+
+\section{Hardware}\label{sec:hardware}
+
+Comme vu juste avant, les ordinateurs classiques sont composés de portes logiques, qui peuvent toutes être
+construites à partir de portes NAND ou NOR.
+Afin de donner une idée du fonctionnement d'un ordinateur classique, on va détailler le fonctionnement pratique
+d'une implémentation de la porte NAND, qui est la plus simple à construire.
+
+\begin{figure}[H]
+    \centering
+    \import{images/notions-bases/classique/elec/}{elec-nand.tex}
+    \caption{Schéma électronique d'une porte NAND}
+    \label{fig:elec-nand}
+\end{figure}
+
+On voit sur la figure~\ref{fig:elec-nand} que la porte NAND est composée, de haut en bas, d'une résistance parcourue
+par un courant électrique de tension $V_{cc}$, qui mène d'un côté à une sortie $Q$ et de l'autre à deux transistors
+alignés avec comme base $A$ et $B$, finalement reliés à la mise à terre.
+De manière simplifiée, on peut dire que les transistors sont des interrupteurs qui laissent passer le courant
+lorsque la tension à leur base est suffisante.
+De plus, le fait de relier le circuit à la mise à terre met le circuit en état bas, soit le 0 logique.
+Ainsi, tant que les deux transistors ne sont pas activés, le courant ne peut pas passer, et la sortie est à 1,
+et dès que cela passe, ce dernier effet s'applique et la sortie passe à 0.\\ \\
+Mais cela n'est pas encore complètement satisfaisant, car il faut encore savoir construire le circuit.
+Néanmoins, seuls les transistors sont vraiment compliqués à construire, car les résistances sont relativement
+aisées à fabriquer étant une propriété naturelle des matériaux, et les mises à terre sont simplement des
+connexions à la terre, tout comme les connexions et la génération de tension qui sont les bases de l'électricité.\\
+Pour décrire le fonctionnement d'un transistor, on va utiliser un modèle simplifié, qui est le modèle de
+transistor à effet de champ, ou FET (Field effect transistor)~\cite{wiki:mosfet}.
+
+\import{images/notions-bases/classique/elec/}{transistor.tex}
+
+Le principe de fonctionnement est le suivant : lorsque la tension à la base de la grille est suffisante, le courant peut
+passer entre le drain et la source, et lorsque ce n'est pas le cas, le courant ne peut pas passer.
+La base, ou grille, est composée d'un métal qui est séparé du reste du transistor par une couche d'oxyde,
+qui est un isolant.
+Ainsi, lorsque la tension dans le métal est suffisante, cela va attirer ou repousser les électrons du substrat
+et permettre le passage du courant entre le drain et la source.
+Cela est possible car le substrat est un matériau semi-conducteur, qui est un matériau qui peut être isolant
+ou conducteur selon la tension qui lui est appliquée, généralement du silicium.
+Cette propriété découle de la structure de ce matériau, qui est composé d'atomes de silicium, qui ont 4 électrons
+de valence, et qui vont donc former une structure cristalline, où chaque atome est lié à 4 autres.
+Cependant, il manque un électron à chaque atome pour former une liaison covalente, et c'est ce qu'on appelle
+un trou.
+Ainsi, lorsqu'on applique une tension à la base, on va pouvoir déplacer les électrons et les trous, et ainsi
+modifier la conductivité du substrat.
+C'est une partie de la physique du solide nommée théorie des bandes~\cite{wiki:theo-bandes}, qui ne sera pas détaillée ici, mais mentionnée,
+car elle est aussi basée sur la mécanique quantique, ce qui explique l'utilisation de matériaux semi-conducteurs
+dans les ordinateurs quantiques.\\ \\
+Ainsi, on vient d'avoir un aperçu du fonctionnement d'un ordinateur classique, afin de pouvoir mieux comprendre
+les différences avec les ordinateurs quantiques, mais aussi les similarités entre les deux concepts.
+Un ordinateur classique est concrètement construit sur un circuit électronique dont les composants de base sont
+les transistors, qui sont construits à partir de matériaux semi-conducteurs, propriété qui est basée sur la
+mécanique quantique.
+Néanmoins, la logique utilisée en est indépendante, et est basée sur la logique booléenne, qui est une logique
+binaire, et donc purement déterministe.

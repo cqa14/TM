@@ -1,0 +1,200 @@
+\chapter{Machine learning quantique}\label{ch:machine-learning-quantique}
+
+L'intelligence artificielle est devenu au cours de ces dernières années un des sujets
+les plus innovateurs dans le domaine des nouvelles technologies.
+Les méthodes d'entrainement de celles-ci, le \textit{machine learning}, est en général
+un processus très coûteux en puissance de calcul, si l'on omet en outre les difficultés
+pour avoir un échantillon de donnée propre et les autres points clés de ces outils.
+Sur le problème de la puissance de calcul, un ordinateur quantique peut offrir une
+autre approche au machine learning, ce qui pourrait si la technologie devient assez
+fiable être plus rentable que la méthode classique, qui demande actuellement des
+quantités monstrueuses de puissance de calcul et d'énergie.\\ \\
+Pour commencer, voyons dans les grandes lignes comment fonctionne un algorithme de
+machine learning.
+Les plus célèbres sont ceux nommés les réseaux de neurones et fonctionnent par
+``couches''.
+Il y en a deux visibles, les entrées et les sorties, et entre deux, il y en a autant
+que nécessaire, soit construit dynamiquement par la machine ou alors conçu par un
+ingénieur.
+Chaque élément d'une couche est issu de la somme des précédents avec un certain poids,
+puis reçoit lui-même un ajustement avant de passer à la couche suivante jusqu'à avoir
+la sortie.
+Ces poids sont ensuite ajusté par un algorithme d'entrainement
+(\textit{backpropagation} en anglais) afin de faire correspondre les entrées et sorties
+à un lot de données.
+Notons malgré tout que cela reste une explication très simplifiée d'une méthode parmi
+d'autres de faire de l'intelligence artificielle.
+\import{images/algo/qml}{neural_network.tex}
+Dans la suite, nous allons voir le principe d'un algorithme de machine learning exploitant
+un ordinateur quantique, mais nécessitant tout de même un ordinateur classique pour
+faire différentes tâches de calculs intermédiaires, et c'est donc un algorithme
+hybride~\cite{qml-article}.
+Nous allons montrer un exemple afin d'interpoler une fonction continue, à partir d'un
+ensemble de données.
+Pour résumer l'algorithme dans les grandes lignes, ayant un ensemble de données $(x_i, f(x_i))$,
+il va exécuter une fonction $y(x, ^*\theta)$ qui prend pour paramètre la valeur d'entrée $x$
+et un certain nombre de paramètres $^*\theta$ avec pour objectif que $y(x_i, ^*\theta) = y_i$
+soit le plus proche possible de $f(x_i)$.
+Le but est de trouver les paramètres $^*\theta$ qui sont des spécifications du circuit
+quantique qui soit le plus proche possible de ces critères.\\ \\
+La partie quantique de l'algorithme peut être découpée en trois parties.
+La première est un opérateur $U_{in}(x)$ qui va préparer l'état quantique de départ de notre
+circuit $\ket{\psi_{in}(x)}=U_{in}(x)\ket{0}$.
+On a ensuite un opérateur paramétré $U_{out}(^*\theta)$ dont on va chercher les paramètres
+$^*\theta$ optimaux, ce qui donne un état final $\ket{\psi_{out}(x, ^*\theta)}=U_{out}(^*\theta)\ket{\psi_{in}(x)}$.
+Finalement, on mesure un observable $O$ sur l'état final, qui va nous donner une valeur
+$\expval{O}=\bra{\psi_{out}}O\ket{\psi_{out}}$ (on exécute donc le circuit
+plusieurs fois pour avoir une valeur plus précise).\\
+On entre ensuite dans la partie classique de l'algorithme, va appliquer une fonction $F$ sur
+la valeur mesurée $\expval{O}$, qui va nous donner la valeur $y(x, ^*\theta) = F(\expval{O})$.
+On calcule ensuite classiquement pour chaque $x_i$ la valeur $y_i$ et on calcule une fonction
+de coût $L(^*\theta)$ qui mesure l'écart entre $y_i$ et $f(x_i)$.
+Le but est de minimiser cette fonction de coût, ce qui va nous donner les paramètres optimaux
+$^*\theta_t$ et donc la fonction $y(x, ^*\theta_t)$ sera notre modèle prédictif.\\ \\
+On va montrer un exemple relativement simple d'application de cet algorithme sur simulateur,
+en utilisant seulement trois qubits.
+La figure~\ref{fig:extrapolation_gradient_descent}, les points rouges montrent les points
+d'entrainement $(x_i, f(x_i))$.
+On va utiliser comme opérateur $U_{in}(x)$ encodant $x$ dans les qubits en appliquant
+sur chaque qubit une rotation de $\arcsin(x)$ autour de l'axe $Y$ et une rotation de
+$\arccos(x^2)$ autour de l'axe $Z$, donc $U_{in}(x) = (R_Z(\arccos(x^2)) R_Y(\arcsin(x)))^{\otimes 3}$.
+Cela est possible car nos valeurs de $x$ sont comprises entre $-1$ et $1$, mais si ce n'était
+pas le cas, il faudrait trouver une autre méthode pour encoder $x$ dans les qubits, ou juste
+diviser par une constante pour que cela soit le cas.\\
+Pour l'opérateur $U_{out}(^*\theta)$, on va faire une sorte de sandwich entre un opérateur
+$e^{iHt}$ et des rotations autour des axes $X$ et $Z$.
+L'idée est que l'opérateur $e^{iHt}$ va faire évoluer notre état quantique en créant une
+intrication entre les qubits, et les rotations autour des axes $X$ et $Z$ vont permettre
+de modifier leurs états librement, car en appliquant sur un unique qubit d'état $\ket{q}$
+des rotations autour des axes $X$ et $Z$, on peut obtenir n'importe quel état $\ket{q'}$
+en faisant $\ket{q'} = R_X(\theta_3) R_Z(\theta_2) R_X(\theta_1)\ket{q}$, ce qui s'imagine
+aisément en regardant la sphère de Bloch.\\
+On va ensuite mesurer l'amplitude de l'état final sur le premier qubit dans la base
+standard ${\ket{0},\ket{1}}$, ce qui va nous donner une valeur $\expval{O}$ et on obtient
+donc le circuit de la figure~\ref{fig:qml-gen-circ}.\\ \\
+Observons néanmoins l'opérateur $e^{iHt}$, où $H$ est un hamiltonien, et $t$ un intervalle
+de temps que l'on va fixer arbitrairement.
+Pour l'hamiltonien, on va en choisir un en s'inspirant de la nature, ou plutôt d'un modèle
+décrivant l'évolution du spin d'une grille de particules, le modèle d'Ising.
+Il se calcule comme suit :
+\[
+    H = \sum_{i=1}^{N} a_i X_i + \sum_{i=1}^{N} \sum_{j=1}^{i-1}J_{ij}Z_i Z_j
+\]
+avec $X_i$ et $Z_i$ les matrices de Pauli pour le qubit $i$, $a_i$ et $J_{ij}$ des constantes
+dans une distribution uniforme entre $-1$ et $1$, et $N$ le nombre de qubits~\cite{ham-qml}.
+On peut ensuite calculer l'opérateur $e^{iHt}$ et le convertir en un opérateur unitaire
+via une méthode implémentée dans les librairies de calcul quantique.
+On peut noter quelques points intéressants sur ce que l'on vient de voir.
+Tout d'abord, pour calculer l'opérateur $e^{iHt}$, on a besoin de l'exponentielle d'une
+matrice, ce qui peut être rélisé par des méthodes numériques, en utilisant par exemple
+le développement en série de Taylor.
+De plus, sachant que l'on peut implémenter un hamiltonien de cette manière, ainsi que son
+opérateur temporel $e^{iHt}$ (pout $H$ indépendant du temps), on peut donc simuler tout
+à fait envisager d'utiliser ces outils pour simuler des systèmes quantiques, comme dans ce
+cas le modèle d'Ising~\cite{ising-qiskit}.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+        \scalebox{0.5}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+                \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{R_Y}\,(\mathrm{arcsin(x)})} & \gate{\mathrm{R_Z}\,(\mathrm{arccos(x^2)})} \barrier[0em]{2} & \qw & \multigate{2}{\mathrm{e^{iHt}}}_<<<{0} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}0})} & \gate{\mathrm{R_Z}\,(\mathrm{{\ensuremath{\theta}}3})} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}6})} & \multigate{2}{\mathrm{e^{iHt}}}_<<<{0} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}0})} & \gate{\mathrm{R_Z}\,(\mathrm{{\ensuremath{\theta}}3})} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}6})} & \multigate{2}{\mathrm{e^{iHt}}}_<<<{0} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}0})} & \gate{\mathrm{R_Z}\,(\mathrm{{\ensuremath{\theta}}3})} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}6})} \barrier[0em]{2} & \qw & \meter & \qw & \qw\\
+                \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{R_Y}\,(\mathrm{arcsin(x)})} & \gate{\mathrm{R_Z}\,(\mathrm{arccos(x^2)})} & \qw & \ghost{\mathrm{e^{iHt}}}_<<<{1} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}1})} & \gate{\mathrm{R_Z}\,(\mathrm{{\ensuremath{\theta}}4})} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}7})} & \ghost{\mathrm{e^{iHt}}}_<<<{1} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}1})} & \gate{\mathrm{R_Z}\,(\mathrm{{\ensuremath{\theta}}4})} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}7})} & \ghost{\mathrm{e^{iHt}}}_<<<{1} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}1})} & \gate{\mathrm{R_Z}\,(\mathrm{{\ensuremath{\theta}}4})} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}7})} & \qw & \qw & \qw & \qw\\
+                \nghost{{q}_{2} :  } & \lstick{{q}_{2} :  } & \gate{\mathrm{R_Y}\,(\mathrm{arcsin(x)})} & \gate{\mathrm{R_Z}\,(\mathrm{arccos(x^2)})} & \qw & \ghost{\mathrm{e^{iHt}}}_<<<{2} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}2})} & \gate{\mathrm{R_Z}\,(\mathrm{{\ensuremath{\theta}}5})} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}8})} & \ghost{\mathrm{e^{iHt}}}_<<<{2} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}2})} & \gate{\mathrm{R_Z}\,(\mathrm{{\ensuremath{\theta}}5})} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}8})} & \ghost{\mathrm{e^{iHt}}}_<<<{2} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}2})} & \gate{\mathrm{R_Z}\,(\mathrm{{\ensuremath{\theta}}5})} & \gate{\mathrm{R_X}\,(\mathrm{{\ensuremath{\theta}}8})} & \qw & \qw & \qw & \qw\\
+                \nghost{\mathrm{{c} :  }} & \lstick{\mathrm{{c} :  }} & \lstick{/_{_{1}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-3,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Example de circuit de machine learning quantique, 3 qubits, 1 mesure, 3 couches ($U_{in}$|$U_{out}(^*\theta)$|Mesure)}
+    \label{fig:qml-gen-circ}
+\end{figure}
+Comme la mesure est comprise entre $0$ et $1$, on va utiliser une fonction $F$ qui va
+transformer cette valeur en une valeur sur l'intervalle $[\min(f(x_i)), \max(f(x_i))]$,
+par exemple $F(x) = |\min(f(x_i)) - \max(f(x_i))| \cdot x - \min(f(x_i))$ et donc
+$y = F(\expval{O})$.\\
+Maintenant que l'on a notre circuit, on va pouvoir commencer l'entrainement.
+On va utiliser un algorithme inspiré de la descente de gradient, qui va chercher à minimiser
+une fonction à plusieurs variables.
+Cette fonction se nomme la fonction de coût, et est définie comme suit :
+\[
+    L(^*\theta) = \sum_{i=1}^{N} (y_i - f(x_i))^2
+\]
+avec $N$ le nombre de points d'entrainement, $y_i$ la valeur prédite par le modèle pour
+$x_i$ et $f(x_i)$ la valeur réelle pour $x_i$.
+Cette fonction mesure donc l'écart entre les valeurs prédites et les valeurs réelles, et
+en la minimisant, on va obtenir les paramètres optimaux $^*\theta_t$.
+La descente de gradient se fait itérativement, en calculant le gradient de la fonction de coût
+par rapport aux paramètres, et en ajustant ces derniers en fonction de ce gradient :
+\[
+    ^*\theta_{i+1} = ^*\theta_i - \alpha \nabla L(^*\theta_i)
+\]
+avec $\alpha$ un coefficient de proportionnalité, qui va déterminer la taille du pas que l'on
+utilise pour ajuster les paramètres, et $\nabla L(^*\theta_t) = \left(\frac{\partial L(^*\theta_t)}{\partial \theta_0}, \frac{\partial L(^*\theta_t)}{\partial \theta_1}, \ldots, \frac{\partial L(^*\theta_t)}{\partial \theta_n}\right)$ le gradient de la fonction de coût.
+Comme on est sur un ordinateur, cela revient à calculer les dérivées partielles de la fonction
+de coût par rapport à chaque paramètre, ce qui peut être fait par des méthodes numériques
+$\frac{\Delta L}{\Delta \theta_i} = \frac{L(^*\theta + \epsilon \hat{e}_i) - L(^*\theta)}{\epsilon}$
+avec $\hat{e}_i$ le vecteur unitaire de la $i$-ème dimension et $\epsilon$ un petit nombre.
+Si on pose $\epsilon = \alpha$, on peut donc faire évoluer tour à tour chaque paramètre
+en prenant la valeur minimale de $L(\theta_0, \ldots, \theta_i \pm \epsilon, \ldots, \theta_n)$,
+que l'on peut encore optimiser en sauvegardant les valeurs de $L$ de l'itération précédente
+pour être sûr de ne pas remonter dans la fonction de coût si le pas est trop grand.
+Cette méthode permet d'obtenir une descente comme présentée en figure~\ref{fig:gradient_descent}.
+On note que cet algorithme peut converger vers un minimum local, et non global, et que
+l'initialisation des paramètres est de fait très importante.
+De plus, si la variation de $L$ est trop faible, l'algorithme va converger très lentement,
+et il faudra peut-être ajuster le pas ou rechercher une initialisation plus proche du minimum
+qui permettra de converger.
+Ce problème n'est pas que théorique, mais est au contraire un des enjeux majeurs du machine
+learning sur un ordinateur quantique, car plus le nombre de qubits augmente, plus le gradient
+est faible sur la majorité des points, et donc compliqué à utiliser.
+\begin{figure}[H]
+    \centering
+    \import{images/algo/qml}{gradient_descent.tex}
+    \caption{Fonction de coût par itération de l'algorithme de descente de gradient}
+    \label{fig:gradient_descent}
+\end{figure}
+En appliquant cet algorithme avec notre ensemble de données et des paramètres initiaux
+aléatoires, on obtient les résultats de la figure~\ref{fig:param-qml} comme convergence
+de paramètres optimaux après 20 itérations par paramètre et un pas de 0.1.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+        \scalebox{0.5}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+                \nghost{} & \lstick{} & \multigate{2}{\mathrm{e^{iHt}}}_<<<{0} & \gate{\mathrm{R_X}\,(\mathrm{2.403})} & \gate{\mathrm{R_Z}\,(\mathrm{5.414})} & \gate{\mathrm{R_X}\,(\mathrm{1.948})} & \multigate{2}{\mathrm{e^{iHt}}}_<<<{0} & \gate{\mathrm{R_X}\,(\mathrm{4.838})} & \gate{\mathrm{R_Z}\,(\mathrm{3.738})} & \gate{\mathrm{R_X}\,(\mathrm{2.826})} & \multigate{2}{\mathrm{e^{iHt}}}_<<<{0} & \gate{\mathrm{R_X}\,(\mathrm{5.467})} & \gate{\mathrm{R_Z}\,(\mathrm{0.8092})} & \gate{\mathrm{R_X}\,(\mathrm{0.2784})} & \qw & \qw\\
+                \nghost{} & \lstick{} & \ghost{\mathrm{e^{iHt}}}_<<<{1} & \gate{\mathrm{R_X}\,(\mathrm{2.446})} & \gate{\mathrm{R_Z}\,(\mathrm{1.276})} & \gate{\mathrm{R_X}\,(\mathrm{1.475})} & \ghost{\mathrm{e^{iHt}}}_<<<{1} & \gate{\mathrm{R_X}\,(\mathrm{5.049})} & \gate{\mathrm{R_Z}\,(\mathrm{6.197})} & \gate{\mathrm{R_X}\,(\mathrm{3.458})} & \ghost{\mathrm{e^{iHt}}}_<<<{1} & \gate{\mathrm{R_X}\,(\mathrm{1.788})} & \gate{\mathrm{R_Z}\,(\mathrm{1.56})} & \gate{\mathrm{R_X}\,(\mathrm{1.651})} & \qw & \qw\\
+                \nghost{} & \lstick{} & \ghost{\mathrm{e^{iHt}}}_<<<{2} & \gate{\mathrm{R_X}\,(\mathrm{5.116})} & \gate{\mathrm{R_Z}\,(\mathrm{3.954})} & \gate{\mathrm{R_X}\,(\mathrm{5.591})} & \ghost{\mathrm{e^{iHt}}}_<<<{2} & \gate{\mathrm{R_X}\,(\mathrm{3.615})} & \gate{\mathrm{R_Z}\,(\mathrm{2.364})} & \gate{\mathrm{R_X}\,(\mathrm{3.33})} & \ghost{\mathrm{e^{iHt}}}_<<<{2} & \gate{\mathrm{R_X}\,(\mathrm{3.221})} & \gate{\mathrm{R_Z}\,(\mathrm{4.064})} & \gate{\mathrm{R_X}\,(\mathrm{2.956})} & \qw & \qw\\
+        \\ }}
+    \]
+    Paramètres initiaux
+    \[\shorthandoff{!}
+        \scalebox{0.5}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+                \nghost{} & \lstick{} & \multigate{2}{\mathrm{e^{iHt}}}_<<<{0} & \gate{\mathrm{R_X}\,(\mathrm{2.603})} & \gate{\mathrm{R_Z}\,(\mathrm{5.414})} & \gate{\mathrm{R_X}\,(\mathrm{1.948})} & \multigate{2}{\mathrm{e^{iHt}}}_<<<{0} & \gate{\mathrm{R_X}\,(\mathrm{4.738})} & \gate{\mathrm{R_Z}\,(\mathrm{3.538})} & \gate{\mathrm{R_X}\,(\mathrm{2.526})} & \multigate{2}{\mathrm{e^{iHt}}}_<<<{0} & \gate{\mathrm{R_X}\,(\mathrm{5.667})} & \gate{\mathrm{R_Z}\,(\mathrm{0.9092})} & \gate{\mathrm{R_X}\,(\mathrm{0.4784})} & \qw & \qw\\
+                \nghost{} & \lstick{} & \ghost{\mathrm{e^{iHt}}}_<<<{1} & \gate{\mathrm{R_X}\,(\mathrm{3.146})} & \gate{\mathrm{R_Z}\,(\mathrm{1.276})} & \gate{\mathrm{R_X}\,(\mathrm{1.375})} & \ghost{\mathrm{e^{iHt}}}_<<<{1} & \gate{\mathrm{R_X}\,(\mathrm{4.949})} & \gate{\mathrm{R_Z}\,(\mathrm{6.097})} & \gate{\mathrm{R_X}\,(\mathrm{3.358})} & \ghost{\mathrm{e^{iHt}}}_<<<{1} & \gate{\mathrm{R_X}\,(\mathrm{1.888})} & \gate{\mathrm{R_Z}\,(\mathrm{1.66})} & \gate{\mathrm{R_X}\,(\mathrm{1.751})} & \qw & \qw\\
+                \nghost{} & \lstick{} & \ghost{\mathrm{e^{iHt}}}_<<<{2} & \gate{\mathrm{R_X}\,(\mathrm{5.016})} & \gate{\mathrm{R_Z}\,(\mathrm{3.954})} & \gate{\mathrm{R_X}\,(\mathrm{4.891})} & \ghost{\mathrm{e^{iHt}}}_<<<{2} & \gate{\mathrm{R_X}\,(\mathrm{3.415})} & \gate{\mathrm{R_Z}\,(\mathrm{2.564})} & \gate{\mathrm{R_X}\,(\mathrm{3.73})} & \ghost{\mathrm{e^{iHt}}}_<<<{2} & \gate{\mathrm{R_X}\,(\mathrm{3.521})} & \gate{\mathrm{R_Z}\,(\mathrm{4.264})} & \gate{\mathrm{R_X}\,(\mathrm{2.056})} & \qw & \qw\\
+        \\ }}
+    \]
+    Paramètres après descente de gradient
+    \caption{Paramétrisation de l'opérateur $U_{out}(^*\theta)$}
+    \label{fig:param-qml}
+\end{figure}
+Maintenant que le circuit est entrainé, on peut l'utiliser pour prédire des valeurs pour
+des points non présents dans l'ensemble d'entrainement.
+On peut voir sur la figure~\ref{fig:extrapolation_gradient_descent} que le modèle s'est
+bien adapté aux données d'entrainement, mais qu'il a du mal à prédire les valeurs les
+plus extrêmes.
+\begin{figure}[H]
+    \centering
+    \import{images/algo/qml}{extrapolation_gradient_descent.tex}
+    \caption{Extrapolation de données par un algorithme de machine learning quantique}
+    \label{fig:extrapolation_gradient_descent}
+\end{figure}
+On peut facilement imaginer que les algorithmes de machine learning quantique ou hybride
+pourraient offrir une alternative intéressante aux algorithmes classiques, en particulier
+compte tenu du fait que via seulement quelques qubits et des calculs standards sur un
+ordinateur classique, on peut déjà interpoler toute une fonction.
+Néanmoins, il reste encore beaucoup de travail à faire pour que ces algorithmes soient
+utilisables en pratique que ce soit du point de vue des ordinateurs quantiques, mais
+aussi de la manière d'optimiser les paramètres, et de la manière de les initialiser.
+Finalement, l'exemple présenté ici n'est qu'une méthode parmi de nombreuses autres étudiées
+par la communauté scientifique, et est de plus très simplifié afin d'en présenter les
+grandes lignes.

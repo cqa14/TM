@@ -1,0 +1,78 @@
+\chapter{Estimation de phase itérative}\label{ch:iterative-phase-estimatimation}
+
+Durant les chapitres précédents, l'estimation de phase a eu de nombreux rôles très utiles,
+que ce soit dans l'implémentation de l'algorithme de Shor ou dans la recherche du nombre
+de solutions de l'opérateur de Grover.
+Néanmoins, ce circuit grossit assez vite quand on désire une précision élevée, ce qui
+entraîne une augmentation de l'erreur dans ces grands circuits.\\
+Nous allons donc voir dans ce chapitre une méthode permettant d'obtenir une estimation
+de phase avec une précision arbitraire, tout en gardant un circuit de taille constante.
+L'estimation de phase itérative~\cite{ipe-article} est une méthode consistante à faire certaines opérations,
+puis à mesurer le circuit, et à recommencer en suivant une certaine procédure jusqu'à
+obtenir la précision désirée.\\ \\
+Reprenons donc le problème de l'estimation de phase~\ref{sec:estimation-de-phase-quantique},
+et considérons que l'angle $\theta$ peut être écrit comme une
+$\theta = \frac{\theta_1}{2} + \frac{\theta_2}{4} + \dots + \frac{\theta_m}{2^m}$.
+Nous allons déveloper la méthode avec une porte $U$ active sur un qubit, mais il est
+aussi valable pour une porte $U$ active sur plusieurs qubits.\\
+L'initialisation du circuit se fait avec deux qubits, $q_0 \rightarrow \ket{+}$ et
+$q_1 \rightarrow \ket{\Psi}$, avec $\ket{\Psi}$ un vecteur propre de $U$.
+L'application d'une porte $CU$ un nombre $2^t$ de fois va, par un retour de phase,
+faire passer $q_0 \rightarrow \ket{0} + e^{2i\pi\theta2^t}\ket{1}$.\\ \\
+Alors, pour $t= m-1$, nous obtenons un facteur pour $\ket{1}$ de $e^{2i\pi\theta2^{m-1}}
+= e^{2i\pi 2^{m-1} \left(\frac{\theta_1}{2} + \frac{\theta_2}{4} + \dots + \frac{\theta_m}{2^m}\right)}
+= e^{2i\pi \frac{\theta_m}{2}}$, car les autres facteurs sont des multiples de $2\pi$.
+De fait, si $\theta_m = 0$, alors le facteur est égal à $1$, et si $\theta_m = 1$, alors
+le facteur est égal à $-1$, ce qui fera basculer le qubit $q_0$ à $\ket{+}$ ou $\ket{-}$.
+En appliquant alors une porte de Hadamard sur $q_0$, nous obtenons $\ket{0}$ ou $\ket{1}$,
+qui correspond à $\theta_m$.\\
+Pour la deuxième itération, nous allons appliquer $CU$ un nombre $2^{m-2}$ de fois, ce qui
+va nous donner un facteur pour $\ket{1}$ de $e^{2i\pi\theta2^{m-2}} = e^{2i\pi 2^{m-2}
+\left(\frac{\theta_1}{2} + \frac{\theta_2}{4} + \dots + \frac{\theta_m}{2^m}\right)}
+= e^{2i\pi \frac{\theta_{m-1}}{2}} e^{2i\pi \frac{\theta_{m}}{4}}$.
+Comme nous connaissons déjà $\theta_m$, nous pouvons annuler le facteur le concernant
+en appliquant une porte de phase de $-\frac{\pi}{2}$ sur $q_0$ si $\theta_m = 1$, et
+sinon ne rien faire.\\
+On continue la même procédure jusqu'à la dernière itération, en enlevant à chaque fois
+les facteurs déjà connus.\\ \\
+Il suffit ensuite pour connaitre la phase de prendre la liste des bits $\theta_1 \theta_2
+\dots \theta_m$ et de les convertir en décimal, puis de diviser par $2^m$ pour obtenir
+la phase $\theta$.\\ \\
+Par exemple, pour la porte $U = \begin{pmatrix} 1 & 0 \\ 0 & e^{i\frac{\pi}{4}} \end{pmatrix}$,
+nous pouvons nous attendre à obtenir $\theta = \frac{1}{8} = 0.125$.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{0.5}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{H}} & \control \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{\pi}{4}})} \qw & \qw & \qw & \control \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{\pi}{4}})} \qw & \qw & \qw & \control \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{\pi}{4}})} \qw & \qw & \qw & \control \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{\pi}{4}})} \qw & \qw & \qw & \gate{\mathrm{H}} & \meter \barrier[0em]{1} & \qw & \gate{\mathrm{\left|0\right\rangle}} & \gate{\mathrm{H}} & \control \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{\pi}{4}})} \qw & \qw & \qw & \control \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{\pi}{4}})} \qw & \qw & \qw & \gate{\mathrm{P}\,(\mathrm{\frac{-\pi}{2}})} & \gate{\mathrm{H}} & \meter \barrier[0em]{1} & \qw & \gate{\mathrm{\left|0\right\rangle}} & \gate{\mathrm{H}} & \control \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{\pi}{4}})} \qw & \qw & \qw & \gate{\mathrm{P}\,(\mathrm{\frac{-\pi}{2}})} & \gate{\mathrm{P}\,(\mathrm{\frac{-\pi}{4}})} & \gate{\mathrm{H}} & \meter & \qw & \qw\\
+        \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{X}} & \ctrl{-1} & \qw & \qw & \qw & \ctrl{-1} & \qw & \qw & \qw & \ctrl{-1} & \qw & \qw & \qw & \ctrl{-1} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{-1} & \qw & \qw & \qw & \ctrl{-1} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{-1} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{\mathrm{{c} :  }} & \lstick{\mathrm{{c} :  }} & \lstick{/_{_{3}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-2,0] & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \control \cw^(0.0){^{\mathtt{c2_0=0x1}}} \cwx[-2] & \cw & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-2,0] & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \control \cw^(0.0){^{\mathtt{c2_1=0x1}}} \cwx[-2] & \control \cw^(0.0){^{\mathtt{c2_0=0x1}}} \cwx[-2] & \cw & \dstick{_{_{\hspace{0.0em}2}}} \cw \ar @{<=} [-2,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Recherche par itération de la phase de $U$}
+    \label{fig:ipe-ex}
+\end{figure}
+Les résultats obtenus montre bien le résultat attendu, et il est à noter la faible
+proportion d'erreurs sur un ordinateur quantique réel.
+Notons que dans ce cas, nous avons été contraints à utiliser un modèle de bruit plutôt qu'un
+vrai ordinateur quantique, car le contrôle d'une porte par la mesure d'un qubit n'est pas
+encore implémenté sur les ordinateurs quantiques à notre disposition.
+\begin{figure}[H]
+    \centering
+    \subfloat[Simulation]{
+        \import{images/algo/ipe/}{ipe.tex}
+    }
+    \subfloat[Simulation avec bruit \protect\footnotemark]{
+        \import{images/algo/ipe/}{ipe_real.tex}
+    }
+    \caption{Résultats du circuit (chaîne de bits | valeur décimale)}
+    \label{fig:ipe-res}
+\end{figure}
+\footnotetext{Executé selon le modèle \textit{FakeMelbourne}, à date du 20.08.2023, calqué sur un ordinateur d'IBM hors-ligne au moment de la rédaction}
+Cette manière de faire permet donc d'obtenir une estimation de phase avec une précision
+arbitraire sans nécessiter un plus gros circuit.
+Cela rend donc son utilisation possible sur un ordinateur actuel ou à court terme.
+Dans cet objectif, il permet aussi de limiter le temps d'intrication des qubits, car ils
+sont mesurés à chaque itération, ce qui permet d'utiliser cet algorithme sans nécessiter un temps
+de cohérence trop long.

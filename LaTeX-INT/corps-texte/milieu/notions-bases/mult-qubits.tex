@@ -1,0 +1,507 @@
+\chapter{Système à plusieurs qubits}\label{ch:systeme-a-plusieurs-qubits}
+
+Une fois que l'on a compris le fonctionnement d'un qubit, il est pratique,
+sinon indispensable, de pouvoir travailler avec plusieurs qubits.
+En effet, pour le moment, nous ne pouvions rien faire de bien utile outre
+créer des résultats pseudo-aléatoires.
+La manipulation de plusieurs qubits permet de créer des états d'intrication,
+qui sont la base de la puissance des ordinateurs quantiques, et qui permettent
+en quelque sorte de faire des calculs en parallèle.
+
+\section{Description du système}\label{sec:description-du-systeme}
+
+Un système à plusieurs qubits est décrit similairement à un système à un seul
+qubit.
+Considérons deux qubits, $\ket{\psi} = \psi_1 \ket{0} + \psi_2 \ket{1}$ et
+$\ket{\phi} = \phi_1 \ket{0} + \phi_2 \ket{1}$.
+Le système est décrit par le produit tensoriel des deux qubits, soit
+$\ket{\psi} \otimes \ket{\phi} = \psi_1 \phi_1 \ket{00} + \psi_1 \phi_2 \ket{01}
++ \psi_2 \phi_1 \ket{10} + \psi_2 \phi_2 \ket{11} = \ket{\psi \phi}$.
+Cela revient donc à considérer un seul qubit à 4 états, $\ket{00}$, $\ket{01}$,
+$\ket{10}$ et $\ket{11}$, et les coefficients sont obtenus en multipliant les
+coefficients des deux qubits.
+Les probabilités sont obtenues en prenant le module au carré des coefficients, comme
+précédemment.\\
+La logique est la même pour un système à $n$ qubits, que l'on considère comme un seul
+vecteur à $2^n$ états.
+Cette augmentation du nombre d'états est la raison pour laquelle les ordinateurs
+quantiques sont théoriquement intéressants, et de plus la complexité des simulations
+classiques, car elle augmente exponentiellement avec le nombre de qubits.\\ \\
+Le formalisme de Dirac permet de mieux comprendre la notion d'intrication.
+On parle d'intrication lorsque l'on ne peut pas décrire un système par le produit
+de qubits individuels.
+Par exemple, considérons le système $\ket{\psi} = \frac{1}{\sqrt{2}} \ket{00} +
+\frac{1}{\sqrt{2}} \ket{11}$.
+En reprenant l'égalité vue précédemment, $\ket{\psi} \otimes \ket{\phi} = \psi_1 \phi_1 \ket{00} + \psi_1 \phi_2 \ket{01}
++ \psi_2 \phi_1 \ket{10} + \psi_2 \phi_2 \ket{11}$, essayons de trouver les coefficients
+$\psi_1$, $\psi_2$, $\phi_1$ et $\phi_2$.
+En comparant les facteurs, on obtient un système d'équations :
+\[\begin{cases}
+  \ket{00} \ : \ \psi_1 \phi_1 &= \frac{1}{\sqrt{2}} \\
+  \ket{01} \ : \ \psi_1 \phi_2 &= 0 \\
+  \ket{10} \ : \ \psi_2 \phi_1 &= 0 \\
+  \ket{11} \ : \ \psi_2 \phi_2 &= \frac{1}{\sqrt{2}}
+\end{cases}\]
+On voit que $\psi_1$ ou $\phi_1$ devrait être nul pour qu’il soit possible de définir les
+états respectifs des deux sous-systèmes, or si l'on prend les autres équations, la
+première implique que $\psi_1$ est non nul, et la dernière que $\phi_1$ est non nul.
+On observe donc que le système n'est pas descriptible par le produit de deux qubits
+individuels, et on dit qu'il est intriqué.\\ \\
+Le produit tensoriel s'applique aussi aux matrices, et on peut donc définir similairement
+l'application d'une porte sur un système à plusieurs qubits.
+Par exemple si l'on souhaite appliquer une porte d'Hadamard sur le premier qubit d'un
+système à deux qubits, on obtient une porte globale sur le système :
+\[H \otimes I = \frac{1}{\sqrt{2}} \begin{pmatrix}
+  1 & 1 \\
+  1 & -1
+\end{pmatrix} \otimes \begin{pmatrix}
+    1 & 0 \\
+    0 & 1
+\end{pmatrix} = \frac{1}{\sqrt{2}} \begin{pmatrix}
+    1 & 0 & 1 & 0 \\
+    0 & 1 & 0 & 1 \\
+    1 & 0 & -1 & 0 \\
+    0 & 1 & 0 & -1
+\end{pmatrix}\]
+que l'on peut appliquer sur le système afin de trouver le nouveau vecteur d'état.
+
+\section{Les portes}\label{sec:les-portes}
+
+Mais l'intérêt des systèmes à plusieurs qubits n'est pas de faire ce que l'on sait déjà
+faire avec un seul qubit, mais de pouvoir faire des choses nouvelles.\\ \\
+La première porte que l'on va voir est la porte de CX (Controlled X, parfois aussi CNOT pour
+Controlled NOT), qui est une porte à deux qubits.
+Elle va prendre en entrée deux qubits, un qubit de contrôle et un qubit cible.
+Si le qubit de contrôle est à 0, la porte ne fait rien, sinon elle applique une porte
+X sur le qubit cible.
+Elle est représentée par la matrice suivante :
+\[CX = \begin{pmatrix}
+  1 & 0 & 0 & 0 \\
+  0 & 1 & 0 & 0 \\
+  0 & 0 & 0 & 1 \\
+  0 & 0 & 1 & 0
+\end{pmatrix}\]
+et on peut la représenter sur un circuit comme suit :
+\begin{figure}[H]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.8em @!R { \\
+        \lstick{\ket{c}} & \ctrl{1} & \qw & \qw\\
+        \lstick{\ket{t}} & \targ & \qw & \qw\\
+        \\ }}
+    \]
+    \caption{Circuit d'une porte CX}
+    \label{fig:cnot}
+\end{figure}
+avec $\ket{c}$ le qubit de contrôle et $\ket{t}$ le qubit cible.
+C'est une porte très importante, car elle permet de créer de l'intrication, de plus elle
+agit comme une porte XOR entre les deux qubits, avec le deuxième qubit comme sortie, soit
+symboliquement $\ket{c, t} \rightarrow \ket{c, c \oplus t}$ (le qubit cible va être modifié comme s'il
+subissait une porte XOR entre lui et le qubit de contrôle).\\ \\
+L'autre porte sur deux qubits que l'on va le plus utiliser est la porte CZ (Controlled Z).
+Elle est similaire à la porte CX, mais au lieu d'appliquer une porte X sur le qubit cible,
+elle applique une porte Z.
+Ce qui est particulier avec cette porte, c'est qu'elle agit sur tout le système, et pas
+seulement sur le qubit cible.
+En effet, si le qubit de contrôle est à $\ket{0}$, la porte ne fait rien, sinon elle applique une
+porte Z sur le qubit cible, ce qui revient à multiplier le vecteur d'état par $-1$.
+Or, si le qubit cible est à $\ket{0}$, on a $\ket{0} \rightarrow -\ket{0} = \ket{0}$ et donc
+l'état du système ne change pas.
+En résumé, cette porte inverse la phase globale du système si et seulement si les deux
+qubits sont à $\ket{1}$.
+C'est pour cela qu'on la dessine comme suit :
+\begin{figure}[H]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=1em @!R { \\
+        \lstick{\ket{\psi_0} } & \ctrl{1} & \qw & \qw\\
+        \lstick{\ket{\psi_1} } & \control\qw & \qw & \qw\\
+        \\ }}
+    \]
+    \caption{Circuit d'une porte CZ}
+    \label{fig:cz}
+\end{figure}
+et cela est également visible sur sa matrice :
+\[CZ = \begin{pmatrix}
+  1 & 0 & 0 & 0 \\
+  0 & 1 & 0 & 0 \\
+  0 & 0 & 1 & 0 \\
+  0 & 0 & 0 & -1
+\end{pmatrix}\]
+Finalement, un paterne apparait et on peut noter la représentation générale d'une porte
+controlée $U$ comme suit :
+\[CU = \begin{pmatrix}
+  1 & 0 & 0 & 0 \\
+  0 & 1 & 0 & 0 \\
+  0 & 0 & u_{11} & u_{12} \\
+  0 & 0 & u_{21} & u_{22}
+\end{pmatrix}\]
+où $U = \begin{pmatrix}
+  u_{11} & u_{12} \\
+  u_{21} & u_{22}
+\end{pmatrix}$ est la matrice de la porte $U$.\\
+Cette porte générale donne aussi une idée de comment sont construites les matrices des
+portes sur plusieurs qubits.
+En effet, on remarque que les lignes correspond à l'effet de la porte sur les états
+de base $\ket{00}$, $\ket{01}$, $\ket{10}$ et $\ket{11}$, et les colonnes, ce en quoi
+la porte transforme les états de base.
+Par exemple, sur la dernière matrice présentée, on que les deux premières lignes ont juste
+des 1 dans la colonne correspondante, ce qui indique que pour les états $\ket{00}$ et
+$\ket{01}$, la porte ne fait rien.
+Sur les deux dernières lignes, on a des éléments uniquement sur les deux dernières colonnes,
+ce qui indique que le premier qubit demeure à 1, et que le deuxième subit une porte $U$.\\ \\
+Notons encore une porte sur trois qubits, la porte CCX (Controlled Controlled X), ou
+porte de Toffoli.
+Le principe est le même que pour la porte CX, mais avec deux qubits de contrôle, et
+la porte X est appliquée sur le qubit cible si et seulement si les deux qubits de contrôle
+sont à 1.
+\begin{figure}[H]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.8em @!R { \\
+        \lstick{\ket{c_0}} & \ctrl{1} & \qw & \qw\\
+        \lstick{\ket{c_1}} & \ctrl{1} & \qw & \qw\\
+        \lstick{\ket{t}} & \targ & \qw & \qw\\
+        \\ }}
+    \]
+    \caption{Circuit d'une porte de Toffoli}
+    \label{fig:toffoli}
+\end{figure}
+De nombreuses autres portes existent, mais elles ne valent pas la peine d'être mentionnées
+ici, car elles ne seront pas utilisées dans ce travail, ou de manière assez succincte
+pour être expliquées au fur et à mesure.
+
+\section{Applications simples}\label{sec:applications-simples}
+
+Ci-après deux exemples de circuits visant à illustrer certains avantages de l'informatique
+quantique.
+D'un côté, le protocole de superdense coding permet d'envoyer deux bits d'information
+en n'envoyant qu'un seul qubit, et de l'autre, le protocole de quantum teleportation
+qui transfère l'état d'un qubit sans transférer le qubit lui-même, en utilisant
+deux bits classiques.
+Ceux-ci permettent de saisir l'avantage intrinsèque de l'informatique quantique, dans
+ces exemples où un qubit correspond à deux bits classiques, mais aussi de voir comment
+l'intrication peut être utilisée pour transmettre de l'information.\\ \\
+Mais avant de commencer, il faut savoir comment créer un état intriqué, comme décrit
+dans la section~\ref{sec:description-du-systeme}.
+On va expliquer la création d'un état intriqué dit équilibré, soit avec la même
+probabilité d'être dans les différents états intriqués, pour un système de deux qubits
+un tel état est nommé un état de Bell.
+Restons sur le système de deux qubits, sur lequel on compte quatre états de Bell :
+\begin{align*}
+  \ket{\Phi^+} &= \frac{1}{\sqrt{2}}(\ket{00} + \ket{11})\\
+  \ket{\Phi^-} &= \frac{1}{\sqrt{2}}(\ket{00} - \ket{11})\\
+  \ket{\Psi^+} &= \frac{1}{\sqrt{2}}(\ket{01} + \ket{10})\\
+  \ket{\Psi^-} &= \frac{1}{\sqrt{2}}(\ket{01} - \ket{10})
+\end{align*}
+On va montrer comment créer l'état $\ket{\Phi^+}$, et les autres états sont créés
+de manière similaire.\\
+Le circuit est le suivant :
+\begin{figure}[H]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \lstick{\ket{0}} & \gate{\mathrm{H}} & \ctrl{1} & \qw & \qw\\
+        \lstick{\ket{0}} & \qw & \targ & \qw & \qw\\
+        \\ }}
+    \]
+    \caption{Circuit de création de l'état $\ket{\Phi^+}$}
+    \label{fig:phiplus}
+\end{figure}
+qui dont on se rend compte assez intuitivement qu'il a l'effet escompté.
+En effet, on applique une porte de Hadamard sur le premier qubit, ce qui le met dans
+un état superposé, et ensuite, on applique une porte $CX$, qui va mettre le deuxième
+qubit dans le même état que le premier, et donc les deux qubits sont dans le même
+état, et sont intriqués.
+La porte de Hadamard fait changer le système $\ket{00} \rightarrow
+\frac{\ket{0} + \ket{1}}{\sqrt{2}}\ket{0}$ puis la porte $CX$ applique comme une porte
+$XOR$, donc on obtient $\frac{\ket{0} + \ket{1}}{\sqrt{2}}\ket{0} \rightarrow
+\frac{\ket{0, 0 \oplus 0} + \ket{1, 1 \oplus 0}}{\sqrt{2}} = \frac{\ket{00} +
+\ket{11}}{\sqrt{2}}$. \\ \\
+On peut maintenant passer aux deux exemples en gardant en tête ce qui a été dit
+précédemment.
+
+\subsection{Superdense Coding}\label{subsec:superdense-coding}
+
+Le principe du superdense coding~\cite{wiki:superdense-coding} est d'envoyer deux bits d'information en n'envoyant
+qu'un seul qubit.
+On va donc considérer trois personnes, Alice qui veut envoyer un message à Bob, et
+Charlie qui va créer l'état intriqué.
+Une fois son travail terminé, Charlie envoie un qubit à Alice, et un à Bob.
+Alice va pouvoir ensuite encoder son message dans le qubit qu'elle a reçu, selon ce que
+l'on va voir, et ensuite, elle va envoyer son qubit à Bob.
+Bob va ensuite pouvoir décoder le message en appliquant les portes adéquates sur la
+paire de qubits qu'il a reçu.
+\import{images/notions-bases/quantique/sup-cod/}{sup-schem.tex}
+Le circuit de Charlie est celui de la figure~\ref{fig:phiplus}, afin de créer un état
+intriqué $\ket{\phi^+}$ duquel il envoie un qubit à Alice, et un à Bob.
+\begin{figure}[H]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{A} :  } & \lstick{{q}_{A} :  } & \gate{\mathrm{H}} & \ctrl{1} & \qw & \qw\\
+        \nghost{{q}_{B} :  } & \lstick{{q}_{B} :  } & \qw & \targ & \qw & \qw\\
+        \\ }}
+    \]
+    \caption{Circuit de Charlie}
+    \label{fig:charlie-sup}
+\end{figure}
+De l'autre côté, celui de Bob va être l'inverse de celui de Charlie, afin de décoder
+le message.
+Cela est possible, car comme dit plus tôt, les portes sont réversibles.
+Ensuite, il va pouvoir mesurer afin de récupérer les deux bits d'information.
+\begin{figure}[H]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{A} :  } & \lstick{{q}_{A} :  } & \ctrl{1} & \gate{\mathrm{H}} \barrier[0em]{1} & \qw & \meter & \qw & \qw & \qw\\
+        \nghost{{q}_{B} :  } & \lstick{{q}_{B} :  } & \targ & \qw & \qw & \qw & \meter & \qw & \qw\\
+        \nghost{\mathrm{{meas} :  }} & \lstick{\mathrm{{meas} :  }} & \lstick{/_{_{2}}} \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-2,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Circuit de Bob}
+    \label{fig:bob-sup}
+\end{figure}
+Il reste à montrer comment Alice encode son message.
+Alice reçoit le qubit $q_A$.
+Sur le circuit tel qu'on la construit, Alice va influencer du point de vue mathématique
+le qubit à droite (donc initialement on a $\ket{00} = \ket{0}_B \otimes \ket{0}_A$).
+Après le passage dans la partie de Charlie, le circuit est dans l'état $\ket{\Phi^+} =
+\frac{\ket{00} + \ket{11}}{\sqrt{2}}$.
+Pour encoder son message, Alice à alors plusieurs possibilités :
+\begin{itemize}
+    \item Si elle veut envoyer le message $00$, elle ne fait rien, et le circuit reste
+        dans l'état $\ket{\Phi^+}$.
+    \item Similairement à l'ordinateur classique, elle peut inverser son qubit via une
+        porte $X$, et le circuit passe dans l'état $\frac{\ket{01} + \ket{10}}{\sqrt{2}}$.
+        Avec la mesure de Bob, on obtient alors $10$.
+    \item L'avantage quantique est dans les deux derniers, où Alice peut encoder de
+        l'information dans la phase du qubit.
+        En effet, via la porte $Z$ elle peut l'inverser.
+        Ainsi le circuit passe dans l'état $\frac{\ket{00} - \ket{11}}{\sqrt{2}}$ qui
+        va donner $01$ à Bob.
+    \item Enfin, elle peut inverser le qubit et inverser la phase, ce qui donne
+        $\frac{\ket{01} - \ket{10}}{\sqrt{2}}$ et donc $11$ à Bob.
+\end{itemize}
+On peut vérifier les affirmations sur ce que recevra Bob en faisant le calcul.
+Par exemple, $\frac{\ket{01} - \ket{10}}{\sqrt{2}} \rightarrow \frac{\ket{01} -
+\ket{11}}{\sqrt{2}}$ après la $CX$, et finalement $\frac{\ket{01} - \ket{11}}{\sqrt{2}}
+\rightarrow \frac{1}{\sqrt{2}}
+\begin{pmatrix}
+    1 & 0 & 1 & 0 \\
+    0 & 1 & 0 & 1 \\
+    1 & 0 & -1 & 0 \\
+    0 & 1 & 0 & -1
+\end{pmatrix} \cdot \frac{1}{\sqrt{2}}
+\begin{pmatrix}
+    0 \\
+    1 \\
+    0 \\
+    -1
+\end{pmatrix} =
+\begin{pmatrix}
+    0 \\
+    0 \\
+    0 \\
+    1
+\end{pmatrix} = \ket{11}$ après la $H$.
+Il en va de même pour les autres cas. \\ \\
+On peut résumer toutes les étapes en un circuit.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{A} :  } & \lstick{{q}_{A} :  } & \gate{\mathrm{H}} & \ctrl{1} \barrier[0em]{1} & \qw & \gate{\mathrm{I}} \barrier[0em]{1} & \qw & \ctrl{1} & \gate{\mathrm{H}} \barrier[0em]{1} & \qw & \meter & \qw & \qw & \qw\\
+        \nghost{{q}_{B} :  } & \lstick{{q}_{B} :  } & \qw & \targ & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \meter & \qw & \qw\\
+        \nghost{\mathrm{{00} :  }} & \lstick{\mathrm{{00} :  }} & \lstick{/_{_{2}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-2,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{A} :  } & \lstick{{q}_{A} :  } & \gate{\mathrm{H}} & \ctrl{1} \barrier[0em]{1} & \qw & \gate{\mathrm{X}} \barrier[0em]{1} & \qw & \ctrl{1} & \gate{\mathrm{H}} \barrier[0em]{1} & \qw & \meter & \qw & \qw & \qw\\
+        \nghost{{q}_{B} :  } & \lstick{{q}_{B} :  } & \qw & \targ & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \meter & \qw & \qw\\
+        \nghost{\mathrm{{10} :  }} & \lstick{\mathrm{{10} :  }} & \lstick{/_{_{2}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-2,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{A} :  } & \lstick{{q}_{A} :  } & \gate{\mathrm{H}} & \ctrl{1} \barrier[0em]{1} & \qw & \gate{\mathrm{Z}} \barrier[0em]{1} & \qw & \ctrl{1} & \gate{\mathrm{H}} \barrier[0em]{1} & \qw & \meter & \qw & \qw & \qw\\
+        \nghost{{q}_{B} :  } & \lstick{{q}_{B} :  } & \qw & \targ & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \meter & \qw & \qw\\
+        \nghost{\mathrm{{01} :  }} & \lstick{\mathrm{{01} :  }} & \lstick{/_{_{2}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-2,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{A} :  } & \lstick{{q}_{A} :  } & \gate{\mathrm{H}} & \ctrl{1} \barrier[0em]{1} & \qw & \gate{\mathrm{Z}} & \gate{\mathrm{X}} \barrier[0em]{1} & \qw & \ctrl{1} & \gate{\mathrm{H}} \barrier[0em]{1} & \qw & \meter & \qw & \qw & \qw\\
+        \nghost{{q}_{B} :  } & \lstick{{q}_{B} :  } & \qw & \targ & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \meter & \qw & \qw\\
+        \nghost{\mathrm{{11} :  }} & \lstick{\mathrm{{11} :  }} & \lstick{/_{_{2}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-2,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Circuit complet : Charlie | Alice | Bob (circuit | mesure)}
+    \label{fig:complete-circuit}
+\end{figure}
+Testons maintenant l'un de ces circuits avec un vrai ordinateur quantique.\\ \\
+Comme vu avec le calcul, on est censé obtenir exactement la bonne valeur à chaque
+fois.
+Pourtant, les résultats obtenus ne semblent pas tout à fait d'accord avec la théorie.
+Ci-suit l'histogramme des résultats obtenus avec le circuit qui code le message
+01 (voir figure~\ref{fig:complete-circuit}).
+\begin{figure}[H]
+    \centering
+    \import{images/notions-bases/quantique/sup-cod/}{sup-cod-his.tex}
+    \caption{Histogramme des résultats obtenus avec le circuit qui code le message 01 \protect\footnotemark}
+    \label{fig:histogramme-01}
+\end{figure}
+\footnotetext{Executé le 29.08.2023 sur la machine 'ibm\_quito', \textit{job id : cjmovmnijvusg3savs30}}
+On se rend compte qu'il y a des résultats incorrects.
+Parmi les 8192 essais, 7739 sont corrects, ce qui fait un taux de réussite de
+94.5\%.
+Les autres forment le bruit, qui sont les erreurs qui arrivent lors
+du processus.
+Cela illustre très bien le problème des ordinateurs quantiques actuels : ils
+sont très sensibles aux erreurs.
+Nous parlerons par la suite des causes et voie de correction de ces erreurs.
+
+\subsection{Téléportation quantique}\label{subsec:quantum-teleportation}
+
+Il existe en physique quantique un théorème de non-clonage~\cite{wiki:non-cloning} qui dit qu'il est
+impossible de copier à l'identique un état quantique inconnu.
+Notons que deux états intriqués ne peuvent pas être considérés comme des copies
+de part leur mesure qui est identique.
+\begin{proof}
+    Soient $A$ et $B$ deux systèmes quantiques, avec $A$ dans un état
+    $\ket{a}_A$ que nous souhaitons cloner et $B$ dans un état $\ket{b}_B$
+    quelconque.
+    Le système total est donc dans l'état $\ket{a}_A \otimes \ket{b}_B =
+    \ket{a}_A \ket{b}_B$.\\
+    On ne peut pas copier l'état $\ket{a}_A$ en le mesurant, car cela détruirait
+    une partie de l'information.\\
+    On ne peut donc qu'agir sur son opérateur d'évolution $U$ (les portes quantiques
+    sont de tels opérateurs).
+    On cherche $U$ tel que $U\ket{a}_A \ket{b}_B = \ket{a}_A \ket{a}_B$.
+    Cela implique également que pour un état quelconque $\ket{\alpha}_A$ de $A$,
+    $U\ket{\alpha}_A \ket{b}_B = \ket{\alpha}_A \ket{\alpha}_B$.\\ \\
+    Rappelons que les opérateurs d'évolution sont unitaires, donc $U^\dagger U =
+    I$, et que $\ket{\psi}^\dagger = \bra{\psi}$, ainsi que $M^\dagger N^\dagger
+    = (NM)^\dagger$.
+    Étudions donc le produit scalaire de $\ket{a}_A \ket{b}_B$ avec $\ket{\alpha}_A
+    \ket{b}_B$ :
+    \[
+        \begin{split}
+            \bra{b}_B \bra{a}_A \ket{\alpha}_A \ket{b}_B &=
+            \bra{b}_B \bra{a}_A U^\dagger U \ket{\alpha}_A \ket{b}_B
+            = (U \ket{a}_A \ket{b}_B)^\dagger (U \ket{\alpha}_A \ket{b}_B) \\
+            &= (\ket{a}_A \ket{a}_B)^\dagger (\ket{\alpha}_A \ket{\alpha}_B)
+            = \bra{a}_B \bra{a}_A \ket{\alpha}_A \ket{\alpha}_B
+        \end{split}
+    \]
+    Donc $\bra{b}_B \bra{a}_A \ket{\alpha}_A \ket{b}_B = \bra{a}_B \bra{a}_A \ket{\alpha}_A
+    \ket{\alpha}_B \Leftrightarrow \braket{a}{\alpha} = \braket{a}{\alpha}^2$, ce qui
+    est possible que si $\braket{a}{\alpha} = 0$ ou $1$, donc que ces états sont
+    identiques ou orthogonaux.\\ \\
+    On a donc une contradiction avec l'hypothèse de départ supposant ces états
+    quelconques.
+    On a donc montré qu'il est impossible de cloner un état quantique inconnu par
+    l'absurde.
+\end{proof}
+Ce théorème pose différents problèmes, notamment pour créer des méthodes de
+suppression d'erreurs, car on ne peut pas copier le système pour le comparer
+avec l'original.\\
+Mais si la copie est impossible, on peut transmettre un état quantique en utilisant
+un état intriqué et des bits classiques~\cite{wiki:quantum-teleportation}.\\ \\
+Prenons à nouveau nos trois personnages : Alice, Bob et Charlie.
+Charlie va toujours créer un état intriqué, et envoyer un qubit à Alice et un
+à Bob.
+Alice va ensuite appliquer des opérations sur son qubit et envoyer le résultat
+à Bob, via un canal classique de communication, puis Bob va appliquer des opérations sur son
+qubit afin de retrouver ce qu'Alice lui a envoyé.
+\import{images/notions-bases/quantique/quant-tp/}{quant-tp-schem.tex}
+Voyons donc concrètement comment cela fonctionne.
+Le circuit à décortiquer est le suivant :
+\begin{figure}[H]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{\ket{\psi}} & \lstick{\ket{\psi}} & \qw & \qw \barrier[0em]{2} & \qw & \ctrl{1} & \gate{\mathrm{H}} \barrier[0em]{2} & \qw & \meter & \qw \barrier[0em]{2} & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{A} :  } & \lstick{{q}_{A} :  } & \gate{\mathrm{H}} & \ctrl{1} & \qw & \targ & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{B} :  } & \lstick{{q}_{B} :  } & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{X}} & \gate{\mathrm{Z}} & \qw & \qw\\
+        \nghost{\mathrm{{crz} :  }} & \lstick{\mathrm{{crz} :  }} & \lstick{/_{_{1}}} \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-3,0] & \cw & \cw & \cw & \control \cw^(0.0){^{\mathtt{0x1}}} \cwx[-1] & \cw & \cw\\
+        \nghost{\mathrm{{crx} :  }} & \lstick{\mathrm{{crx} :  }} & \lstick{/_{_{1}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-3,0] & \cw & \control \cw^(0.0){^{\mathtt{0x1}}} \cwx[-2] & \cw & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Circuit complet : Charlie | Alice (opération | mesure) | Bob}
+    \label{fig:quant-tp-circuit}
+\end{figure}
+Alice veut transmettre l'état $\ket{\psi} = \alpha \ket{0} + \beta \ket{1}$ à
+Bob.
+Charlie va donc créer un état intriqué $\ket{e} = \frac{1}{\sqrt{2}}
+(\ket{00} + \ket{11})$, puis transmettre le premier qubit $q_A$ à Alice et le
+second $q_B$ à Bob.
+Gardons en tête donc que le qubit le plus à droite est celui de Bob, et celui
+le plus à gauche celui d'Alice $\ket{e} = \frac{1}{\sqrt{2}} (\ket{0}_A \ket{0}_B
++ \ket{1}_A \ket{1}_B)$. \\
+Avec celui $\ket{\psi}$ que l'on veut transmettre, on a donc un système de
+trois qubits : $\ket{\psi} \otimes \ket{e} = \frac{1}{\sqrt{2}} (\alpha \ket{0}
+\otimes (\ket{00} + \ket{11}) + \beta \ket{1} \otimes (\ket{00} + \ket{11})) =
+\frac{1}{\sqrt{2}} (\alpha \ket{000} + \alpha \ket{011} + \beta \ket{100} +
+\beta \ket{111})$.\\
+En appliquant le porte $CX$ avec le qubit de gauche comme contrôle et celui du
+milieu comme cible, on obtient : $ \frac{1}{\sqrt{2}} (\alpha \ket{000} + \alpha
+\ket{011} + \beta \ket{100} + \beta \ket{111}) \rightarrow \frac{1}{\sqrt{2}}
+(\alpha \ket{000} + \alpha \ket{011} + \beta \ket{110} + \beta \ket{101})$.\\
+En appliquant la porte $H$ sur le qubit de gauche, le facteur devant devient
+$\frac{1}{\sqrt{2}} \cdot \frac{1}{\sqrt{2}} = \frac{1}{2}$, et les termes
+$\ket{0ij} \rightarrow \ket{0ij} + \ket{1ij}$, et $\ket{1ij} \rightarrow
+\ket{0ij} - \ket{1ij}$, donc on obtient : $\frac{1}{2} (\alpha (\ket{000} +
+\ket{011} + \ket{100} + \ket{111}) + \beta (\ket{010} + \ket{010} - \ket{110} -
+\ket{101}))$.\\
+Ceci peut être réécrit de la manière suivante :
+\[
+    \begin{split}
+        \frac{1}{2}( \quad & \ket{00}(\alpha \ket{0} + \beta \ket{1}) \\
+        + & \ket{01}(\alpha \ket{1} + \beta \ket{0}) \\
+        + & \ket{10}(\alpha \ket{0} - \beta \ket{1}) \\
+        + & \ket{11}(\alpha \ket{1} - \beta \ket{0}) \quad )
+    \end{split}
+\]
+Cela permet de voir que la mesure d'Alice va projeter le qubit de Bob dans l'un
+des quatre états suivants :
+\begin{itemize}
+    \item $\ket{00} \rightarrow \alpha \ket{0} + \beta \ket{1}$
+    \item $\ket{01} \rightarrow \alpha \ket{1} + \beta \ket{0}$
+    \item $\ket{10} \rightarrow \alpha \ket{0} - \beta \ket{1}$
+    \item $\ket{11} \rightarrow \alpha \ket{1} - \beta \ket{0}$
+\end{itemize}
+et donc Bob n'a plus qu'à appliquer les portes $X$ et $Z$ selon les bits reçus
+pour retrouver l'état $\ket{\psi}$.\\
+Alice mesure le qubit de droite sur le registre $crx$, et donc la porte $X$ est
+appliquée uniquement si le bit est à 1, ce qui va inverser les 0 et les 1.
+De même pour le signe, mais avec celui de gauche et le registre $crz$, ainsi
+qu'avec la porte $Z$.\\ \\
+On peut également le faire sans mesure si l'on souhaite mettre un autre qubit dans
+l'état désiré en appliquant des portes $CX$ et $CZ$ depuis les bits que l'on
+mesurait précédemment.
+\begin{figure}[H]
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \qw & \qw \barrier[0em]{2} & \qw & \ctrl{1} & \gate{\mathrm{H}} \barrier[0em]{2} & \qw & \ctrl{2} & \qw & \qw & \qw\\
+        \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{H}} & \ctrl{1} & \qw & \targ & \qw & \qw & \qw & \ctrl{1} & \qw & \qw\\
+        \nghost{{q}_{2} :  } & \lstick{{q}_{2} :  } & \qw & \targ & \qw & \qw & \qw & \qw & \targ & \control\qw & \qw & \qw\\
+        \\ }}
+    \]
+    \caption{Téléportation quantique sans mesure}
+    \label{fig:quant-tp-circuit-sans-mesure}
+\end{figure}
+Ce circuit a un intérêt de démonstration de la valeur d'un qubit question donnée,
+mais n'est pas très intéressant à utiliser en tant que tel, c'est pour cela qu'on
+le désigne comme un protocole.\\ \\
+En résumé, on a vu deux circuits mettant en évidence des avantages et complications
+liés à la nature quantique des qubits.
+En plus de donner une idée de l'importance des concepts de superposition et
+d'intrication, ces circuits permettent de voir que les qubits peuvent transporter
+plus d'un bit d'information par qubit en quelque sorte.

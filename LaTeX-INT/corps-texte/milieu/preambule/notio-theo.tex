@@ -1,0 +1,548 @@
+\chapter{Notions théoriques}\label{ch:notions-theoriques}
+
+Avant d'aborder le vif du sujet, il est nécessaire de définir quelques notions théoriques.
+En premier lieu, nous allons définir une méthode pour comparer les performances de différents algorithmes,
+car c'est un point central qui justifie la recherche en informatique quantique.
+Dans un second temps, nous allons définir les concepts de la mécanique quantique, sur lesquels
+s'appuient les algorithmes quantiques.
+
+\section{Informatique}\label{sec:informatique}
+
+La différence de technologie interroge sur la possibilité de comparer les performances de celles-ci.
+On voit bien que quelque chose est plus rapide qu'une autre en mesurant le temps, mais si la technologie
+est encore à bâtir, il demeure intéressant de comparer les différents algorithmes.
+On peut se dire qu'en les exécutant sur un ordinateur, on peut comparer les temps d'exécution.
+Mais cela n'est pas fixe et reproductible, car cela dépend de tout un tas de facteurs.\\ \\
+Pour illustrer cela, comparons sur une même machine le même algorithme, mais avec deux langages différents.
+Premièrement, on va utiliser le Python, et deuxièmement, on va utiliser le C\@.
+Le principe de l'algorithme est de calculer la factorielle d'un nombre.
+\[ n! = \prod_{i=1}^n i = 1 \times 2 \times 3 \times
+\ldots \times (n-1) \times n, n \in \mathbb{N} \]
+Pour cela, on va utiliser l'algorithme suivant:
+
+\import{images/preambules/algo/}{fact.tex}
+Ce qui s'implémente comme suit dans les différents langages:
+
+\begin{minipage}{0.45\textwidth}
+\import{images/preambules/code/}{fun-fact-py.tex}
+\end{minipage}
+\hfill
+\begin{minipage}{0.5\textwidth}
+\import{images/preambules/code/}{fun-fact-c.tex}
+\end{minipage}
+
+Afin de comparer les temps d'exécution, on va appeler la fonction 10000 fois, et on va calculer la moyenne.
+\import{images/preambules/code/}{python-fact.tex}
+Dans ce premier programme, on peut noter utilisation du package \lstinline{timeit} qui permet de mesurer
+le temps d'exécution.
+De plus, le temps d'exécution est très court, de l'ordre de $10^{-5}$ secondes.
+\import{images/preambules/code/}{c-fact.tex}
+Dans ce second programme, la mesure du temps est plus compliquée, car il faut utiliser des fonctions
+spécifiques à la librairie \lstinline{sys/time.h}, sans disposer d'outils dédiés.
+De plus, la structure du C est plus complexe que celle du Python.
+Néanmoins, le temps d'exécution est toujours très court, de l'ordre de $10^{-8}$ secondes, soit plus de 1000 fois
+plus rapide.\\ \\
+De plus, on peut faire une constatation similaire sur le temps d'exécution de la fonction selon la taille de
+l'entrée.
+\begin{figure}[H]
+\centering
+\import{images/preambules/graph/}{factorial-time-plot.tex}
+\caption{Temps d'exécution de la fonction factorielle en Python selon la taille de l'entrée}
+\label{fig:fact-plot-time}
+\end{figure}
+En premier abord, on peut penser que le temps d'exécution est proportionnel à la taille de l'entrée.
+En effet, on fait une boucle de $1$ à $n$, et on fait une multiplication à chaque itération.
+Or, on constate que le temps d'exécution est plus proche d'une fonction cubique que linéaire.
+Cela est dû à la multiplication qui est plus longue pour un grand nombre.\\ \\
+On constate donc que sur une même machine, deux programmes donnent des temps très différents pour un même algorithme.
+À noter malgré tout que le C est un langage compilé alors que le Python est un langage interprété, ce qui
+explique en partie la différence de temps d'exécution, mais pose malgré tout un problème de comparaison.
+De plus, leurs temps d'exécution varient selon la taille de l'entrée.
+Dès lors, comment comparer les temps d'exécution de deux algorithmes différents ?\\ \\
+Les algorithmes sont alors classés selon leur complexité~\cite{wiki:complexity-gen}, soit leur ``temps d'exécution'' selon la taille de
+l'entrée, indépendamment de la machine utilisée.
+Ce n'est néanmoins pas la définition exacte de la complexité, car c'est plutôt l'ordre de grandeur du nombre d'opérations
+à effectuer qui est important, mais cela donne une  excellente base de comparaison pour de grandes valeurs.
+Symboliquement, on utilise la notation $\order{}$~\cite{wiki:big-o} pour exprimer la complexité d'un algorithme (à noter que d'autres
+notations existent pour des usages similaires, comme $\Theta()$ ou $\Omega()$).\\
+La définition de la complexité que l'on va utiliser est la suivante :
+\[ f(x) = \order{g(x)} \text{ quand } x \rightarrow \infty \]
+si la valeur absolue de $f(x)$ est à un multiple constant de $g(x)$ près, pour des valeurs de $x$ suffisamment
+grandes.
+Pour simplifier l'écriture, on écrira juste $f(x) = \order{g(x)}$.\\ \\
+Cela permet d'expliquer la croissance de la factorielle, car on estime que la multiplication est en $\order{n^2}$ (pour simplifier les calculs, mais sur les grands nombres, c'est un peu moins~\cite{python-mult-comp}),
+donc en la faisant $n$ fois, on obtient une complexité de $\order{n^3}$.\\
+Prenons quelques autres exemples d'algorithmes afin de mieux comprendre ce concept :
+\begin{enumerate}[wide, labelwidth=!, labelindent=0pt]
+\item Calculer $(-1)^n$ : le temps ne dépend pas de l'entrée
+donc la complexité est $\order{1}$ \\
+\import{images/preambules/algo/}{o1.tex}
+\item Trouver le maximum d'une liste de nombres : le temps dépend uniquement de la taille de la liste
+donc la complexité est $\order{n}$ \\
+\import{images/preambules/algo/}{on.tex}
+\item Calculer naïvement le produit matriciel de deux matrices carrées de taille $n$ : il faudra calculer
+n-fois la somme des n-lignes multipliée par les n-colonnes, donc $n \times n \times n = n^3$, soit $\order{n^3}$\\
+\import{images/preambules/fig/}{matmultp.tex}
+\import{images/preambules/algo/}{on3.tex}
+\end{enumerate}
+Sur le dernier exemple, le terme naïf est utilisé, car il existe des algorithmes plus efficaces pour calculer le
+produit matriciel, comme par exemple l'algorithme de Strassen~\cite{wiki:matmult}, qui a une complexité de $\order{n^{2.807}}$, ou
+celui de Coppersmith-Winograd avec $\order{n^{2.376}}$~\cite{wiki:matmult-copper} (Notons qu'il faudrait pour uniquement lire les entrées
+des matrices une complexité $\order{n^2}$).\\ \\
+Pour illustrer cette différence de complexité entre deux algorithmes, on va utiliser la recherche d'un nombre
+dans une liste ordonnée.
+Pour rechercher un nombre dans une liste, l'algorithme le plus simple est de parcourir la liste
+jusqu'à trouver le nombre, ou jusqu'à la fin de la liste, avec une complexité de $\order{n}$
+(voir Algorithme~\ref{alg:maximum}).\\
+Mais si la liste est ordonnée, on peut optimiser la recherche selon le principe de recherche dichotomique.
+On va comparer le nombre recherché avec le nombre au milieu de la liste, et si le nombre recherché est plus
+grand, on va refaire la même opération sur la moitié supérieure de la liste, sinon sur la moitié inférieure.
+
+\import{images/preambules/algo/}{bin-search.tex}
+On voit donc que l'on divise notre liste par deux à chaque itération.
+Si on considère que la taille de la liste est $n$ et $x$ le nombre d'opérations nécessaires pour trouver le
+nombre, on a donc $n \times 2^{-x} = 1$, soit $x = \log_2(n)$, d'où une complexité de $\order{\log(n)}$
+(pour la complexité, la base n'est pas précisée, car par la formule du changement de base du
+logarithme, l'un ne varie de l'autre que par un scalaire).\\
+On peut donc voir que la recherche dichotomique est beaucoup plus efficace que la recherche naïve, et que
+lorsque la taille de la liste augmente, la différence de temps d'exécution entre les deux algorithmes
+augmente de manière exponentielle.\\ \\
+Ce genre d'amélioration est très important en informatique, car il permet de résoudre des problèmes
+qui seraient autrement insolubles.
+Ces optimisations sont presque toutes aussi importantes qu'une bonne implémentation, et il est donc
+utile de les connaître.
+La complexité des algorithmes quantiques vis-à-vis des algorithmes classiques est un des points
+centraux justifiant la recherche dans ce domaine, parce que cela permettrait des accélérations
+considérables dans de nombreux domaines.\\ \\
+Il faut quand même prendre en compte que lorsque l'on implémente un algorithme, la complexité
+réelle est souvent plus grande que la complexité théorique, car il faut prendre en compte
+les opérations de base, comme les additions, les multiplications, les comparaisons, etc.
+Ces opérations sont souvent considérées comme ayant une complexité $\order{1}$, mais en réalité, elles
+dépendent de la taille des nombres manipulés, et donc de la taille de l'entrée.\\
+Si on reprend l'Algorithme~\ref{alg:neg-one-power}, pour faire $(-1)^n$, on regarde la parité de $n$,
+or pour cela, il y a plusieurs façons de le réaliser.
+Premièrement, on peut regarder le dernier bit de $n$, et si il est à 1, alors $n$ est impair, sinon
+il est pair, ou en base 10 si le dernier chiffre est dans \{0,2,4,6,8\}, alors c'est pair et sinon
+impair.
+Ceci est une opération en $\order{1}$, car on ne fait qu'une comparaison.
+Mais si on n'y pense pas, on peut également faire $n \mod 2$ (donc si le résultat est 0, c'est pair
+et sinon impair), qui est une opération beaucoup plus coûteuse, parce qu'elle nécessite une division.
+\begin{figure}[H]
+\centering
+\import{images/preambules/graph/}{principal-complexity.tex}
+\caption{Comparaison de quelques complexités courantes}
+\label{fig:complexity-comparison}
+\end{figure}
+Sur le graphe ci-dessus, on peut voir clairement l'enjeu d'optimiser la complexité d'un algorithme,
+d'autant plus que la taille de l'entrée augmente.
+Cela permet de surpasser des obstacles qui seraient potentiellement insurmontables avec des
+améliorations de performances matérielles uniquement, sur lesquelles on compte principalement dans notre
+société actuelle en vertu de la loi de Moore~\cite{wiki:moore}.\\ \\
+Cette question de la complexité des algorithmes peut être étendue à la théorie de la complexité, visant
+à étudier la difficulté des problèmes, et à les classer selon leur complexité et également étudier
+les relations entre les classes de complexité~\cite{wiki:complexity-theo}.
+Par exemple, on va dénommer $P$ la classe des problèmes qui peuvent être résolus en temps polynomial,
+où nous pouvons citer le problème de la multiplication de deux matrices.
+Une autre classe célèbre est $NP$, qui contient les problèmes qui peuvent être vérifiés en temps polynomial,
+comme par exemple un sudoku : il est facile de vérifier si une grille est correcte, mais il est difficile
+de la résoudre de manière générale.\\
+Cette question des classes de complexité est très importante, à tel point qu'elle est considérée comme
+l'un des sept problèmes du prix du millénaire, celui nommé vulgairement $P=NP$ et visant à déterminer
+si tous les problèmes vérifiables en temps polynomial sont également résolubles en temps polynomial.
+\href{https://www.claymath.org/millennium-problems/}{Ce sont sept problèmes mathématiques qui ont été définis par le Clay Mathematics Institute en 2000}, et pour
+lesquels une récompense d'un million de dollars est promise à celui qui les résoudra.
+Les algorithmes quantiques ne remettent pas directement en cause cette question, mais ils en ouvrent de nouvelles,
+dans ce domaine, car ils permettent de résoudre des problèmes qui sont dans $NP$ en temps polynomial avec
+une probabilité assez élevée~\cite{wiki:bqp}.\\ \\
+En résumé, la complexité d'un algorithme est une mesure de sa difficulté, et permet de comparer les
+performances de différents algorithmes indépendamment de la machine utilisée.
+Cette mesure peut être tout autant dans le temps d'exécution que dans l'espace mémoire utilisé.
+Néanmoins, de par sa définition et sa nature asymptotique, la mesure de la complexité est vraiment
+pertinente quand les entrées sont grandes, car sinon il faut prendre en compte les machines utilisées.
+
+\section{Physique}\label{sec:physique}
+
+Derrière le terme d'algorithme quantique se trouve les concepts de la mécanique quantique.
+Celle-ci vise à décrire le comportement de la matière à l'échelle atomique et subatomique.
+Elle est basée sur le principe de dualité onde-corpuscule, qui dit que selon l’expérience envisagée une particule
+(objet localisé dans l’espace) se comporte comme une onde (phénomène étendu) et inversement une onde se
+comporte comme une particule.\\
+Plus concrètement, cette idée peut déjà se pressentir avec les études sur la lumière dès le 19\up{ème} siècle.
+En effet, c'est en 1801 que Thomas Young réalise l'expérience qui porte son nom, les fentes de Young~\cite{wiki:young},
+qui met en évidence l’aspect ondulatoire de la lumière par les franges d’interférence qui résultent de la superposition
+des ondes émises par chacun des deux trous.
+Avec des particules classiques on verrait uniquement deux taches suivant que la particule est passée par l’un ou l’autre trou .
+\import{images/preambules/fig/}{fente-young.tex}
+Le principe de cette expérience est de faire passer un faisceau de lumière à travers deux fentes
+parallèles, et d'observer le résultat sur un écran.
+Là où l'on s'attendrait à voir deux taches lumineuses, on observe en réalité une multitude de
+taches, propres aux franges d'interférences entre deux ondes.
+Cette conception de la lumière comme une onde semble être alors la plus probable, car la théorie de
+Maxwell, qui décrit les ondes électromagnétiques, permet de décrire la lumière comme tel.\\ \\
+%C'est au début du 20\up{ème} siècle que la physique quantique va émerger~\cite{wiki:mech-quantique}, avec les travaux
+%de Max Planck sur le rayonnement du corps noir, où il va introduire le concept de quantification,
+%soit que l'énergie est émise par paquets, ou quanta, proportionnellement à la fréquence de l'onde.
+%C'est également à cette époque que l'on va découvrir l'effet photoélectrique~\cite{wiki:photoelectrique}, duquel Albert Einstein
+%va déduire que la lumière est composée de particules, les photons, qui ont une énergie proportionnelle
+%à la fréquence de l'onde.
+%La relation qu'il en ressort est la suivante :
+%\[
+%E = h \nu
+%\]
+%où $E$ est l'énergie du photon, $h$ est la constante de Planck et $\nu$ est la fréquence de l'onde.\\ \\
+%Voyant que la lumière, jusque-là considérée comme une onde, peut se comporter comme une particule, où plutôt un paquet dit quanta de lumière ou photon,
+%on va se demander si les particules, jusque-là considérées comme des corpuscules, peuvent se comporter
+%comme des ondes.
+%Le mathématicien français Louis De Broglie va alors proposer que toute particule a une longueur d'onde
+%associée~\cite{myst-monde-quantique}, et donc que toute particule peut se comporter comme une onde.
+%Là où l'énergie est proportionnelle à la fréquence pour une onde, De Broglie va proposer que la quantité
+%de mouvement est proportionnelle à la longueur d'onde pour une particule :
+%\[
+%p = \frac{h}{\lambda}
+%\]
+%où $p$ est la quantité de mouvement de la particule, $h$ est la constante de Planck et $\lambda$ est
+%la longueur d'onde de la particule.\\ \\
+C’est en 1900 que l’idée de quantification va émerger~\cite{wiki:mech-quantique} avec les travaux de Max Planck sur le problème du
+rayonnement du corps noir.
+Il obtient de manière empirique la formule pour ce rayonnement.
+Pour interpréter cette équation, il introduit l’hypothèse que la matière ne peut rayonner de l’énergie que
+par des quantités finies - ou quanta - proportionnelles à la fréquence de vibration des atomes.
+Toutefois, il n’envisage pas que la lumière puisse avoir une structure discontinue.
+Au contraire pour élaborer sa théorie de l’effet photoélectrique (découvert en 1887)~\cite{wiki:photoelectrique} Einstein introduit
+en 1905 l’hypothèse que lors de l’émission ou l’absorption d’un rayonnement lumineux par la matière, celui-ci doit
+être considéré comme formé d’un nombre fini de petits grains indivisibles, ou ``quantas'', parfaitement localisés dans
+l’espace, dont l’énergie $E$ et la quantité de mouvement $p$ sont proportionnelles à la fréquence de l’onde, soit
+\[
+E = h \nu \qquad \text{et} \qquad p =  h \frac{\nu}{c}
+\]
+où $h$ est la constante de Planck, $\nu$ la fréquence de l’onde et $c$ la vitesse de la lumière.\\ \\
+Au contraire lors de sa propagation la lumière doit être considérée comme une onde obéissant aux équations de
+Maxwell.
+Mais les physiciens ont du mal à accepter cette hypothèse, en particulier Max Planck qui dans un rapport
+élogieux sur Einstein écrit en 1913 ``il est vrai qu’il a parfois manqué le but lors de ses spéculations par
+exemple avec son hypothèse sur les quantas lumineux.''\\
+L’hypothèse d’Einstein sera confirmée en 1923 par les expériences de Compton et en 1926 on donnera le nom de photon
+à cette particule lumineuse.\\ \\
+En 1923 le physicien français Louis de Broglie suggère d’associer à toute particule massive d’énergie $E$ et
+de quantité de mouvement $p = mv$ une onde de fréquence $\nu$ et de longueur d’onde $\lambda$ avec
+\[
+    \nu = \frac{E}{h} \qquad \text{et} \qquad \lambda = \frac{h}{p}
+\]
+Cette hypothèse lui permet d’expliquer les règle de quantification des orbites électroniques dans l’atome introduite
+par Bohr en 1913 par décrire les spectres atomiques~\cite{myst-monde-quantique}.\\ \\
+De ces théories, le physicien allemand Erwin Schrödinger va se poser la question de connaître l'équation
+d'onde qui décrit le comportement d'une particule.
+Dans ce qui suit, on va décrire un chemin afin de la comprendre avec une dimension spatiale et une
+dimension temporelle, et la généralisation va être mentionnée sans démonstration.\\ \\
+Mais avant de commencer, il faut définir ce qu'est une onde.
+Une onde est une perturbation qui se propage dans un milieu, et qui transporte de l'énergie sans
+transporter de matière.
+La perturbation peut être de différentes natures, comme une perturbation mécanique, électromagnétique,
+etc.
+On peut la décrire de manière classique par une fonction $y(x,t)$, où $x$ est la position dans l'espace et
+$t$ est le temps.
+Cette fonction est solution de l'équation d'onde classique à une dimension :
+\[
+    \pdv[2]{y}{x} = \frac{1}{v^2} \pdv[2]{y}{t}
+\]
+où $v$ est la vitesse de propagation de l'onde.
+\begin{proof}
+Pour montrer que cette équation fonctionne bel et bien, on va considérer comme onde une corde vibrante en deux dimensions~\cite{wiki:onde-corde}.
+Prenons un tronçon de corde infinitésimal $AB$ avec $A(x;y)$ et $B(x+\dd{x};y+\dd{y})$, et l'angle entre la tangente
+à la corde et l'horizontal en ce point au temps $t$ donné par $\alpha (x,t)$ (respectivement $\alpha (x+\dd{x},t)$).
+En négligeant la force pesante, on a uniquement la force de tension qui agit sur la corde, $\vec{T_A}$ en $A$
+et $\vec{T_B}$ en $B$.
+\import{images/preambules/fig/}{onde-corde.tex}
+Connaissant la masse linéique de la corde $\mu$, on peut écrire la relation suivante:
+\[
+    \vec{T_A} + \vec{T_B} = \mu \dd{x} \vec{a}
+\]
+où $\vec{a} = \mqty(\pdv[2]{x}{t} \\ \pdv[2]{y}{t}) = \mqty(0 \\ \pdv[2]{y}{t})$ est l'accélération de la corde
+(nulle horizontalement, car il n'y a qu'un déplacement vertical).\\ \\
+On peut décomposer l'équation en deux équations, une selon l'axe horizontal $Ox$ et une selon l'axe verticale $Oy$.
+\[
+    \begin{cases}
+        Ox \ : \ - T_A \cos \alpha (x,t) + T_B \cos \alpha (x+\dd{x},t) = 0 \\
+        Oy \ : \ - T_A \sin \alpha (x,t) + T_B \sin \alpha (x+\dd{x},t) = \mu \dd{x} \pdv[2]{y}{t}
+    \end{cases}
+\]
+En utilisant les approximations du premier ordre $\sin \alpha \approx \alpha$ et $\cos \alpha \approx 1$, si l'on
+considère la variation crée par l'onde et donc les angles comme faibles, on obtient:
+\[
+    \begin{cases}
+        Ox \ : \ - T_A + T_B = 0 \\
+        Oy \ : \ - T_A \alpha (x,t) + T_B \alpha (x+\dd{x},t) = \mu \dd{x} \pdv[2]{y}{t}
+    \end{cases}
+    \Rightarrow
+    \begin{cases}
+        T_A = T_B = T \\
+        - T \alpha (x,t) + T \alpha (x+\dd{x},t) = \mu \dd{x} \pdv[2]{y}{t}
+    \end{cases}
+\]
+De plus, nous pouvons considérer que $\alpha = \tan \alpha = \pdv{y}{x}$, d'où:
+\[
+    -T \pdv{y}{x} \left( x,t \right) + T \pdv{y}{x} \left( x+\dd{x},t \right) = \mu \dd{x} \pdv[2]{y}{t} \left( x,t \right)
+\]
+En notant que
+\[
+    \pdv{y}{x} \left( x+\dd{x},t \right) - \pdv{y}{x} \left( x,t \right) =
+    \pdv{x} \left( y \left( x+\dd{x},t \right) - y(x,t) \right) = \pdv{x} \left(  \pdv{y}{x} \left( x,t \right) \dd{x} \right) =
+    \pdv[2]{y}{x} \dd{x}
+\]
+on obtient
+\[
+    T \pdv[2]{y}{x} \dd{x} = \mu \dd{x} \pdv[2]{y}{t} \Leftrightarrow \pdv[2]{y}{x} = \frac{\mu}{T} \pdv[2]{y}{t}
+\]
+qui est une équation d'onde, ou équation de d'Alembert, de forme
+\[
+    \pdv[2]{y}{x} = \frac{1}{v^2} \pdv[2]{y}{t}
+\]
+où $v = \sqrt{\frac{T}{\mu}}$ est la célérité de l'onde sur la corde dans ce cas.
+\end{proof}
+On peut noter que la célérité est reliée à la fréquence $\nu$ et à la longueur d'onde $\lambda$ par la relation
+$v = \lambda \nu$.
+De plus, on peut remarquer que l'équation d'onde est une équation linéaire, c'est-à-dire que si $y_1$ et $y_2$
+sont deux solutions de l'équation, alors $y = y_1 + y_2$ est aussi une solution, ce qui va induire le principe dit de superposition.\\ \\
+Sachant cela, essayons de construire une équation d'onde pour une particule~\cite{schrodinger-eq}.
+Dans le cas classique, une solution possible est une onde plane, de la forme
+\[
+    y(x,t) = A \cos \left( kx - \omega t \right)
+\]
+Avec $k = \frac{2 \pi}{\lambda}$ le nombre d'onde et $\omega = 2 \pi \nu$ la pulsation.
+Or, des formules $E = h \nu$ et $p = \frac{h}{\lambda}$, on peut déduire que tant qu'il n'y a pas de forces
+extérieures, la quantité de mouvement $p$ ne varie pas et donc la longueur d'onde $\lambda$ non plus.
+Mais pour pouvoir construire une équation générale, il faut savoir comment cela se passe aussi dans le cas
+où cela n'est pas vrai.
+L'équation doit donc correspondre à plusieurs postulats:
+\begin{enumerate}
+    \item Les postulats de De Broglie-Einstein: $E = h \nu$ et $p = \frac{h}{\lambda}$
+    \item L'équation d'énergie $E = K + P$ avec $E$ l'énergie totale, $K$ l'énergie cinétique et $P$ l'énergie
+        potentielle ; de plus, $K = \frac{1}{2}mv^2 = \frac{p^2}{2m}$ (avec $m$ la masse de la particule, $v$ sa
+        vitesse et $p$ sa quantité de mouvement) et $P = V(x,t)$ avec $V$ le potentiel d'où $F = - \pdv{V}{x}$ ;
+        ainsi, $E = \frac{p^2}{2m} + V$
+    \item L'équation doit être linéaire (comme l'équation d'onde)
+    \item Pour un potentiel $V$ constant, l'équation différentielle doit avoir une onde sinusoïdale comme solution
+        de longueur d'onde et de fréquence constantes (car $V(x,t) = constante \Rightarrow F = - \pdv{V}{x} = 0$
+        et donc $p = constante$ car $F = \dv{p}{t}$)
+\end{enumerate}
+De ces postulats, on déduit que
+\[
+    E = \frac{p^2}{2m} + V(x,t) = \frac{h^2}{2m \lambda^2} + V(x,t) = h \nu
+\]
+puis en remplaçant $\nu$ par $\frac{\omega}{2 \pi}$ et $\lambda$ par $\frac{2 \pi}{k}$, ainsi qu'utilisant la constante
+de Planck réduite $\hbar = \frac{h}{2 \pi}$ afin de simplifier la notation, on obtient
+\[
+    \frac{\hbar^2 k^2}{2m} + V(x,t) = \hbar \omega
+\]
+sur laquelle on note un facteur $k^2$ à gauche et un facteur $\omega$ à droite.
+De la 4\ieme{} condition, commençons par considérer que la fonction recherchée est de la forme
+\[
+    \Psi (x,t) = \cos \left( kx - \omega t \right)
+\]
+et de là notons que
+\[
+    \pdv[2]{\Psi (x,t)}{x} = - k^2 \Psi (x,t) \qquad \text{et} \qquad \pdv{\Psi (x,t)}{t} = \omega \sin \left( kx - \omega t \right)
+\]
+d'où la conclusion que l'équation doit contenir une dérivée seconde par rapport à $x$ et une dérivée première par
+rapport à $t$, ainsi qu'un facteur avec le potentiel $V(x,t)$, multiplié par $\Psi (x,t)$ afin d'assurer
+la linéarité de l'équation.\\ \\
+Posons donc une équation de la forme
+\[
+    \alpha \pdv[2]{\Psi (x,t)}{x} + V(x,t) \Psi (x,t) = \beta \pdv{\Psi (x,t)}{t}
+\]
+où $\alpha$ et $\beta$ sont des constantes à déterminer.\\
+En essayant de vérifier la condition 4, on pose $\Psi (x,t) = \cos \left( kx - \omega t \right)$ et $V(x,t)=V_0$,
+et on regarde ce que cela donne:
+\begin{gather*}
+    \alpha \pdv[2]{\Psi (x,t)}{x} + V_0 \Psi (x,t) = \beta \pdv{\Psi (x,t)}{t} \\
+    \Leftrightarrow - \alpha k^2 \cos \left( kx - \omega t \right) + V_0 \cos \left( kx - \omega t \right) =
+    \beta \omega \sin \left( kx - \omega t \right)\\
+    \Leftrightarrow \left( \alpha k^2  - V_0 \right) \cos \left( kx - \omega t \right) + \beta \omega \sin \left( kx - \omega t \right) = 0\\
+\end{gather*}
+Cette égalité ne se vérifie que si $k^2 = \frac{V_0}{\alpha}$ et $\beta = 0$, or sous ces conditions, on ne satisfait pas
+l'équation d'énergie $\frac{\hbar^2 k^2}{2m} + V(x,t) = \hbar \omega$.\\
+Nous devons donc considérer une autre forme pour $\Psi (x,t)$, et nous allons essayer avec
+\[
+    \Psi (x,t) = \cos \left( kx - \omega t \right) + \gamma \sin \left( kx - \omega t \right)
+\]
+où $\gamma$ est une constante à déterminer.
+On a alors
+\begin{gather*}
+    \pdv{\Psi (x,t)}{t} = \omega \left( \sin \left( kx - \omega t \right) - \gamma \cos \left( kx - \omega t \right) \right)\\
+    \pdv[2]{\Psi (x,t)}{x} = - k^2 \cos \left( kx - \omega t \right) - \gamma k^2 \sin \left( kx - \omega t \right)
+\end{gather*}
+et donc
+\begin{gather*}
+    \alpha \pdv[2]{\Psi (x,t)}{x} + V(x,t) \Psi (x,t) = \beta \pdv{\Psi (x,t)}{t}\\
+    \Leftrightarrow - \alpha k^2 \cos \left( kx - \omega t \right) - \alpha \gamma k^2 \sin \left( kx - \omega t \right) + V_0 \left( \cos \left( kx - \omega t \right) + \gamma \sin \left( kx - \omega t \right) \right) = \\ = \beta \omega \left( \sin \left( kx - \omega t \right) - \gamma \cos \left( kx - \omega t \right) \right)\\
+    \Leftrightarrow - \alpha k^2 \left[ \cos \left( kx - \omega t \right) + \gamma \sin \left( kx - \omega t \right) \right] + V_0 \left[ \cos \left( kx - \omega t \right) + \gamma \sin \left( kx - \omega t \right) \right] = \\ = \frac{\beta \omega}{\gamma} \left[- \gamma^2 \cos \left( kx - \omega t \right) + \gamma \sin \left( kx - \omega t \right) \right]\\
+\end{gather*}
+qui contient dans les crochets à gauche du signe égal la fonction $\Psi (x,t)$, et dans les crochet à droite du signe
+égal une fonction qui y ressemble, mais qui n'est pas exactement la même.\\
+Nous pourrions alors essayer de trouver une valeur de $\gamma$ qui permet de faire correspondre les deux fonctions,
+soit satisfaisant l'équation
+\[
+- \gamma^2 \cos \left( kx - \omega t \right) + \gamma \sin \left( kx - \omega t \right) = \cos \left( kx - \omega t \right) + \gamma \sin \left( kx - \omega t \right)
+\]
+ce qui nécessite que $\gamma^2 = -1$, donc $\gamma = \pm \sqrt{-1} = \pm i$, où $i$ est l'unité imaginaire.
+En posant $\gamma = i$, on peut simplifier l'équation précédente en
+\[
+    - \alpha k^2 + V_0 = \frac{\beta \omega}{i}
+\]
+et en comparant avec l'équation de De Broglie-Einstein $\frac{\hbar^2 k^2}{2m} + V(x,t) = \hbar \omega$,
+on voit que l'équation précédente est satisfaite si $\alpha = - \frac{\hbar^2}{2m}$ et $\beta = i \hbar$.\\
+Nous avons donc trouvé une équation qui satisfait les conditions 1, 2, 3 et 4, et qui est donc une équation
+d'onde quantique pour une particule de masse $m$ dans un potentiel $V(x,t)$, à savoir
+\[
+    - \frac{\hbar^2}{2m} \pdv[2]{\Psi (x,t)}{x} + V(x,t) \Psi (x,t) = i \hbar \pdv{\Psi (x,t)}{t}
+\]
+dénommée équation de Schrödinger (à noter que tout comme il existe une équation d'onde de dimension plus grande,
+il y a aussi une équation de Schrödinger de dimension supérieure).\\
+On admet que pour un instant $t_0$ donné la fonction d’onde $\Psi (x, t_0)$ décrit l’état de la particule
+à cet instant.
+Comme l’équation de Schrödinger est linéaire, on remarque que connaissant deux états, définis par deux solutions
+de cette équation, on obtient par superposition linéaire de ces deux solutions une nouvelle solution, c'est-à-dire
+un nouvel état.
+C’est ce que l’on appelle ``principe de superposition des états'' : à partir de deux états de la particule, on
+peut définir de nouveaux états par combinaisons linéaires.
+C’est un principe entièrement nouveau qui n’a pas de correspondance en physique classique.
+En utilisant la notation introduite par Dirac, on représente cet état sous la forme d’un vecteur $\ket{\Psi_t}$,
+appelé ``ket''.\\ \\
+Cette équation prédit excellemment bien les résultats expérimentaux de la mécanique quantique, mais son
+interprétation est plus difficile, à commencer par que représente $\Psi (x,t)$, pourquoi l'unité imaginaire
+est-elle présente dans l'équation, etc.\\
+Cela peut s'expliquer par la différence majeure entre la mécanique classique et la mécanique quantique:
+en mécanique classique, la mesure d'une grandeur physique ne change pas la valeur de n'importe quelle autre
+grandeur physique, alors qu'en mécanique quantique, la mesure d'une grandeur physique change la valeur
+de certaines autres grandeurs physiques.
+Cela s'exprime par les relations d'incertitude d'Heisenberg, qui sont des relations entre les incertitudes
+de deux grandeurs physiques, et qui sont données par
+\[
+    \Delta x \Delta p_x \geq \frac{\hbar}{2} \qquad \text{et} \qquad \Delta E \Delta t \geq \frac{\hbar}{2}
+\]
+qui implique que plus on connaît précisément la position d'une particule, moins on connaît précisément
+son impulsion, et vice-versa, et plus on connaît précisément l'énergie d'une particule, moins on connaît
+précisément le temps qu'elle mettra à parcourir une certaine distance, et réciproquement.\\ \\
+L'équation de Schrödinger est donc une équation qui décrit l'évolution de la fonction d'onde d'une particule
+dans le temps, mais comme elle est complexe, elle ne peut pas être interprétée comme une mesure directe.
+Or, on sait que le module carré d'un nombre complexe est un nombre réel positif, et donc on peut interpréter
+cela comme une mesure.
+L'interprétation de la fonction d'onde donnée par Max Born est que son module au carré est la probabilité de trouver la
+particule dans un certain état, et donc l'équation de Schrödinger est une équation qui décrit l'évolution de
+la probabilité de trouver une particule dans un certain état dans le temps.\\
+Dans le cas de la position, qui est une variable continue, la probabilité de trouver la particule dans l'intervalle
+$[x_1,x_2]$ est donnée par
+\[
+    P(x_1 \leq x \leq x_2) = \int_{x_1}^{x_2} \abs{\Psi (x,t)}^2 \dd{x}
+\]
+ce qui nous indique également, comme la somme des probabilités doit être égale à 1, que la fonction d'onde
+doit être normalisée, c'est-à-dire que
+\[
+    \int_{- \infty}^{+ \infty} \abs{\Psi (x,t)}^2 \dd{x} = 1
+\]
+Cependant, dans la suite, on va considérer des grandeurs qui ne prennent que des valeurs discrètes, car l'informatique quantique fonctionne à l'image de
+celle classique, c'est-à-dire avec des bits, qui ne peuvent prendre que deux valeurs, 0 ou 1.
+De plus on va utiliser la notation de Dirac afin de représenter les états quantiques, qui est une notation
+qui permet de représenter les états quantiques de manière plus simple et plus compacte.\\
+On va donner un exemple de cette notation, et on en posera les concepts plus rigoureusement par la suite.
+La grandeur spin a été mise en évidence en 1922 par O. Stern et W. Gerlach qui voulaient mesurer le moment
+angulaire d’un atome pour tester l’hypothèse de quantification du plan des orbites des électrons introduite
+par Sommerfeld.
+Le moment angulaire étant parallèle au moment magnétique, ils envoient des atomes à travers un champ magnétique
+et ils s'attendent à trouver sur un écran, situé après l’aimant, un nombre impair de taches correspondant aux
+différentes directions possibles du moment angulaire.
+Ils observent deux taches ce qui est un résultat incompréhensible.
+L’explication sera donnée en 1925 par G. Uhlenbeck et S. Goudsmit qui introduisent l'idée véritablement
+révolutionnaire que l’électron possède un moment angulaire intrinsèque, grandeur vectorielle sans équivalent
+classique, qui ne peut prendre deux valeurs $+ \frac{1}{2}$ ou $- \frac{1}{2}$ quand mesurée dans une direction donnée.
+Pauli donnera le nom de spin à cette nouvelle grandeur.
+Comme elle ne peut prendre que deux valeurs, on peut représenter ces deux états par deux vecteurs, qui sont
+appelés vecteurs d'état, par exemple $\ket{+}$ et $\ket{-}$ pour les deux états de spin.\\
+On représente alors l'état de spin de la particule par un vecteur qui est une combinaison linéaire des deux vecteurs
+d'état, par exemple $\ket{\psi} = c_1 \ket{+} + c_2 \ket{-}$, comme les deux états sont ``solutions'' de notre
+problème, et donc on peut représenter l'état de la particule par un vecteur qui est une combinaison linéaire
+de ceux-ci en vertu du 3\ieme{} postulat évoqué précédemment.
+Selon l'interprétation de Born, la probabilité de trouver la particule dans l'état $\ket{+}$ est donnée par
+$\abs{c_1}^2$, et la probabilité de trouver la particule dans l'état $\ket{-}$ est donnée par $\abs{c_2}^2$,
+et donc la somme des probabilités est égale à 1, ce qui implique que $\abs{c_1}^2 + \abs{c_2}^2 = 1$.\\ \\
+Ce formalisme peut paraître étrange, car il affirme que la particule n’est ni dans l’état $\ket{+}$ ni dans l’état
+$\ket{-}$, mais que si on fait une mesure, on l’observera soit dans l’état $\ket{+}$, soit dans l’état $\ket{-}$ avec un résultat
+aléatoire dont la probabilité est connue et après la mesure la particule sera dans l’état observé avec probabilité 1.
+Or ce phénomène est réel, et il est appelé superposition quantique~\cite{wiki:superposition}.
+C'est similaire au comportement lorsque deux ondes classiques se rencontrent, elles vont en quelque sorte s'additionner,
+comme à l'image de deux vagues qui se rencontrent en créant des vaguelettes l'une sur l'autre par endroit, augmentant
+leur taille à d'autre ou encore s'annulant en certains points.\\
+Le fameux chat de Schrödinger~\cite{wiki:chat-schrodinger} est une expérience de pensée visant à illustrer ce phénomène.
+Un dispositif diabolique est mis en place, qui consiste en une boîte hermétique contenant un chat, un flacon
+de poison, un détecteur de radioactivité et une source radioactive, et si le détecteur détecte une particule
+radioactive, alors le flacon de poison est cassé, et le chat meurt.
+Or le fait que la particule radioactive se désintègre ou non est un phénomène quantique, et donc tant que l'on ne
+regarde pas dans la boîte, on ne sait pas si la particule s'est désintégrée ou non, et donc si le chat est mort
+ou vivant.
+Cela parait impossible et montre les lacunes de l'interprétation de la mécanique quantique, mais des phénomènes
+semblables peuvent être réalisés en laboratoire.\\ \\
+Citons par exemple l'interféromètre de Mach-Zehnder~\cite{wiki:exp-superposition}, qui est un dispositif permettant de mettre en évidence
+le phénomène d'interférence quantique, qui est un phénomène qui n'a pas d'équivalent en mécanique classique.
+C'est un dispositif qui consiste en un laser, qui est une source de photons, qui sont des particules de lumière,
+qui est envoyé sur un miroir semi-réfléchissant, qui va diviser le faisceau en deux faisceaux, qui vont suivre
+des chemins différents, et qui vont être réfléchis par deux miroirs, et sont redirigés vers un autre miroir
+semi-réfléchissant, qui va recombiner les deux faisceaux, et les envoyer vers deux détecteurs.
+La lumière agit comme une onde, et le montage est conçu de manière que les deux faisceaux se recombinent
+avec une différence de phase telle que les deux ondes s'annulent sur une des sorties, et se renforcent sur
+l'autre.
+\import{images/preambules/fig/}{mach-zender.tex}
+L'expérience devient intéressante lorsque l'on envoie les photons un par un, car on s'attendrait à ce qu'ils
+arrivent sur les deux détecteurs comme ils le feraient s'ils étaient des particules classiques, parce qu'ils ne devraient,
+selon notre intuition, parcourir qu'un seul des deux chemins et donc pouvoir atteindre les deux détecteurs, car
+ils ne devraient plus subir d'interférences.
+Or la réalité est différente, et on observe que les photons arrivent toujours sur le même détecteur, et donc
+que les photons interfèrent avec eux-mêmes, et qu'ils parcourent en quelque sorte les deux chemins en même temps.\\
+Pour en revenir aux concepts évoqués précédemment, le premier miroir va créer une superposition quantique des
+deux états, qui sont les deux chemins possibles, et le deuxième miroir va impacter à nouveau cette superposition,
+et crée cette interférence quantique, qui mène à cette mesure étrange.\\ \\
+Le dernier concept que l'on va évoquer est celui de l'intrication quantique~\cite{wiki:entenglement}, qui se produit lorsque deux
+particules interagissent, et que l'on ne peut plus décrire l'état de chacune des particules indépendamment,
+mais que l'on doit décrire l'état du système formé par les deux particules.
+Si on reprend l'expérience de pensée du chat de Schrödinger, on peut imaginer que la vie du chat est liée à
+l'état de la particule radioactive, et donc que tant que l'on ne regarde pas dans la boîte, le chat est à la
+fois mort et vivant, et que l'on ne peut pas décrire l'état du chat sans décrire l'état de la particule radioactive.
+Cela peut paraître étrange, mais c'est un phénomène réel, et il a été mis en évidence par l'expérience d'Aspect,
+qui lui a valu le prix Nobel de physique en 2022.\\
+Ce concept d'intrication fut mis en évidence par Schrödinger, puis Einstein, Podolsky et Rosen, ont émis l'hypothèse
+que la mécanique quantique était incomplète, et que les particules possédaient des propriétés cachées, car sinon
+cela impliquerait que les particules communiquent instantanément, ce qui est impossible selon la relativité
+restreinte, car cela impliquerait que l'information se déplace plus vite que la lumière.
+Néanmoins, cette simultanéité ne va pas à l'encontre de la relativité restreinte, via le théorème de non-communication,
+car pour constater cette causalité, il faudrait pouvoir communiquer de l'information, ce qui se fait à la vitesse
+de la lumière au maximum.\\
+Néanmoins, l'hypothèse EPR (Einstein, Podolsky, Rosen) suggérait qu'il y avait des propriétés cachées, et donc
+que la mécanique quantique était incomplète, et donc qu'il existait une théorie plus fondamentale.
+C'est dans ce contexte que John Bell a énoncé son théorème, qui permet de tester expérimentalement l'hypothèse EPR,
+et qui consiste en une inégalité, qui si elle est violée, implique qu'il y a une influence instantanée entre les
+particules et non un paramètre autre, et donc contredit l'hypothèse EPR.
+Alain Aspect a réalisé une expérience qui a violé cette inégalité de manière indiscutable~\cite{wiki:aspect}, et qui de plus était
+en parfait accord avec la mécanique quantique.
+\import{images/preambules/fig/}{aspect.tex}
+Cette expérience consiste en un laser, qui envoie des photons sur un cristal, qui va créer une paire de photons
+intriqués, qui vont être envoyés sur deux détecteurs, qui vont mesurer la polarisation des photons.
+Les deux détecteurs mesurent la polarisation des photons selon deux axes différents, et on peut choisir l'angle
+de ces axes, et donc on peut choisir la polarisation que l'on veut mesurer.
+On va changer cet angle après que les photons soient partis du cristal, et donc après qu'ils soient intriqués,
+et on va mesurer la polarisation des photons, et c'est cette polarisation qui va être corrélée, et qui va nous
+permettre de tester l'inégalité de Bell.\\ \\
+En résumé, la mécanique quantique est une théorie qui décrit le monde à l'échelle microscopique et qui fait
+apparaître des phénomènes qui n'ont pas d'équivalent en mécanique classique, et qui sont contre-intuitifs.
+Ceux-ci font intervenir des concepts probabilistes, de superposition quantique, d'intrication quantique, et
+d'interférence quantique, mais qui sont néanmoins prédictifs et vérifiables expérimentalement.\\
+Cela fait de la physique quantique une théorie déterministe des systèmes considérés pour ce qui est de l’évolution
+temporelle, c'est-à-dire qui permet de décrire l’évolution d’un système à partir des conditions initiales,
+ce qui rend ses concepts applicables à l'informatique.
+Néanmoins, la mesure d’une observable va modifier l’état de façon aléatoire.
+On va donc perdre une partie de l'information lors de celle-ci, ce qui fait que les résultats sont
+probabilistes, et donc non purement déterministes à cet égard.
+De fait, on peut utiliser les propriétés de superposition des états quantiques afin de réaliser des calculs
+sur plusieurs états en même temps, et donc de manière parallèle, avec l'intrication qui permet de lier différents
+états entre eux et d'augmenter encore les possibilités de calculs.
+Tout cela permet de réaliser des opérations complexes, mais il faut garder en tête la perte d'information lors
+de la mesure, et les problèmes qui en découlent, car une interaction avec l'environnement peut détruire la
+fonction d'onde, tout comme une mesure, et donc détruire les calculs en cours.

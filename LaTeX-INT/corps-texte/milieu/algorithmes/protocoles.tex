@@ -1,0 +1,470 @@
+\chapter{Quelques protocoles}\label{ch:quelques-protocoles}
+
+Certains concepts ont déjà été vu plus tôt, néanmoins un certain formalisme est
+très utile à la bonne compréhension des capacités plus avancées de l'informatique
+quantique.
+Ce ne sont pas des algorithmes à proprement parler, mais plutôt des protocoles
+qui servent de base à la construction d'algorithmes.
+
+\section{Retour de phase}\label{sec:retour-de-phase}
+
+Ce protocole est très perturbant au premier abord, mais il est en fait très
+simple.
+Rappelons l'algorithme de Deutsch-Jozsa vu dans le chapitre du même nom.
+Lors de l'application de l'oracle, l'opération qui devait être effectuée sur la
+sortie s'est retrouvée, de par la configuration du circuit, effectuée sur
+l'entrée.\\
+On définit un \textit{retour de phase} quand le vecteur propre d'une porte sur un qubit
+est ``retourné'' sur un autre qubit via une opération de contrôle.\\ \\
+Prenons l'exemple le plus simple, celui d'une porte de $CX$.
+Pour rappel, la porte $CX$ est une porte de contrôle qui effectue une porte $X$
+sur le qubit cible si le qubit de contrôle est à l'état $\ket{1}$, donc va inverser
+le qubit cible.\\
+Les figures suivantes indiquent en rouge l'état initial et en vert l'état
+final.
+De plus, les qubits de contrôle sont donnés avec un $_c$ et ceux cibles avec un
+$_t$.
+
+\begin{figure}[H]
+    \centering
+    \subfloat[Contrôle]{
+        \begin{blochsphere}[radius=1.5 cm,tilt=15,rotation=-30,opacity=0]
+            \drawBallGrid[style={opacity=0.1}]{30}{180}
+
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{x-Achse}{90}{90}
+            \drawStatePolar[axisarrow=true, statewidth = 0.3]{y-Achse}{90}{0}
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{z-Achse}{0}{0}
+
+            \node[below] at (x-Achse) {\fontsize{0.15cm}{1em} \large $x$};
+            \node[below] at (y-Achse) {\fontsize{0.15cm}{1em} \large $y$};
+            \node[below] at (z-Achse) {\fontsize{0.15cm}{1em} \large $z$};
+
+            \drawStatePolar[statecolor = red]{State}{180}{0}
+            \drawStatePolar[statecolor = green]{State}{180}{0}
+
+            \labelLatLon{up}{90}{0};
+            \labelLatLon{down}{-90}{90};
+            \node[above] at (up) {$\ket{0}$};
+            \node[below] at (down) {$\ket{1}$};
+        \end{blochsphere}
+    }
+    \subfloat[Cible]{
+        \begin{blochsphere}[radius=1.5 cm,tilt=15,rotation=-30,opacity=0]
+            \drawBallGrid[style={opacity=0.1}]{30}{180}
+
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{x-Achse}{90}{90}
+            \drawStatePolar[axisarrow=true, statewidth = 0.3]{y-Achse}{90}{0}
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{z-Achse}{0}{0}
+
+            \node[below] at (x-Achse) {\fontsize{0.15cm}{1em} \large $x$};
+            \node[below] at (y-Achse) {\fontsize{0.15cm}{1em} \large $y$};
+            \node[below] at (z-Achse) {\fontsize{0.15cm}{1em} \large $z$};
+
+            \drawStatePolar[statecolor = red]{State}{0}{0}
+            \drawStatePolar[statecolor = green]{State}{180}{0}
+
+            \labelLatLon{up}{90}{0};
+            \labelLatLon{down}{-90}{90};
+            \node[above] at (up) {$\ket{0}$};
+            \node[below] at (down) {$\ket{1}$};
+        \end{blochsphere}
+    }
+    \caption{Application d'une porte $CX$ sur un qubit à l'état $\ket{1}_c \otimes \ket{0}_t$}
+    \label{fig:retour-de-phase-1}
+\end{figure}
+
+Maintenant, remarquons que $X$ aura le même effet sur la base $\{\ket{+}, \ket{-}\}$ que
+$Z$ sur la base $\{\ket{0}, \ket{1}\}$.
+De fait, $X \ket{-} = -\ket{-}$, et sachant cela, on peut experimenter avec une $CX$
+appliquée sur les pairs de qubits $\ket{0}_c \otimes \ket{-}_t$ et $\ket{1}_c \otimes \ket{-}_t$ :
+\begin{align*}
+    \ket{0}_c \otimes \ket{-}_t &\xrightarrow{CX} \ket{0}_c \otimes \ket{-}_t \\
+    \ket{1}_c \otimes \ket{-}_t &\xrightarrow{CX} \ket{1}_c \otimes X \ket{-}_t = -\ket{1}_c \otimes \ket{-}_t
+\end{align*}
+Dans ces cas-là, seule la phase globale est affectée, et ce n'est donc pas observable,
+donc peu intéressant.
+Néanmoins, si le qubit de contrôle est en superposition, alors on peut observer
+des phénomènes intéressants, comme avec l'application d'une porte $CX$ sur l'état
+$\ket{+}_c \otimes \ket{-}_t$ :
+\[
+    \ket{+}_c \otimes \ket{-}_t \xrightarrow{CX} \frac{1}{\sqrt{2}} \left( \ket{0}_c \otimes \ket{-}_t - \ket{1}_c \otimes \ket{-}_t \right)
+\]
+que l'on peut séparer de manière équivalente en :
+\[
+    \frac{1}{\sqrt{2}} \left( \ket{0}_c \otimes \ket{-}_t - \ket{1}_c \otimes \ket{-}_t \right) = \frac{1}{\sqrt{2}} \left( \ket{0}_c - \ket{1}_c \right) \otimes \ket{-}_t = \ket{-}_c \otimes \ket{-}_t
+\]
+La vision de cette opération sur la sphère de Bloch est très instructive.
+
+\begin{figure}[H]
+    \centering
+    \subfloat[Contrôle]{
+        \begin{blochsphere}[radius=1.5 cm,tilt=15,rotation=-30,opacity=0]
+            \drawBallGrid[style={opacity=0.1}]{30}{180}
+
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{x-Achse}{90}{90}
+            \drawStatePolar[axisarrow=true, statewidth = 0.3]{y-Achse}{90}{0}
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{z-Achse}{0}{0}
+
+            \node[below] at (x-Achse) {\fontsize{0.15cm}{1em} \large $x$};
+            \node[below] at (y-Achse) {\fontsize{0.15cm}{1em} \large $y$};
+            \node[below] at (z-Achse) {\fontsize{0.15cm}{1em} \large $z$};
+
+            \drawStatePolar[statecolor = red]{State}{90}{90}
+            \drawStatePolar[statecolor = green]{State}{-90}{90}
+
+            \labelLatLon{up}{90}{0};
+            \labelLatLon{down}{-90}{90};
+            \node[above] at (up) {$\ket{0}$};
+            \node[below] at (down) {$\ket{1}$};
+        \end{blochsphere}
+    }
+    \subfloat[Cible]{
+        \begin{blochsphere}[radius=1.5 cm,tilt=15,rotation=-30,opacity=0]
+            \drawBallGrid[style={opacity=0.1}]{30}{180}
+
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{x-Achse}{90}{90}
+            \drawStatePolar[axisarrow=true, statewidth = 0.3]{y-Achse}{90}{0}
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{z-Achse}{0}{0}
+
+            \node[below] at (x-Achse) {\fontsize{0.15cm}{1em} \large $x$};
+            \node[below] at (y-Achse) {\fontsize{0.15cm}{1em} \large $y$};
+            \node[below] at (z-Achse) {\fontsize{0.15cm}{1em} \large $z$};
+
+            \drawStatePolar[statecolor = red]{State}{-90}{90}
+            \drawStatePolar[statecolor = green]{State}{-90}{90}
+
+            \labelLatLon{up}{90}{0};
+            \labelLatLon{down}{-90}{90};
+            \node[above] at (up) {$\ket{0}$};
+            \node[below] at (down) {$\ket{1}$};
+        \end{blochsphere}
+    }
+    \caption{Application d'une porte $CX$ sur un qubit à l'état $\ket{+}_c \otimes \ket{-}_t$}
+    \label{fig:retour-de-phase-2}
+\end{figure}
+En comparant la figure~\ref{fig:retour-de-phase-2} avec la figure~\ref{fig:retour-de-phase-1},
+on remarque que l'application d'une porte $CX$ sur un qubit à l'état $\ket{+}_c \otimes \ket{-}_t$
+va modifier l'état du qubit de contrôle, à l'inverse de ce qui se passe avec dans la base
+standard $\{\ket{0}, \ket{1}\}$.\\
+Cet exemple répond complètement à la définition : via la porte de contrôle $CX$,
+l'opération, on arrive en changeant de base à modifier l'état du qubit de contrôle.
+De plus, ce changement de base est aisé, se faisant simplement en appliquant une porte
+$H$ sur les qubits désirés, ainsi que réversible.
+Il en découle l'identité décrite dans la figure~\ref{fig:id-cx}.
+Celle-ci permet de choisir librement le contrôle et la cible d'une porte $CX$,
+dans le cas où l'architecture ne le permet pas directement et cela n'est qu'un
+exemple parmi tant d'autres.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.8em @!R { \\
+        & \ctrl{1} & \qw\\
+        & \targ & \qw\\
+        \\ }}
+    \]
+    =
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        & \gate{\mathrm{H}} & \targ & \gate{\mathrm{H}} & \qw \\
+        & \gate{\mathrm{H}} & \ctrl{-1} & \gate{\mathrm{H}} & \qw \\
+        \\ }}
+    \]
+    \caption{Changement de sens d'une porte $CX$ en changeant de base}
+    \label{fig:id-cx}
+\end{figure}
+Le retour de phase est donc un protocole très utile, car il implique que selon l'état des qubits,
+une opération contrôlée peut être effectuée dans un sens ou dans l'autre, et cela
+peut être très utile dans la construction de circuits.
+
+\section{Transformée de Fourier quantique}\label{sec:transformee-de-fourier-quantique}
+
+Les séries de Fourier~\cite{wiki:serie-fourier} sont des outils mathématiques très puissants, permettant
+de décomposer une fonction périodique en une somme de fonctions sinusoïdales.
+Ces séries sont très utilisées en traitement du signal, en analyse de données,
+et de nombreuses autres applications.\\
+En effet, elles permettent de décomposer un signal en une somme de signaux plus
+simples, et donc de simplifier l'analyse de celui-ci.
+L'idée des séries de Fourier est de décomposer une fonction périodique $f$ en une
+somme de fonctions sinusoïdales de fréquences différentes, et en généralisant
+aux nombres complexes, elle s'exprime via la formule d'Euler :
+\[
+    e^{i\theta} = \cos(\theta) + i\sin(\theta)
+\]
+On appelle transformée de Fourier la transformation qui permet de passer d'une
+fonction $f$ à sa décomposition en série de Fourier, généralisée à toute fonction,
+même non périodique.
+Dans le cas qui nous intéresse, seule la version discrète~\cite{wiki:transformee-fourier-disc} de la transformée de
+Fourier nous intéresse, et elle associe un vecteur $(x_0, \ldots, x_{N-1})$ à un
+vecteur $(y_0, \ldots, y_{N-1})$ tel que :
+\[
+    y_k = \frac{1}{\sqrt{N}} \sum_{j=0}^{N-1} x_j e^{2\pi i \frac{jk}{N}}
+\]
+et similairement de manière quantique~\cite{wiki:qft}, on associe un état $\ket{X} = \sum_{j=0}^{N-1} x_j \ket{j}$
+à un état $\ket{Y} = \sum_{k=0}^{N-1} y_k \ket{k}$ selon la même formule.\\ \\
+Elle fait ainsi la transformation entre deux bases, celle $Z$ et celle de Fourier.
+La visualisation intuitive de celle-ci est suffisante pour comprendre son fonctionnement
+et son implémentation.
+
+\begin{figure}[H]
+    \centering
+    \subfloat[qubit 0]{
+        \begin{blochsphere}[radius=1.5 cm,tilt=15,rotation=-30,opacity=0]
+            \drawBallGrid[style={opacity=0.1}]{30}{180}
+
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{x-Achse}{90}{90}
+            \drawStatePolar[axisarrow=true, statewidth = 0.3]{y-Achse}{90}{0}
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{z-Achse}{0}{0}
+
+            \node[below] at (x-Achse) {\fontsize{0.15cm}{1em} \large $x$};
+            \node[below] at (y-Achse) {\fontsize{0.15cm}{1em} \large $y$};
+            \node[below] at (z-Achse) {\fontsize{0.15cm}{1em} \large $z$};
+
+            \drawStatePolar[statecolor = red]{State}{180}{0}
+            \drawStatePolar[statecolor = green]{State}{0}{0}
+
+            \labelLatLon{up}{90}{0};
+            \labelLatLon{down}{-90}{90};
+            \node[above] at (up) {$\ket{0}$};
+            \node[below] at (down) {$\ket{1}$};
+        \end{blochsphere}
+    }
+    \subfloat[qubit 1]{
+        \begin{blochsphere}[radius=1.5 cm,tilt=15,rotation=-30,opacity=0]
+            \drawBallGrid[style={opacity=0.1}]{30}{180}
+
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{x-Achse}{90}{90}
+            \drawStatePolar[axisarrow=true, statewidth = 0.3]{y-Achse}{90}{0}
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{z-Achse}{0}{0}
+
+            \node[below] at (x-Achse) {\fontsize{0.15cm}{1em} \large $x$};
+            \node[below] at (y-Achse) {\fontsize{0.15cm}{1em} \large $y$};
+            \node[below] at (z-Achse) {\fontsize{0.15cm}{1em} \large $z$};
+
+            \drawStatePolar[statecolor = red]{State}{0}{0}
+            \drawStatePolar[statecolor = green]{State}{180}{0}
+
+            \labelLatLon{up}{90}{0};
+            \labelLatLon{down}{-90}{90};
+            \node[above] at (up) {$\ket{0}$};
+            \node[below] at (down) {$\ket{1}$};
+        \end{blochsphere}
+    }
+    \subfloat[qubit 2]{
+        \begin{blochsphere}[radius=1.5 cm,tilt=15,rotation=-30,opacity=0]
+            \drawBallGrid[style={opacity=0.1}]{30}{180}
+
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{x-Achse}{90}{90}
+            \drawStatePolar[axisarrow=true, statewidth = 0.3]{y-Achse}{90}{0}
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{z-Achse}{0}{0}
+
+            \node[below] at (x-Achse) {\fontsize{0.15cm}{1em} \large $x$};
+            \node[below] at (y-Achse) {\fontsize{0.15cm}{1em} \large $y$};
+            \node[below] at (z-Achse) {\fontsize{0.15cm}{1em} \large $z$};
+
+            \drawStatePolar[statecolor = red]{State}{0}{0}
+            \drawStatePolar[statecolor = green]{State}{180}{0}
+
+            \labelLatLon{up}{90}{0};
+            \labelLatLon{down}{-90}{90};
+            \node[above] at (up) {$\ket{0}$};
+            \node[below] at (down) {$\ket{1}$};
+        \end{blochsphere}
+    }
+    \caption{Nombres dans la base $Z$ (1 en en rouge, 6 en vert)}
+    \label{fig:qft-z}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \subfloat[qubit 0]{
+        \begin{blochsphere}[radius=1.5 cm,tilt=15,rotation=-30,opacity=0]
+            \drawBallGrid[style={opacity=0.1}]{30}{180}
+
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{x-Achse}{90}{90}
+            \drawStatePolar[axisarrow=true, statewidth = 0.3]{y-Achse}{90}{0}
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{z-Achse}{0}{0}
+
+            \node[below] at (x-Achse) {\fontsize{0.15cm}{1em} \large $x$};
+            \node[below] at (y-Achse) {\fontsize{0.15cm}{1em} \large $y$};
+            \node[below] at (z-Achse) {\fontsize{0.15cm}{1em} \large $z$};
+
+            \drawStatePolar[statecolor = red]{State}{90}{45}
+            \drawStatePolar[statecolor = green]{State}{90}{180}
+
+            \labelLatLon{up}{90}{0};
+            \labelLatLon{down}{-90}{90};
+            \node[above] at (up) {$\ket{0}$};
+            \node[below] at (down) {$\ket{1}$};
+        \end{blochsphere}
+    }
+    \subfloat[qubit 1]{
+        \begin{blochsphere}[radius=1.5 cm,tilt=15,rotation=-30,opacity=0]
+            \drawBallGrid[style={opacity=0.1}]{30}{180}
+
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{x-Achse}{90}{90}
+            \drawStatePolar[axisarrow=true, statewidth = 0.3]{y-Achse}{90}{0}
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{z-Achse}{0}{0}
+
+            \node[below] at (x-Achse) {\fontsize{0.15cm}{1em} \large $x$};
+            \node[below] at (y-Achse) {\fontsize{0.15cm}{1em} \large $y$};
+            \node[below] at (z-Achse) {\fontsize{0.15cm}{1em} \large $z$};
+
+            \drawStatePolar[statecolor = red]{State}{90}{0}
+            \drawStatePolar[statecolor = green]{State}{90}{-90}
+
+            \labelLatLon{up}{90}{0};
+            \labelLatLon{down}{-90}{90};
+            \node[above] at (up) {$\ket{0}$};
+            \node[below] at (down) {$\ket{1}$};
+        \end{blochsphere}
+    }
+    \subfloat[qubit 2]{
+        \begin{blochsphere}[radius=1.5 cm,tilt=15,rotation=-30,opacity=0]
+            \drawBallGrid[style={opacity=0.1}]{30}{180}
+
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{x-Achse}{90}{90}
+            \drawStatePolar[axisarrow=true, statewidth = 0.3]{y-Achse}{90}{0}
+            \drawStatePolar[axisarrow = true, statewidth = 0.3]{z-Achse}{0}{0}
+
+            \node[below] at (x-Achse) {\fontsize{0.15cm}{1em} \large $x$};
+            \node[below] at (y-Achse) {\fontsize{0.15cm}{1em} \large $y$};
+            \node[below] at (z-Achse) {\fontsize{0.15cm}{1em} \large $z$};
+
+            \drawStatePolar[statecolor = red]{State}{90}{-90}
+            \drawStatePolar[statecolor = green]{State}{90}{90}
+
+            \labelLatLon{up}{90}{0};
+            \labelLatLon{down}{-90}{90};
+            \node[above] at (up) {$\ket{0}$};
+            \node[below] at (down) {$\ket{1}$};
+        \end{blochsphere}
+    }
+    \caption{Nombres dans la base de Fourier (1 en rouge, 6 en vert)}
+    \label{fig:qft-f}
+\end{figure}
+Dans la figure~\ref{fig:qft-z}, les nombres sont en binaire (i.e. 1 correspond à 100 et 6 à 011) en utilisant la base $\ket{0}$
+et $\ket{1}$, tandis que dans la figure~\ref{fig:qft-f}, on observe que les nombres sont
+encodés dans la rotation autour de l'axe $Z$.
+On note ce nouvel état $QFT\ket{x} = \ket{\tilde{x}}$.\\
+Comme on voit sur la figure~\ref{fig:qft-f}, le nombre 6 est encodé sur trois qubits
+via une rotation de $\frac{6}{2^n} = \frac{6}{2^3} = \frac{3}{4}$ d'un tour complet
+sur le qubit 0, $\frac{3}{2}$ d'un tour complet sur le qubit 1 et une fois encore,
+on double cela pour le qubit 2.\\ \\
+Nous ne nous attarderons pas sur l'implémentation plus que cela, car elle fait
+exactement ce que l'on vient de décrire, soit l'application d'une porte d'Hadamard,
+puis la rotation autour de l'axe $Z$ selon la valeur des autres qubits via des portes
+de phase contrôlées, ensuite l'opération se répète sur les qubits suivants.\\
+Néanmoins, on se rend compte que le circuit grossit assez vite, et à un certain
+stade, pour économiser des ressources, on peut ignorer certaines rotations tout en gardant
+une précision suffisante.\\
+Dernier point, comme toutes les opérations, celle-ci est réversible, et on peut définir
+l'opération inverse comme $QFT^{\dagger}$.\\ \\
+La transformée de Fourier quantique permet donc de profiter des différentes bases
+offertes par les qubits, par exemple dans ce cas en encodant les nombres différemment.
+Dans ce cas-là, cela va même plus loin, car cela n'est pas comme en informatique
+classique où l'on se base sur deux états, mais on exploite une propriété quantique
+qui est la phase.
+
+\section{Estimation de phase quantique}\label{sec:estimation-de-phase-quantique}
+
+Tout comme la section précédente, pour ce protocole, nous laisserons quelque peu de
+côté la partie mathématique, car l'aspect intuitif est bien plus intéressant et
+pertinent.\\
+Soit un opérateur $U$ et un état $\ket{\psi}$ tel que $U\ket{\psi} = e^{2\pi i \theta}\ket{\psi}$,
+l'algorithme d'estimation de phase quantique~\cite{wiki:qpe} permet d'estimer $\theta$.
+On note donc que $\ket{\psi}$ est un vecteur propre de $U$ avec la valeur propre
+$e^{2\pi i \theta}$.\\ \\
+Pour ce faire, on initialise un registre de $t$ qubits à $\ket{0}$, et un autre
+registre d'un qubit à $\ket{\psi}$.
+Ensuite, on fait passer le registre de $t$ qubits à travers une porte d'Hadamard,
+puis le but est d'encoder la phase de $U$ dans la base de Fourier sur le registre.
+Pour ce faire, on utilise le retour de phase d'une porte $CU$, avec un des qubits
+du registre de $t$ qubits comme contrôle et $\ket{\psi}$ en cible.
+Sur le premier qubit du registre de $t$ qubits, la porte $CU$ $2^{t-1}$ fois, le second
+$2^{t-2}$ fois, et ainsi de suite jusqu'au dernier qubit où la porte $CU$ est appliquée
+une fois.\\
+De là, on applique la transformée de Fourier inverse sur le registre de $t$ qubits,
+puis on mesure le registre.
+La mesure de celle-ci correspond à $2^t \theta$, et dans ce cas si c'est un nombre
+entier, on aura la solution exacte, sinon, on aura une probabilité bien plus élevée pour
+les valeurs autour de la solution.\\ \\
+Si l'on construit le circuit avec un angle $\theta = \frac{1}{3}$, on utilisera pour
+l'exemple la porte $P(\frac{2 \pi}{3})$, et on note que $P(\frac{2 \pi}{3})\ket{1} = e^{2\pi i \frac{1}{3}}\ket{1}$,
+donc $\ket{1}$ est un vecteur propre de notre opérateur.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{0.8}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{H}} & \ctrl{3} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \multigate{2}{QFT^{\dagger}}_<<<{0} & \meter & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \ctrl{2} & \qw & \qw & \qw & \ctrl{2} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ghost{QFT^{\dagger}}_<<<{1} & \qw & \meter & \qw & \qw & \qw\\
+        \nghost{{q}_{2} :  } & \lstick{{q}_{2} :  } & \gate{\mathrm{H}} & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ghost{QFT^{\dagger}}_<<<{2} & \qw & \qw & \meter & \qw & \qw\\
+        \nghost{{q}_{3} :  } & \lstick{{q}_{3} :  } & \gate{\mathrm{X}} & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{\mathrm{{c} :  }} & \lstick{\mathrm{{c} :  }} & \lstick{/_{_{3}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-4,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-3,0] & \dstick{_{_{\hspace{0.0em}2}}} \cw \ar @{<=} [-2,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Estimation de phase pour $\theta = \frac{1}{3}$ avec un registre de $t = 3$ qubits}
+    \label{fig:qpes3-circ}
+\end{figure}
+Les qubits 0 à 2 sont le registre de $t$ qubits, le qubit 3 est le registre de $\ket{\psi}$,
+que l'on initialise selon le protocole énoncé précédemment.
+Petite subtilité, par rapport à ce qui a été dit auparavant, on applique la porte $CU$
+le plus de fois sur le dernier qubit du registre de $t$ qubits, et non le premier.
+Si l'on ne le faisait pas, les résultats obtenus seraient inversés, et serait donc moins
+lisibles, cela est dû à la manière dont le module utilisé pour la simulation des circuits
+quantiques et l'interaction avec les ordinateurs à disposition fonctionne.
+\begin{figure}[H]
+    \centering
+    \import{images/algo/protocoles/}{qpe13s3.tex}
+    \caption{Mesures pour $\theta = \frac{1}{3}$ avec un registre de $t = 3$ qubits}
+    \label{fig:qpes3-meas}
+\end{figure}
+Les deux plus grandes valeurs obtenues sont 011 qui correspond à 3 et donc un angle
+de $\theta \approx \frac{3}{2^3} = 0.375$ et 010 qui correspond à 2 et donc un angle
+$\theta \approx \frac{2}{2^3} = 0.25$.
+Elles entourent bien la valeur de $\theta$ que l'on cherchait à estimer, néanmoins
+la précision laisse à désirer.\\ \\
+Pour l'augmenter, on peut augmenter le nombre de qubits du registre de $t$ qubits.
+Regardons par exemple avec 5 qubits.
+Outre le gigantisme du circuit~\ref{fig:qpes5-circ}, problème qui sera discuté ultérieurement
+avec des pistes d'amélioration, on peut remarquer que les mesures sont bien plus précises
+que dans le cas précédent.
+On obtient principalement une mesure de 01011, soit 11 en décimal, ce qui donne une estimation
+de $\frac{11}{32} \approx 0.344$.
+\begin{sidewaysfigure}
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{0.4}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{H}} & \ctrl{5} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \multigate{4}{QFT^{\dagger}}_<<<{0} \barrier[0em]{5} & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \ctrl{4} & \qw & \qw & \qw & \ctrl{4} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ghost{QFT^{\dagger}}_<<<{1} & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{2} :  } & \lstick{{q}_{2} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{3} & \qw & \qw & \qw & \ctrl{3} & \qw & \qw & \qw & \ctrl{3} & \qw & \qw & \qw & \ctrl{3} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ghost{QFT^{\dagger}}_<<<{2} & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{3} :  } & \lstick{{q}_{3} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{2} & \qw & \qw & \qw & \ctrl{2} & \qw & \qw & \qw & \ctrl{2} & \qw & \qw & \qw & \ctrl{2} & \qw & \qw & \qw & \ctrl{2} & \qw & \qw & \qw & \ctrl{2} & \qw & \qw & \qw & \ctrl{2} & \qw & \qw & \qw & \ctrl{2} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ghost{QFT^{\dagger}}_<<<{3} & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw\\
+        \nghost{{q}_{4} :  } & \lstick{{q}_{4} :  } & \gate{\mathrm{H}} & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \qw & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ctrl{1} & \dstick{\hspace{2.0em}\mathrm{P}\,(\mathrm{\frac{2\pi}{3}})} \qw & \qw & \qw & \ghost{QFT^{\dagger}}_<<<{4} & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw\\
+        \nghost{{q}_{5} :  } & \lstick{{q}_{5} :  } & \gate{\mathrm{X}} & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \control \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{\mathrm{{c} :  }} & \lstick{\mathrm{{c} :  }} & \lstick{/_{_{5}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-6,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-5,0] & \dstick{_{_{\hspace{0.0em}2}}} \cw \ar @{<=} [-4,0] & \dstick{_{_{\hspace{0.0em}3}}} \cw \ar @{<=} [-3,0] & \dstick{_{_{\hspace{0.0em}4}}} \cw \ar @{<=} [-2,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Estimation de phase pour $\theta = \frac{1}{3}$ avec un registre de $t = 5$ qubits}
+    \label{fig:qpes5-circ}
+\end{sidewaysfigure}
+\begin{figure}[H]
+    \centering
+    \import{images/algo/protocoles/}{qpe13s5.tex}
+    \caption{Mesures pour $\theta = \frac{1}{3}$ avec un registre de $t = 5$ qubits}
+    \label{fig:qpes5-meas}
+\end{figure}
+On a vu avec la transformée de Fourier quantique que la phase offrait une nouvelle
+dimension pour l'encodage des nombres.
+La phase peut offrir d'autres possibilités, et donc la possibilité de mesurer cette
+propriété est intéressante.
+Il faut préciser que la transformée de Fourier quantique se base sur la phase des
+qubits, alors que l'estimation de phase quantique mesure la phase qu'induit un
+opérateur sur un état propre de celui-ci.
+Néanmoins, l'un a l'autre peuvent être relié, car on peut encoder dans la base de Fourier
+par un opérateur et on peut mesurer la phase de celui-ci.
+De fait, les deux notions sont assez lié dans ce sens-là, même si elles peuvent être
+utilisées indépendamment l'une de l'autre.
+De plus, cela revêt un aspect aussi conceptuel, car par cette mesure, on donne une valeur
+concrète à une propriété quantique, basée sur les nombres complexes qui plus est.

@@ -1,0 +1,186 @@
+% PsTricks
+\usepackage[usenames,dvipsnames]{pstricks}
+\usepackage{pstricks-add}
+\usepackage{epsfig}
+\usepackage{pst-grad} % For gradients
+\usepackage{pst-plot} % For axes
+\usepackage[space]{grffile} % For spaces in paths
+\usepackage{etoolbox} % For spaces in paths
+\makeatletter % For spaces in paths
+\patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+\makeatother
+
+\usepackage{auto-pst-pdf}
+
+% Graphiques
+\usepackage{pgfplots}
+% \DeclareUnicodeCharacter{2212}{−}
+\usepgfplotslibrary{groupplots,dateplot}
+\usetikzlibrary{patterns,shapes.arrows}
+\pgfplotsset{compat=newest}
+
+% Logic
+\usetikzlibrary{positioning,shapes.gates.logic.US,circuits.logic.IEC,fit}
+\newcommand\addvmargin[1]{
+    \node[fit=(current bounding box),inner ysep=#1,inner xsep=0]{};
+}
+
+% Quantum circuit
+\usepackage[all]{xy}
+\usepackage{qcircuit}
+
+% Footnote
+\usepackage[bottom]{footmisc}
+
+% Code style
+\usepackage{listings}
+\lstset{
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!40!black},
+    stringstyle=\color{purple},
+    showstringspaces=false,
+    breaklines=true,
+    numbers=left,
+    numberstyle=\tiny,
+    frame=single
+}
+
+% Page style
+\usepackage{fancyhdr}
+\usepackage{csquotes}
+\usepackage[toc,page]{appendix}
+
+\fancyhead{} % clear all header fields
+\fancyhead[L]{\textbf{Les algorithmes quantiques}}
+\fancyhead[R]{\textit{\nouppercase{\leftmark}}}
+\fancyfoot{} % clear all footer fields
+\fancyfoot[R]{\thepage}
+\fancyfoot[L]{Romain Blondel}
+
+% Title settings
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+\newcommand{\hsp}{\hspace{20pt}}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+% Page num
+\renewcommand{\thepage}{}
+
+% Jupyter notebook
+\usepackage[most]{tcolorbox}
+
+\definecolor{white}{rgb}{1,1,1}
+\definecolor{mygreen}{rgb}{0,0.4,0}
+\definecolor{light_gray}{rgb}{0.97,0.97,0.97}
+\definecolor{mykey}{rgb}{0.117,0.403,0.713}
+
+\tcbuselibrary{listings}
+\newlength\inwd
+\setlength\inwd{1.3cm}
+
+\newcounter{ipythcntr}
+\renewcommand{\theipythcntr}{\texttt{[\arabic{ipythcntr}]}}
+
+\newtcblisting{pyin}[1][]{%
+    sharp corners,
+    enlarge left by=\inwd,
+    width=\linewidth-\inwd,
+    enhanced,
+    boxrule=0pt,
+    colback=light_gray,
+    listing only,
+    top=0pt,
+    bottom=0pt,
+    overlay={
+        \node[
+            anchor=north east,
+            text width=\inwd,
+            font=\footnotesize\ttfamily\color{mykey},
+            inner ysep=2mm,
+            inner xsep=0pt,
+            outer sep=0pt
+        ]
+        at (frame.north west)
+            {\refstepcounter{ipythcntr}\label{#1}In \theipythcntr:};
+    }
+    listing engine=listing,
+    listing options={
+        aboveskip=1pt,
+        belowskip=1pt,
+        basicstyle=\footnotesize\ttfamily,
+        language=Python,
+        keywordstyle=\color{mykey},
+        showstringspaces=false,
+        escapeinside={;@}{\^^M},
+        stringstyle=\color{mygreen}
+    },
+}
+\newtcblisting{pyprint}{
+    sharp corners,
+    enlarge left by=\inwd,
+    width=\linewidth-\inwd,
+    enhanced,
+    boxrule=0pt,
+    colback=white,
+    listing only,
+    top=0pt,
+    bottom=0pt,
+    overlay={
+        \node[
+            anchor=north east,
+            text width=\inwd,
+            font=\footnotesize\ttfamily\color{mykey},
+            inner ysep=2mm,
+            inner xsep=0pt,
+            outer sep=0pt
+        ]
+        at (frame.north west)
+            {};
+    }
+    listing engine=listing,
+    listing options={
+        aboveskip=1pt,
+        belowskip=1pt,
+        basicstyle=\footnotesize\ttfamily,
+        language=Python,
+        keywordstyle=\color{mykey},
+        showstringspaces=false,
+        escapeinside={;@}{\^^M},
+        stringstyle=\color{mygreen}
+    },
+}
+\newtcblisting{pyout}[1][\theipythcntr]{
+    sharp corners,
+    enlarge left by=\inwd,
+    width=\linewidth-\inwd,
+    enhanced,
+    boxrule=0pt,
+    colback=white,
+    listing only,
+    top=0pt,
+    bottom=0pt,
+    overlay={
+        \node[
+            anchor=north east,
+            text width=\inwd,
+            font=\footnotesize\ttfamily\color{mykey},
+            inner ysep=2mm,
+            inner xsep=0pt,
+            outer sep=0pt
+        ]
+        at (frame.north west)
+            {\setcounter{ipythcntr}{\value{ipythcntr}}Out#1:};
+    }
+    listing engine=listing,
+    listing options={
+        aboveskip=1pt,
+        belowskip=1pt,
+        basicstyle=\footnotesize\ttfamily,
+        language=Python,
+        keywordstyle=\color{mykey},
+        showstringspaces=false,
+        escapeinside={;@}{\^^M},
+        stringstyle=\color{mygreen}
+    },
+}

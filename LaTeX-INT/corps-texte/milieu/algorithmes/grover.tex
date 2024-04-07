@@ -1,0 +1,343 @@
+\chapter{Algorithme de Grover}\label{ch:algorithme-de-grover}
+
+Un autre domaine d'intérêts de l'ordinateur quantique serait dans de l'organisation logistique.
+L'algorithme de Grover~\cite{grover-article, wiki:grover} en est un bon exemple, car il permet de trouver un élément dans une base
+de données non triée.
+Comme discuté en introduction, la complexité de manière classique est $\order{n}$ dans le cas
+d'une base de données non structurée, alors que l'algorithme de Grover permet de trouver
+l'élément en $\order{\sqrt{n}}$.\\ \\
+L'exemple type de problème de recherche dans une base de données est le problème de la recherche
+d'un numéro de téléphone dans un annuaire téléphonique.
+En effet, si l'annuaire référence les noms de manière alphabétique, trouver un numéro de téléphone
+revient à rechercher quelque chose sans pouvoir se situer dans l'annuaire.\\
+De plus, l'algorithme de Grover permet d'accélérer la recherche d'une solution à un problème
+dont on sait vérifier la validité d'une solution, ceux de classe $NP$\@.
+Malgré cela, un problème de classe $NP$ est généralement exponentiel avec le nombre d'éléments
+mis en jeu dans le problème (typiquement $N=2^n$ si $n$ est le nombre d'éléments), ce qui fait
+que vis à vis d'un ordinateur classique le résolvant en $2^n$, l'algorithme de Grover ne permet
+que de le résoudre en $\sqrt{2^n} = 2^{\frac{n}{2}}$ qui demeure exponentiel.\\
+On peut citer plusieurs problèmes type pouvant être résolus par l'algorithme de Grover, comme
+les sudokus, les problèmes de satisfiabilité, les problèmes de coloration de graphes, etc.
+
+\section{Principe}\label{sec:principe2}
+
+L'algorithme de Grover est constitué de trois étapes principales, comme illustré sur la
+figure~\ref{fig:grov-principe}.
+Il y a tout d'abord la préparation de l'espace de recherche, qui correspond à toutes les
+solutions possibles du problème, puis l'application d'un oracle qui permet de marquer
+les solutions valides, et enfin l'application d'un opérateur de diffusion qui permet
+d'amplifier l'effet de l'oracle afin de pouvoir mesurer la solution à la fin de
+l'algorithme.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{\ket{0}} & \lstick{\ket{0}} & {/^n} \qw & \gate{\mathrm{H^{\otimes n}}} & \gate{Oracle} & \gate{Diffuser} & \meter & \qw \gategroup{2}{5}{2}{6}{.7em}{--} \\
+        & & & &  \mbox{$\qquad \qquad \quad$ Répéter $\order{\sqrt{n}}$ fois} & & & \\
+        \\ }}
+    \]
+    \caption{Principe de l'algorithme de Grover}
+    \label{fig:grov-principe}
+\end{figure}
+Au début, on obtient un espace de recherche qui correspond à une superposition de tous
+les états possibles, $\ket{s} = \frac{1}{\sqrt{N}} \sum_{x=0}^{N-1} \ket{x}$, avec une
+même probabilité, $\frac{1}{N} = \frac{1}{2^n}$, d'obtenir n'importe quel état.
+Dans ce cas, on a une chance sur $2^n$ de mesurer la bonne solution, soit en moyenne
+$2^{n-1}$ essais pour trouver la solution.\\
+La procédure d'amplification vise à augmenter l'amplitude de la bonne solution, et
+diminuer celle des mauvaises solutions, jusqu'à avoir une probabilité presque certaine.
+De plus, cet algorithme a une jolie interprétation géométrique, via des réflexions
+qui entraînent des rotations dans le plan.\\
+Considérons donc deux vecteurs $\ket{w}$ et $\ket{s}$, avec $\ket{w}$ le vecteur
+correspondant aux solutions valides, et $\ket{s}$ le vecteur de départ.
+Ils forment donc un plan à deux dimensions dans l'espace de Hilbert $\mathbb{C}^N$.
+Ils ne sont néanmoins pas orthogonaux, et on peut donc définir un vecteur $\ket{s'}$
+en enlevant $\ket{w}$ à $\ket{s}$ et en normalisant le résultat.
+\begin{enumerate}
+    \item On commence l'algorithme par une superposition uniforme de tous les états $\ket{s}$.
+        \import{images/algo/grover}{step1-geo.tex}
+        Le graphique de gauche correspond au plan défini par $\ket{w}$ et $\ket{s'}$ qui permet
+        d'exprimer l'état initial $\ket{s} = \sin \theta \ket{w} + \cos \theta \ket{s'}$, avec
+        $\theta = \arcsin \braket{s}{w} = \arcsin \frac{1}{\sqrt{N}}$.
+        Le graphique de droite montre les amplitudes de l'état $\ket{s}$.
+    \item On applique ensuite l'oracle $U_f$.
+        \import{images/algo/grover}{step2-geo.tex}
+        Géométriquement, cela correspond à une réflexion de $\ket{s}$ autour de $\ket{s'}$.
+        De fait, l'amplitude de $\ket{w}$ devient négative, l'amplitude moyenne diminue donc.
+    \item On applique finalement le diffuseur $U_s$, qui correspond à une réflexion autour
+        de $\ket{s}$.
+        \import{images/algo/grover}{step3-geo.tex}
+        Les deux réflexions successives correspondent toujours à une rotation dans le plan.
+        La transformation $U_s U_f$ va donc faire tourner le vecteur $\ket{s}$ plus près de $\ket{w}$.
+        L'action de $U_s$ peut être prise comme une réflexion sur l'amplitude moyenne, ce qui va
+        booster l'amplitude de $\ket{w}$ qui est négative et lui faire prendre près de trois fois sa
+        valeur précédente, tout en diminuant les autres amplitudes.
+\end{enumerate}
+On répète ensuite les deux dernières étapes à plusieurs reprises, jusqu'à ce que la probabilité
+de mesurer $\ket{w}$ soit suffisamment grande.\\
+Après $t$ étapes, nous sommes donc dans l'état $\ket{\Psi_t} = (U_s U_f)^t \ket{s}$.
+Pour trouver le nombre idéal $t$ d'étapes, on peut utiliser la formule suivante :
+\[
+    t = \lfloor \frac{\pi}{4} \sqrt{\frac{N}{m}} \rfloor
+\]
+où $m$ est le nombre de solutions valides, et $N$ la taille de l'espace de recherche.
+Cette formule est démontrable via la représentation géométrique de l'algorithme.\\ \\
+Pour l'oracle $U_f$, il faut créer un opérateur qui inverse le signe si l'état sur lequel
+on l'applique est une solution valide.
+On peut le faire à partir d'une fonction qui vaut 0 si l'état n'est pas une solution valide,
+et 1 sinon, et via le retour de phase, comme pour l'algorithme de Deutsch-Jozsa, on peut la
+transformer en $U_f \ket{x} = (-1)^{f(x)} \ket{x}$.\\ \\
+Le diffuseur $U_s$ peut être construit très simplement, en appliquant d'abord les mêmes portes
+que pour initialiser l'état $\ket{s}$, ce qui a pour effet de le ramener à l'état $\ket{0}$,
+et il suffit donc de créer une symétrie par rapport à $\ket{0}$, ce qui peut être fait avec
+en encadrant une porte multicontrolée $Z$ avec des portes $X$.
+Finalement, on remet le circuit dans l'état du début en appliquant l'inverse de l'initialisation.
+
+\section{Comparaison avec une implémentation classique}\label{sec:comparaison-avec-une-implementation-classique}
+
+Nous pouvons appliquer l'algorithme de Grover avec différentes tailles d'entrées, et comparer
+avec une implémentation classique.
+L'implémentation classique consiste à tester toutes les solutions possibles, et à s'arrêter
+quand on en trouve une qui fonctionne.
+Celle quantique est similaire à celle classique car il faut une logique similaire pour l'oracle,
+mais il intègre ensuite le diffuseur.
+Afin de faciliter la compréhension, nous choisirons des oracles faciles à implémenter.
+
+\subsection{2 entrées}\label{subsec:2-entrees}
+
+Avec deux entrées, nous allons créer un circuit qui détecte si les deux entrées sont à 1.
+L'oracle sera donc simplement une $CZ$ qui change le signe de l'état si les deux entrées sont
+à 1.
+Le circuit d'amplification sera également comme décrit précédemment, avec une initialisation
+à l'aide de portes d'Hadamard.\\
+Afin de connaitre le nombre d'itérations à effectuer, nous allons utiliser la formule
+de l'angle $\theta = \arcsin \frac{1}{\sqrt{N}}$, avec $N = 4$.
+Ainsi $\theta = \frac{\pi}{6}$, et après $t$ étapes, nous avons l'état
+$(U_s U_f)^t = \sin \theta_t \ket{w} + \cos \theta_t \ket{s'}$ et l'on sait que
+$\theta_t = (2t + 1) \theta$ par la figure~\ref{fig:step3-geo}.
+Pour obtenir une probabilité de mesure de $\ket{w}$ de 1, il faut donc $\theta_t = \frac{\pi}{2}$,
+ce qui donne connaissant $\theta = \frac{\pi}{6}$ que $t = 1$.
+On voit avec cela que l'on aura une réponse exacte en une seule itération, qui est la mesure
+de $\ket{11}$.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{H}} \barrier[0em]{1} & \qw & \ctrl{1} \barrier[0em]{1} & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} \barrier[0em]{1} & \qw & \meter & \qw & \qw & \qw\\
+        \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{H}} & \qw & \control\qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \control\qw & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \meter & \qw & \qw\\
+        \nghost{\mathrm{{meas} :  }} & \lstick{\mathrm{{meas} :  }} & \lstick{/_{_{2}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-2,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Algorithme de Grover avec 2 entrées, sortie 11}
+    \label{fig:grov-2}
+\end{figure}
+On peut également préciser que la recherche classique se ferait avec une porte $AND$ entre les
+deux entrées, et que l'on doit les tester toutes si on veut être sûr de trouver la bonne,
+et en moyenne la moitié avec de la chance.
+
+\subsection{3 entrées}\label{subsec:3-entrees}
+
+Dans le circuit suivant, on remarque les mêmes patterns que dans le circuit précédent.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{H}} \barrier[0em]{2} & \qw & \ctrl{1} & \ctrl{2} \barrier[0em]{2} & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} \barrier[0em]{2} & \qw \barrier[0em]{2} & \qw & \meter & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{H}} & \qw & \control\qw & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \meter & \qw & \qw & \qw\\
+        \nghost{{q}_{2} :  } & \lstick{{q}_{2} :  } & \gate{\mathrm{H}} & \qw & \qw & \control\qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \control\qw & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \meter & \qw & \qw\\
+        \nghost{\mathrm{{meas} :  }} & \lstick{\mathrm{{meas} :  }} & \lstick{/_{_{3}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-3,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-2,0] & \dstick{_{_{\hspace{0.0em}2}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Algorithme de Grover avec 3 entrées}
+    \label{fig:grov-3}
+\end{figure}
+Pour le parallèle avec l'ordinateur classique, on va essayer de trouver les sorties escomptées.
+On voit que ce coup-ci, l'oracle est composé de deux $CZ$, l'une entre les deux premières entrées,
+et l'autre entre la première et la troisième.
+De fait, si seuls les deux premiers qubits sont à 1, alors le premier $CZ$ va inverser la phase
+et cela devient un résultat possible.
+De même pour la seconde porte, et finalement si les deux agissent en même temps, alors les
+effets s'annulent et on se retrouve avec une phase inchangée, ce qui fait que ce n'est pas
+une des solutions possibles.\\
+De fait, on en conclut que l'on devrait mesurer soit $\ket{011}$, soit $\ket{101}$.
+De plus, on peut calculer $t = \lfloor \frac{\pi}{4} \sqrt{\frac{N}{m}} \rfloor = 1$
+avec $N = 2^3$ et $m=2$.
+La simulation du circuit nous donne bien les deux résultats désirés.
+\begin{figure}[H]
+    \centering
+    \import{images/algo/grover}{grover_3bit.tex}
+    \caption{Mesure de l'algorithme de Grover avec 3 entrées}
+    \label{fig:grov-3-sim}
+\end{figure}
+
+\subsection{4 entrées}\label{subsec:4-entrees}
+
+Pour celui à 4 entrées, ça se complique.
+Considérons le circuit suivant, qui a un oracle dont on ne connait pas le nombre de solutions.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{1.0}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{H}} \barrier[0em]{3} & \qw & \ctrl{1} & \ctrl{2} & \ctrl{3} \barrier[0em]{3} & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} \barrier[0em]{3} & \qw \barrier[0em]{3} & \qw & \meter & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{H}} & \qw & \control\qw & \qw & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{2} :  } & \lstick{{q}_{2} :  } & \gate{\mathrm{H}} & \qw & \qw & \control\qw & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw\\
+        \nghost{{q}_{3} :  } & \lstick{{q}_{3} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \control\qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \control\qw & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw\\
+        \nghost{\mathrm{{meas} :  }} & \lstick{\mathrm{{meas} :  }} & \lstick{/_{_{4}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-4,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-3,0] & \dstick{_{_{\hspace{0.0em}2}}} \cw \ar @{<=} [-2,0] & \dstick{_{_{\hspace{0.0em}3}}} \cw \ar @{<=} [-1,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Algorithme de Grover avec 4 entrées}
+    \label{fig:grov-4}
+\end{figure}
+Rappelons-nous que l'application $U_s U_f$ fait une rotation d'un angle de $2 \theta$.
+Or, on sait retrouver l'angle d'un opérateur en utilisant l'estimation de phase.
+De fait, en créant un circuit avec cette opération que l'on contrôle, on peut connaitre
+l'angle de rotation provoqué par l'opérateur~\cite{wiki:quant-count}.
+\begin{figure}[H]
+    \centering
+    \[\shorthandoff{!}
+    \scalebox{0.7}{
+        \Qcircuit @C=1.0em @R=0.2em @!R { \\
+        \nghost{{q}_{0} :  } & \lstick{{q}_{0} :  } & \gate{\mathrm{H}} & \ctrl{5} & \qw & \qw & \qw & \qw & \multigate{4}{\mathrm{QFT^\dagger}}_<<<{0} & \meter & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{1} :  } & \lstick{{q}_{1} :  } & \gate{\mathrm{H}} & \qw & \ctrl{4} & \qw & \qw & \qw & \ghost{\mathrm{QFT^\dagger}}_<<<{1} & \qw & \meter & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{2} :  } & \lstick{{q}_{2} :  } & \gate{\mathrm{H}} & \qw & \qw & \ctrl{3} & \qw & \qw & \ghost{\mathrm{QFT^\dagger}}_<<<{2} & \qw & \qw & \meter & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{3} :  } & \lstick{{q}_{3} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \ctrl{2} & \qw & \ghost{\mathrm{QFT^\dagger}}_<<<{3} & \qw & \qw & \qw & \meter & \qw & \qw & \qw\\
+        \nghost{{q}_{4} :  } & \lstick{{q}_{4} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \ctrl{1} & \ghost{\mathrm{QFT^\dagger}}_<<<{4} & \qw & \qw & \qw & \qw & \meter & \qw & \qw\\
+        \nghost{{q}_{5} :  } & \lstick{{q}_{5} :  } & \gate{\mathrm{H}} & \multigate{3}{\mathrm{Grover\string^1}}_<<<{0} & \multigate{3}{\mathrm{Grover\string^2}}_<<<{0} & \multigate{3}{\mathrm{Grover\string^4}}_<<<{0} & \multigate{3}{\mathrm{Grover\string^8}}_<<<{0} & \multigate{3}{\mathrm{Grover\string^16}}_<<<{0} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{6} :  } & \lstick{{q}_{6} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{Grover\string^1}}_<<<{1} & \ghost{\mathrm{Grover\string^2}}_<<<{1} & \ghost{\mathrm{Grover\string^4}}_<<<{1} & \ghost{\mathrm{Grover\string^8}}_<<<{1} & \ghost{\mathrm{Grover\string^16}}_<<<{1} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{7} :  } & \lstick{{q}_{7} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{Grover\string^1}}_<<<{2} & \ghost{\mathrm{Grover\string^2}}_<<<{2} & \ghost{\mathrm{Grover\string^4}}_<<<{2} & \ghost{\mathrm{Grover\string^8}}_<<<{2} & \ghost{\mathrm{Grover\string^16}}_<<<{2} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{{q}_{8} :  } & \lstick{{q}_{8} :  } & \gate{\mathrm{H}} & \ghost{\mathrm{Grover\string^1}}_<<<{3} & \ghost{\mathrm{Grover\string^2}}_<<<{3} & \ghost{\mathrm{Grover\string^4}}_<<<{3} & \ghost{\mathrm{Grover\string^8}}_<<<{3} & \ghost{\mathrm{Grover\string^16}}_<<<{3} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+        \nghost{\mathrm{{c} :  }} & \lstick{\mathrm{{c} :  }} & \lstick{/_{_{5}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-9,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-8,0] & \dstick{_{_{\hspace{0.0em}2}}} \cw \ar @{<=} [-7,0] & \dstick{_{_{\hspace{0.0em}3}}} \cw \ar @{<=} [-6,0] & \dstick{_{_{\hspace{0.0em}4}}} \cw \ar @{<=} [-5,0] & \cw & \cw\\
+        \\ }}
+    \]
+    \caption{Recherche de l'angle de rotation de l'opérateur $U_s U_f$}
+    \label{fig:grov-4-num}
+\end{figure}
+En voyant les résultats de la simulation, on peut voir que l'angle ne semble pas être une
+valeur que l'on peut calculer exactement avec peu de ressources.
+\begin{figure}[H]
+    \centering
+    \import{images/algo/grover}{grover_4bit_angle.tex}
+    \caption{Simulation de l'estimation de phase de l'opérateur de Grover}
+    \label{fig:grov-4-est}
+\end{figure}
+Néanmoins ces résultats sont suffisants pour pouvoir calculer le bon nombre de solutions
+possibles.
+On observe donc que le nombre le plus mesuré est 27 (11011 en base 2).
+La fraction de l'angle est donc $\frac{27}{2^5}$, que l'on multiplie par $2 \pi$ pour obtenir
+l'angle de rotation de l'opérateur $U_s U_f$, i.e. $2 \theta = \frac{27}{2^5} 2 \pi \approx 5.3$.
+Finalement, pour obtenir le nombre de solutions $m$, on reprend la figure~\ref{fig:step1-geo}.
+On constate alors que par définition, $\ket{s} = \sqrt{\frac{m}{N}} \ket{w} + \sqrt{1 - \frac{m}{N}} \ket{s'}$,
+de plus $\ket{s} = \sin \theta \ket{w} + \cos \theta \ket{s'}$.
+Ainsi nous pouvons conclure que $\braket{s'}{s} = \sqrt{1 - \frac{m}{N}} = \cos \theta \Leftrightarrow m = N \sin^2 \theta$.
+De la valeur de $2 \theta$ calculée précédement, on peut donc déduire que $m \approx 3.6$ d'où
+l'on peut penser que le nombre de solutions est 4.\\
+De cette conclusion, le calcul du nombre d'itérations de l'algorithme de Grover est donc
+$t = \lfloor \frac{\pi}{4} \sqrt{\frac{2^4}{4}} \rfloor = 1$.
+En faisant une simulation du circuit présenté en figure~\ref{fig:grov-4}, on obtient
+bien 4 solutions différentes, qui sont bien les 4 solutions de l'oracle utilisé.
+\begin{figure}[H]
+    \centering
+    \import{images/algo/grover}{grover_4bit.tex}
+    \caption{Résultats du circuit~\ref{fig:grov-4}}
+    \label{fig:grov-4-sim}
+\end{figure}
+
+\subsection{Différence de complexité}\label{subsec:difference-de-complexite}
+
+On voit donc que l'algorithme de Grover permet de trouver une solution à un problème
+de manière plus efficace que de manière classique.
+Il y a tout d'abord le nombre d'opérations à effectuer qui est réduit, de manière classique
+en moyenne la moitié des possibilités doivent être testées donc $2^{n-1}$ opérations,
+alors que cette méthode permet de le faire en $2^{\frac{n}{2}}$, ce qui est non-négligeable
+quand $n$ est grand.
+On peut également noter d'autres avantages.
+Par exemple, connaître le nombre de solutions n'est pas possible de manière classique
+à moins de tester toutes les solutions possibles, alors que via ce que l'on a vu,
+on peut le faire avec un protocole standard avec un ordinateur quantique.
+
+\section{Résolution d'un sudoku}\label{sec:resolution-d'un-sudoku}
+
+Un autre exemple, assez récréatif, est la résolution d'un sudoku.
+En effet, un sudoku est un problème de satisfiabilité, et donc résoluble par l'algorithme
+de Grover.
+Prenons la grille suivante, qui est un sudoku trivial pour illustrer le principe.
+\begin{figure}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{1} & \textit{2} & \textit{3} \\
+        \hline
+        \textbf{2} & \textit{3} & \textbf{1} \\
+        \hline
+        \textit{3} & \textbf{1} & \textit{2} \\
+        \hline
+    \end{tabular}
+    \caption{Sudoku à résoudre (réponses attendues en italique)}
+    \label{fig:sudoku}
+\end{figure}
+Notons que la grille est choisie de sorte à éviter d'encoder chaque nombre sur 2 bits,
+car tous les 1 sont placés, ce qui serait au-delà des ressources disponibles, car cela
+demanderait soit un superordinateur, soit un ordinateur quantique à la pointe de la technologie.\\ \\
+On va donc établir une convention pour encoder les nombres : les 2 vont apparaître comme des
+0 et les 3 comme des 1 dans la sortie.
+De plus, la sortie va donner les nombres par ligne de haut en bas et de gauche à droite, soit
+le bit de gauche de la sortie correspond au nombre en haut à gauche de la grille.\\ \\
+L'initialisation du circuit se fait en appliquant des portes d'Hadamard sur tous les qubits
+qui encodent les nombres à trouver.
+Notons également le dernier qubit qui est initialisé à $\ket{-}$ afin de créer un retour
+de phase permettant de marquer les solutions valides et donc de créer l'oracle.\\ \\
+L'oracle est constitué de porte $CX$ qui vérifient les différentes contraintes du sudoku.
+On va donc avoir sur la première vérification de condition une $CX$ avec le qubit correspondant
+à en bas à droite de la grille, et une avec le qubit correspondant au nombre en bas à gauche.
+De fait, si les deux sont différents comme attendu, le qubit de verification sera inversé, et
+sinon il demeurera à 0.
+Nous faisons de même pour les autres contraintes, et nous obtenons donc un qubit de vérification
+par contrainte.
+Pour les cases qui dépendent de données déjà présentes dans la grille, nous initialisons le
+qubit de vérification à la valeur de la case, et nous appliquons une $CX$ avec le qubit
+qui en dépend.\\
+Pour finir, nous utilisons une porte multicontrôlée $X$ pour inverser le qubit visant à créer
+le retour de phase si tous les qubits de vérification sont à 1, ce qui correspond à une solution
+valide, puis nous réappliquons toutes les portes $CX$ précédentes pour remettre les qubits
+de vérification à 0.\\ \\
+Le diffuseur est construit de manière similaire aux précédents, outre l'implémentation de
+la porte multicontrôlée $Z$ qui est faite via une $X$ dont la cible est encadrée par des
+portes $H$.\\ \\
+Finalement, de par l'unicité des solutions du sudoku, nous savons que nous n'aurons qu'une
+seule solution, et donc il faut appliquer l'algorithme de Grover $t = \lfloor \frac{\pi}{4} \sqrt{2^5} \rfloor = 4$.
+\begin{sidewaysfigure}
+    \centering
+    \[\shorthandoff{!}
+        \scalebox{0.26}{
+            \Qcircuit @C=1.0em @R=0.2em @!R { \\
+            \nghost{{input}_{0} :  } & \lstick{{input}_{0} :  } & \gate{\mathrm{H}} & \qw \barrier[0em]{11} & \qw & \ctrl{5} & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{5} & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw \barrier[0em]{11} & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw \barrier[0em]{11} & \qw & \ctrl{5} & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{5} & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw \barrier[0em]{11} & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw \barrier[0em]{11} & \qw & \ctrl{5} & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{5} & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw \barrier[0em]{11} & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw \barrier[0em]{11} & \qw & \ctrl{5} & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{5} & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw \barrier[0em]{11} & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw \barrier[0em]{11} & \qw & \meter & \qw & \qw & \qw & \qw & \qw & \qw\\
+            \nghost{{input}_{1} :  } & \lstick{{input}_{1} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \ctrl{4} & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{4} & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \ctrl{4} & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{4} & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \ctrl{4} & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{4} & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \ctrl{4} & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{4} & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw & \qw\\
+            \nghost{{input}_{2} :  } & \lstick{{input}_{2} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \ctrl{7} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \ctrl{7} & \qw & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \ctrl{7} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \ctrl{7} & \qw & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \ctrl{7} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \ctrl{7} & \qw & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \ctrl{7} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{6} & \qw & \qw & \ctrl{7} & \qw & \qw & \qw & \qw & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw & \qw\\
+            \nghost{{input}_{3} :  } & \lstick{{input}_{3} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{3} & \qw & \qw & \ctrl{7} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{3} & \qw & \qw & \ctrl{7} & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{3} & \qw & \qw & \ctrl{7} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{3} & \qw & \qw & \ctrl{7} & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{3} & \qw & \qw & \ctrl{7} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{3} & \qw & \qw & \ctrl{7} & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{3} & \qw & \qw & \ctrl{7} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{3} & \qw & \qw & \ctrl{7} & \qw & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \qw & \ctrl{1} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw & \qw\\
+            \nghost{{input}_{4} :  } & \lstick{{input}_{4} :  } & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{5} & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{5} & \qw & \ctrl{6} & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \targ & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{5} & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{5} & \qw & \ctrl{6} & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \targ & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{5} & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{5} & \qw & \ctrl{6} & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \targ & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{5} & \qw & \ctrl{6} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{5} & \qw & \ctrl{6} & \qw & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \targ & \gate{\mathrm{H}} & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \meter & \qw & \qw\\
+            \nghost{{cond}_{0} :  } & \lstick{{cond}_{0} :  } & \qw & \qw & \qw & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{1} & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{1} & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{1} & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{1} & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+            \nghost{{cond}_{1} :  } & \lstick{{cond}_{1} :  } & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \ctrl{1} & \qw & \qw & \qw & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \ctrl{1} & \qw & \qw & \qw & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \ctrl{1} & \qw & \qw & \qw & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \ctrl{1} & \qw & \qw & \qw & \targ & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+            \nghost{{cond}_{2} :  } & \lstick{{cond}_{2} :  } & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+            \nghost{{cond}_{3} :  } & \lstick{{cond}_{3} :  } & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{1} & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{1} & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{1} & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \ctrl{1} & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+            \nghost{{cond}_{4} :  } & \lstick{{cond}_{4} :  } & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \targ & \qw & \qw & \ctrl{1} & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \targ & \qw & \qw & \ctrl{1} & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \targ & \qw & \qw & \ctrl{1} & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \targ & \qw & \qw & \ctrl{1} & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+            \nghost{{cond}_{5} :  } & \lstick{{cond}_{5} :  } & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \targ & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \targ & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \targ & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \targ & \ctrl{1} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+            \nghost{{kick} :  } & \lstick{{kick} :  } & \gate{\mathrm{X}} & \gate{\mathrm{H}} & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \targ & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw & \qw\\
+            \nghost{\mathrm{{mes} :  }} & \lstick{\mathrm{{mes} :  }} & \lstick{/_{_{5}}} \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \cw & \dstick{_{_{\hspace{0.0em}0}}} \cw \ar @{<=} [-12,0] & \dstick{_{_{\hspace{0.0em}1}}} \cw \ar @{<=} [-11,0] & \dstick{_{_{\hspace{0.0em}2}}} \cw \ar @{<=} [-10,0] & \dstick{_{_{\hspace{0.0em}3}}} \cw \ar @{<=} [-9,0] & \dstick{_{_{\hspace{0.0em}4}}} \cw \ar @{<=} [-8,0] & \cw & \cw\\
+            \\ }}
+    \]
+    \caption{Circuit de résolution du sudoku \ref{fig:sudoku}}
+    \label{fig:grov-sudoku}
+\end{sidewaysfigure}
+Ce qui nous donne après simulation des résultats presque parfaits.
+\begin{figure}[H]
+    \centering
+    \import{images/algo/grover}{sudoku_result.tex}
+    \caption{Résultat de l'algorithme de Grover pour le sudoku \ref{fig:sudoku}}
+    \label{fig:grov-sudoku-sol}
+\end{figure}
+En effet, selon les conventions que nous avons établies, la liste 01110 correspond à la
+solution attendue 23332.
