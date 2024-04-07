@@ -1,0 +1,52 @@
+% \usepackage[usenames,dvipsnames]{pstricks}
+% \usepackage{pstricks-add}
+% \usepackage{epsfig}
+% \usepackage{pst-grad} % For gradients
+% \usepackage{pst-plot} % For axes
+% \usepackage[space]{grffile} % For spaces in paths
+% \usepackage{etoolbox} % For spaces in paths
+% \makeatletter % For spaces in paths
+% \patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+% \makeatother
+% 
+\begin{figure}[H]
+\centering
+\psscalebox{0.8 0.8} % Change this value to rescale the drawing.
+{
+\begin{pspicture}(0,-6.055292)(13.83625,0.83529234)
+\definecolor{colour1}{rgb}{0.5019608,0.5019608,0.5019608}
+\definecolor{colour0}{rgb}{0.7019608,0.7019608,0.7019608}
+\definecolor{colour2}{rgb}{0.8,0.8,0.8}
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(0.48,-4.4747076)(0.54,0.14529236)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(0.48,-4.4547076)(5.1,-4.4547076)
+\psline[linecolor=colour1, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(0.5,-4.4547076)(4.84,-2.8947077)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(8.04,-4.4947076)(8.1,0.12529236)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(8.04,-4.4747076)(12.66,-4.4747076)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](8.62,-3.018633)(8.06,-4.4947076)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](9.16,-3.0047076)(8.6,-4.4807825)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](9.66,-3.0047076)(9.1,-4.4807825)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](10.22,-3.0047076)(9.66,-4.4807825)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=red, dimen=outer](10.74,-0.9647076)(10.18,-4.4947076)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](11.26,-3.038446)(10.7,-4.4947076)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](11.78,-3.0247076)(11.22,-4.4809694)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](12.34,-3.038446)(11.78,-4.4947076)
+\psrotate(1.42, -3.5947077){-38.240223}{\psarc[linecolor=black, linewidth=0.04, dimen=outer](1.42,-3.5947077){0.59}{0.7786851}{136.97614}}
+\rput[bl](12.88,-4.5347075){Élements}
+\rput[bl](8.06,0.48529235){Amplitude}
+\rput[bl](2.08,-3.3547077){$2 \theta$}
+\rput[bl](0.0,0.28529236){$\ket{w}$}
+\rput[bl](5.38,-4.6147075){$\ket{s'}$}
+\rput[bl](4.86,-2.9947076){$\ket{s}$}
+\rput[bl](7.94,-4.8547077){0}
+\rput[bl](12.22,-4.8947077){$N$}
+\rput[bl](10.28,-5){$\ket{w}$}
+\psline[linecolor=colour2, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(0.48,-4.4347076)(4.68,-6.0347075)
+\rput[bl](2.88,-0.6347076){$U_s \ket{\Psi_{t'}}= U_s U_f \ket{\Psi_t}$}
+\psline[linecolor=red, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(0.48,-4.4547076)(2.68,-0.6547077)
+\psrotate(1.795, -3.8297076){-120.99221}{\psarc[linecolor=black, linewidth=0.04, linestyle=dotted, dotsep=0.10583334cm, dimen=outer, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(1.795,-3.8297076){2.055}{67.13177}{206.08342}}
+\end{pspicture}
+}
+\caption{État après le diffuseur}
+\label{fig:step3-geo}
+\end{figure}
+

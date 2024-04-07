@@ -1,0 +1,13 @@
+\begin{algorithm}[H]
+    \caption{Calcul de $(-1)^n$}
+    \label{alg:neg-one-power}
+    \Entree{Un nombre entier $n$}
+    \Sortie{Le résultat de $(-1)^n$ : $r$}
+    $N \gets n$ \;
+    \eSi{$N \text{ est pair}$}{
+        $r \gets 1$ \;
+    }{
+        $r \gets -1$ \;
+    }
+    \Retour $r$\;
+\end{algorithm}

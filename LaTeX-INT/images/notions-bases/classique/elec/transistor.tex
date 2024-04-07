@@ -1,0 +1,42 @@
+% \usepackage[usenames,dvipsnames]{pstricks}
+% \usepackage{pstricks-add}
+% \usepackage{epsfig}
+% \usepackage{pst-grad} % For gradients
+% \usepackage{pst-plot} % For axes
+% \usepackage[space]{grffile} % For spaces in paths
+% \usepackage{etoolbox} % For spaces in paths
+% \makeatletter % For spaces in paths
+% \patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+% \makeatother
+% 
+\begin{figure}[H]
+\centering
+\psscalebox{1.0 1.0} % Change this value to rescale the drawing.
+{
+\begin{pspicture}(0,-3.2)(5.88,-0.26)
+\definecolor{colour0}{rgb}{0.8,1.0,1.0}
+\definecolor{colour1}{rgb}{1.0,0.9019608,0.7019608}
+\definecolor{colour2}{rgb}{0.8,0.8,0.8}
+\definecolor{colour3}{rgb}{0.4,0.4,0.4}
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](4.61,-2.07)(1.3,-3.2)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour1, dimen=outer](2.2,-2.07)(1.55,-2.51)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour1, dimen=outer](4.38,-2.09)(3.65,-2.53)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour2, dimen=outer](3.84,-1.62)(2.02,-2.09)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour3, dimen=outer](3.84,-1.14)(2.02,-1.65)
+\rput[bl](1.72,-2.45){+}
+\rput[bl](3.88,-2.47){+}
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(0.7,-1.07)(1.76,-2.03)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(5.28,-1.05)(4.14,-2.01)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(2.98,-0.53)(3.0,-1.03)
+\rput[bl](0.0,-0.99){Source}
+\rput[bl](4.96,-0.99){Drain}
+\rput[bl](2.48,-0.5){Grille}
+\rput[bl](2.32,-2.93){Substrat}
+\rput[bl](2.46,-2.05){Oxyde}
+\rput[bl](2.46,-1.51){Métal}
+\end{pspicture}
+}
+\caption{Transistor à effet de champ (FET)}
+\label{fig:transistor}
+\end{figure}
+

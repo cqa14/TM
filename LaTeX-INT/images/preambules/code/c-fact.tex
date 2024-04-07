@@ -1,0 +1,45 @@
+\begin{lstlisting}[language=C,label={lst:c-factorielle-10000},title={Programme de test en C},
+    escapeinside={''}]
+#include <stdio.h>
+#include <sys/time.h>
+
+unsigned long long int factorial(int n)
+{
+    unsigned long long int result = 1;
+    for (int i = 1; i <= n; i++)
+    {
+        result *= i;
+    }
+    return result;
+}
+
+int main()
+{
+    int n = 20;
+
+    struct timeval begin, end;
+    gettimeofday(&begin, 0);
+
+    for (int i = 0; i < 10000; i++)
+    {
+        factorial(n);
+    }
+
+    gettimeofday(&end, 0);
+    long seconds = end.tv_sec - begin.tv_sec;
+    long microseconds = end.tv_usec - begin.tv_usec;
+    double elapsed = (seconds + microseconds*1e-6)/10000;
+
+    printf("Factorial of %d = %llu\n", n, factorial(n));
+    printf("Time measured: %.9f seconds.\n", elapsed);
+
+    return 0;
+}
+
+''
+out :
+Factorial of 20 = 2432902008176640000
+Time measured: 0.000000019 seconds.
+
+Process finished with exit code 0
+\end{lstlisting}

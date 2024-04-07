@@ -1,0 +1,47 @@
+% \usepackage[usenames,dvipsnames]{pstricks}
+% \usepackage{pstricks-add}
+% \usepackage{epsfig}
+% \usepackage{pst-grad} % For gradients
+% \usepackage{pst-plot} % For axes
+% \usepackage[space]{grffile} % For spaces in paths
+% \usepackage{etoolbox} % For spaces in paths
+% \makeatletter % For spaces in paths
+% \patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+% \makeatother
+% 
+\begin{figure}[H]
+\centering
+\psscalebox{0.8 0.8} % Change this value to rescale the drawing.
+{
+\begin{pspicture}(0,-5.475)(15.231093,0.255)
+\definecolor{colour0}{rgb}{0.7019608,0.7019608,0.7019608}
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(0.48,-5.055)(0.54,-0.435)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(0.48,-5.035)(5.1,-5.035)
+\psline[linecolor=red, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(0.5,-5.035)(4.84,-3.475)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(8.04,-5.075)(8.1,-0.455)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(8.04,-5.055)(12.66,-5.055)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](8.62,-2.955)(8.06,-5.075)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](9.16,-2.935)(8.6,-5.055)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](9.66,-2.935)(9.1,-5.055)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](10.22,-2.935)(9.66,-5.055)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=red, dimen=outer](10.72,-2.955)(10.16,-5.075)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](11.26,-2.955)(10.7,-5.075)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](11.78,-2.935)(11.22,-5.055)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](12.34,-2.955)(11.78,-5.075)
+\psrotate(2.14, -4.735){-55.997147}{\psarc[linecolor=black, linewidth=0.04, dimen=outer](2.14,-4.735){0.32}{0.0}{128.41806}}
+\rput[bl](12.62,-3.2){$\frac{1}{\sqrt{N}}$}
+\rput[bl](13.26,-5.115){Élements}
+\rput[bl](8.06,-0.095){Amplitude}
+\rput[bl](2.68,-4.775){$\theta$}
+\rput[bl](0.0,-0.295){$\ket{w}$}
+\rput[bl](4.86,-3.575){$\ket{s} = \ket{\Psi_0}$}
+\rput[bl](5.38,-5.195){$\ket{s'}$}
+\rput[bl](7.94,-5.435){0}
+\rput[bl](12.22,-5.475){$N$}
+\rput[bl](10.3,-5.595){$\ket{w}$}
+\end{pspicture}
+}
+\caption{État après initialisation}
+\label{fig:step1-geo}
+\end{figure}
+

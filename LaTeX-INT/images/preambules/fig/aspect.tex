@@ -1,0 +1,38 @@
+% \usepackage[usenames,dvipsnames]{pstricks}
+% \usepackage{pstricks-add}
+% \usepackage{epsfig}
+% \usepackage{pst-grad} % For gradients
+% \usepackage{pst-plot} % For axes
+% \usepackage[space]{grffile} % For spaces in paths
+% \usepackage{etoolbox} % For spaces in paths
+% \makeatletter % For spaces in paths
+% \patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+% \makeatother
+% 
+\begin{figure}[H]
+\centering
+\psscalebox{0.8 0.8} % Change this value to rescale the drawing.
+{
+\begin{pspicture}(0,-4.66)(10.49,-2.46)
+\definecolor{colour3}{rgb}{1.0,0.7019608,0.4}
+\definecolor{colour4}{rgb}{0.8,1.0,1.0}
+\pscircle[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour3, dimen=outer](5.06,-3.5){0.6}
+\psline[linecolor=yellow, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(4.48,-3.5)(2.14,-3.48)
+\psline[linecolor=yellow, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(5.66,-3.54)(8.2,-3.54)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour4, dimen=outer](2.1,-2.46)(-0.5,-4.64)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=colour4, dimen=outer](11.08,-2.48)(8.28,-4.66)
+\rput[bl](-1,-2.82){+}
+\rput[bl](-1,-4.5){-}
+\rput[bl](11.24,-2.8){+}
+\rput[bl](11.24,-4.48){-}
+\rput[bl](-0.18,-3.64){Détecteur 1}
+\rput[bl](8.54,-3.66){Détecteur 2}
+\rput[bl](4.5,-2.82){Source}
+\rput[bl](5.94,-4.08){particule 2}
+\rput[bl](2.6,-4.0){particule 1}
+\end{pspicture}
+}
+\caption{Schéma d'un test EPR idéal}
+\label{fig:aspect}
+\end{figure}
+

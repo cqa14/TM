@@ -1,0 +1,46 @@
+% \usepackage[usenames,dvipsnames]{pstricks}
+% \usepackage{pstricks-add}
+% \usepackage{epsfig}
+% \usepackage{pst-grad} % For gradients
+% \usepackage{pst-plot} % For axes
+% \usepackage[space]{grffile} % For spaces in paths
+% \usepackage{etoolbox} % For spaces in paths
+% \makeatletter % For spaces in paths
+% \patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+% \makeatother
+% 
+\begin{figure}[H]
+\centering
+\psscalebox{1.0 1.0} % Change this value to rescale the drawing.
+{
+\begin{pspicture}(0,-5.7100005)(12.9800205,1.7100405)
+\psrotate(2.18, 0.27002046){-41.150562}{\pscircle[linecolor=white, linewidth=0.04, fillstyle=vlines, hatchwidth=0.028222222, hatchangle=0.0, hatchsep=0.2612, dimen=outer](2.18,0.27002046){1.44}}
+\pscircle[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=black, dimen=outer](2.18,0.25002044){0.22}
+\psrotate(11.3, 0.21002045){-41.150562}{\pscircle[linecolor=white, linewidth=0.04, fillstyle=vlines, hatchwidth=0.028222222, hatchangle=0.0, hatchsep=0.2612, dimen=outer](11.3,0.21002045){1.44}}
+\pscircle[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=black, dimen=outer](11.3,0.19002044){0.22}
+\psrotate(2.38, -4.2699795){-41.150562}{\pscircle[linecolor=white, linewidth=0.04, fillstyle=vlines, hatchwidth=0.028222222, hatchangle=0.0, hatchsep=0.2612, dimen=outer](2.38,-4.2699795){1.44}}
+\pscircle[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=black, dimen=outer](2.38,-4.2899795){0.22}
+\psrotate(11.54, -3.7099795){-41.150562}{\pscircle[linecolor=white, linewidth=0.04, fillstyle=vlines, hatchwidth=0.028222222, hatchangle=0.0, hatchsep=0.2612, dimen=outer](11.54,-3.7099795){1.44}}
+\pscircle[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=black, dimen=outer](11.54,-3.7299795){0.22}
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(4.12,1.1900204)(2.9,0.8300204)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(3.48,-0.9099796)(2.36,0.070020445)
+\rput[bl](4.3,1.2700205){Électron}
+\rput[bl](3.68,-1.0){Proton}
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(1.82,0.13002044)(1.8,0.5900204)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(2.2,0.87002045)(2.22,1.4300205)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(2.06,-4.3899794)(2.02,-3.9099796)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(2.64,-3.3099794)(2.64,-3.7699795)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(10.92,0.45002043)(10.94,-0.0099795535)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(11.88,0.95002043)(11.88,1.4700204)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(11.16,-3.4099796)(11.16,-3.8699796)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(12.22,-2.6699796)(12.22,-3.2499795)
+\rput[bl](-1.0,0.19002044){$\ket{++}$}
+\rput[bl](8.0,0.19002044){$\ket{+-}$}
+\rput[bl](-1.0,-4.2899795){$\ket{-+}$}
+\rput[bl](8.0,-3.9299796){$\ket{--}$}
+\end{pspicture}
+}
+\caption{États de base de l'état fondamental de l'atome d'hydrogène}
+\label{fig:hydrogen}
+\end{figure}
+

@@ -1,0 +1,49 @@
+% \usepackage[usenames,dvipsnames]{pstricks}
+% \usepackage{pstricks-add}
+% \usepackage{epsfig}
+% \usepackage{pst-grad} % For gradients
+% \usepackage{pst-plot} % For axes
+% \usepackage[space]{grffile} % For spaces in paths
+% \usepackage{etoolbox} % For spaces in paths
+% \makeatletter % For spaces in paths
+% \patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+% \makeatother
+% 
+\begin{figure}[H]
+\centering
+\psscalebox{0.8 0.8} % Change this value to rescale the drawing.
+{
+\begin{pspicture}(0,-4.1775)(17.043,2.2875)
+\definecolor{colour1}{rgb}{0.6,0.6,0.6}
+\rput(0.012999496,-1.9475){\psplot[linecolor=black, linewidth=0.04, plotstyle=curve, plotpoints=50, xunit=0.01, yunit=0.5, polarplot=false]{1.0}{900.0}{x sin}}
+\psframe[linecolor=black, linewidth=0.04, linestyle=dotted, dotsep=0.10583334cm, dimen=outer](7.4129996,-1.7475)(6.8529997,-2.3075)
+\psframe[linecolor=black, linewidth=0.04, linestyle=dotted, dotsep=0.10583334cm, dimen=outer](18,2.2875)(10,-4.1525)
+\psline[linecolor=black, linewidth=0.04, linestyle=dotted, dotsep=0.10583334cm](7.4129996,-1.7675)(10,2.2525)
+\psline[linecolor=black, linewidth=0.04, linestyle=dotted, dotsep=0.10583334cm](7.4129996,-2.3075)(10,-4.1475)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(11.313,-3.0075)(16.213,-3.0075)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(11.613,-3.3475)(11.613,1.6725)
+\rput[bl](11.332999,-3.3675){$0$}
+\psbezier[linecolor=black, linewidth=0.04](11.973,-2.3075)(13.933,-1.5875)(14.712999,-1.0075)(15.532999,-0.1075)
+\psline[linecolor=green, linewidth=0.04, linestyle=dashed, dash=0.17638889cm 0.10583334cm](12.952999,-1.9475)(12.973,-3.0075)
+\psline[linecolor=green, linewidth=0.04, linestyle=dashed, dash=0.17638889cm 0.10583334cm](14.153,-1.9675)(11.613,-1.9875)
+\psline[linecolor=green, linewidth=0.04, linestyle=dashed, dash=0.17638889cm 0.10583334cm](14.733,-0.8875)(14.712999,-2.9675)
+\psline[linecolor=green, linewidth=0.04, linestyle=dashed, dash=0.17638889cm 0.10583334cm](16.373,-0.8675)(11.613,-0.9075)
+\rput[bl](12.952999,-3.4){$x$}
+\rput[bl](11.193,-2.1075){$y$}
+\rput[bl](10.3,-1.1075){$y+\dd{y}$}
+\rput[bl](14.613,-3.4){$x+\dd{x}$}
+\psline[linecolor=red, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(12.853,-1.9875)(11.693,-2.5475)
+\psline[linecolor=red, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(14.733,-0.8875)(15.973,0.0325)
+\psline[linecolor=red, linewidth=0.04, linestyle=dashed, dash=0.17638889cm 0.10583334cm](12.853,-1.9875)(13.792999,-1.6075)
+\psarc[linecolor=colour1, linewidth=0.04, dimen=outer](13.592999,-1.8675){0.2}{325.30484}{84.289406}
+\psarc[linecolor=colour1, linewidth=0.04, dimen=outer](15.153,-0.7275){0.2}{325.30484}{84.289406}
+\rput[bl](13.792999,-1.9675){$\alpha (x,t)$}
+\rput[bl](15.353,-0.7675){$\alpha (x+\dd{x},t)$}
+\rput[bl](11.853,-2.9){$\vec{T_A}$}
+\rput[bl](15.792999,0.0725){$\vec{T_B}$}
+\end{pspicture}
+}
+\caption{Onde sur une corde et forces considérées}
+\label{fig:onde-corde}
+\end{figure}
+

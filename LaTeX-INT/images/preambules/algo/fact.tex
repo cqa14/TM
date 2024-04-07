@@ -1,0 +1,15 @@
+\begin{algorithm}[H]
+    \caption{Factorielle}
+    \label{alg:factorielle}
+
+    \Entree{Un nombre entier $n$}
+    \Sortie{La factorielle de $n$ : $n!=r$}
+    $N \gets n$ \;
+    $r \gets 1$ \;
+    $i \gets 1$ \;
+    \Tq{$i \leq N$}{
+        $r \gets r \times i$ \;
+        $i \gets i + 1$ \;
+    }
+    \Retour $r$\;
+\end{algorithm}

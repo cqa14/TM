@@ -1,0 +1,179 @@
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Nom & Symbole & Table de vérité \\
+        \hline
+        AND &
+        \begin{tikzpicture}[
+        %Environment config
+            font=\sffamily,
+            thick,
+        %Environment styles
+            GateCfg/.style={
+                logic gate inputs={normal,normal,normal},
+                draw,
+                scale=1
+            },
+            baseline=(current bounding box.center)
+        ]
+            % Draw two inputs A and B and the AND gate to an output Q
+            \node[and gate US, GateCfg] (and) at (0, 0) {};
+            \draw (and.input 1) -- ++(-.5, 0) node[left] {$A$};
+            \draw (and.input 3) -- ++(-.5, 0) node[left] {$B$};
+            \draw (and.output) -- ++(.5, 0) node[right] {$Q$};
+        \end{tikzpicture} &
+        \begin{tabular}{c|c||c}
+            $A$ & $B$ & $Q$ \\
+            \hline
+            0 & 0 & 0 \\
+            0 & 1 & 0 \\
+            1 & 0 & 0 \\
+            1 & 1 & 1 \\
+        \end{tabular} \\
+        \hline
+        OR &
+        \begin{tikzpicture}[
+        %Environment config
+            font=\sffamily,
+            thick,
+        %Environment styles
+            GateCfg/.style={
+                logic gate inputs={normal,normal,normal},
+                draw,
+                scale=1
+            },
+            baseline=(current bounding box.center)
+        ]
+            % Draw two inputs A and B and the OR gate to an output Q
+            \node[or gate US, GateCfg] (or) at (0, 0) {};
+            \draw (or.input 1) -- ++(-.5, 0) node[left] {$A$};
+            \draw (or.input 3) -- ++(-.5, 0) node[left] {$B$};
+            \draw (or.output) -- ++(.5, 0) node[right] {$Q$};
+        \end{tikzpicture} &
+        \begin{tabular}{c|c||c}
+            $A$ & $B$ & $Q$ \\
+            \hline
+            0 & 0 & 0 \\
+            0 & 1 & 1 \\
+            1 & 0 & 1 \\
+            1 & 1 & 1 \\
+        \end{tabular} \\
+        \hline
+        XOR &
+        \begin{tikzpicture}[
+        %Environment config
+            font=\sffamily,
+            thick,
+        %Environment styles
+            GateCfg/.style={
+                logic gate inputs={normal,normal,normal},
+                draw,
+                scale=1.5
+            },
+            baseline=(current bounding box.center)
+        ]
+            % Draw two inputs A and B and the XOR gate to an output Q
+            \node[xor gate US, GateCfg] (xor) at (0, 0) {};
+            \draw (xor.input 1) -- ++(-.5, 0) node[left] {$A$};
+            \draw (xor.input 2) -- ++(-.5, 0) node[left] {$B$};
+            \draw (xor.output) -- ++(.5, 0) node[right] {$Q$};
+        \end{tikzpicture} &
+        \begin{tabular}{c|c||c}
+            $A$ & $B$ & $Q$ \\
+            \hline
+            0 & 0 & 0 \\
+            0 & 1 & 1 \\
+            1 & 0 & 1 \\
+            1 & 1 & 0 \\
+        \end{tabular} \\
+        \hline
+        \hline
+        NAND &
+        \begin{tikzpicture}[
+        %Environment config
+            font=\sffamily,
+            thick,
+        %Environment styles
+            GateCfg/.style={
+                logic gate inputs={normal,normal,normal},
+                draw,
+                scale=1
+            },
+            baseline=(current bounding box.center)
+        ]
+            % Draw two inputs A and B and the NAND gate to an output Q
+            \node[nand gate US, GateCfg] (nand) at (0, 0) {};
+            \draw (nand.input 1) -- ++(-.5, 0) node[left] {$A$};
+            \draw (nand.input 3) -- ++(-.5, 0) node[left] {$B$};
+            \draw (nand.output) -- ++(.5, 0) node[right] {$Q$};
+        \end{tikzpicture} &
+        \begin{tabular}{c|c||c}
+            $A$ & $B$ & $Q$ \\
+            \hline
+            0 & 0 & 1 \\
+            0 & 1 & 1 \\
+            1 & 0 & 1 \\
+            1 & 1 & 0 \\
+        \end{tabular} \\
+        \hline
+        NOR &
+        \begin{tikzpicture}[
+        %Environment config
+            font=\sffamily,
+            thick,
+        %Environment styles
+            GateCfg/.style={
+                logic gate inputs={normal,normal,normal},
+                draw,
+                scale=1
+            },
+            baseline=(current bounding box.center)
+        ]
+            % Draw two inputs A and B and the NOR gate to an output Q
+            \node[nor gate US, GateCfg] (nor) at (0, 0) {};
+            \draw (nor.input 1) -- ++(-.5, 0) node[left] {$A$};
+            \draw (nor.input 3) -- ++(-.5, 0) node[left] {$B$};
+            \draw (nor.output) -- ++(.5, 0) node[right] {$Q$};
+        \end{tikzpicture} &
+        \begin{tabular}{c|c||c}
+            $A$ & $B$ & $Q$ \\
+            \hline
+            0 & 0 & 1 \\
+            0 & 1 & 0 \\
+            1 & 0 & 0 \\
+            1 & 1 & 0 \\
+        \end{tabular} \\
+        \hline
+        XNOR &
+        \begin{tikzpicture}[
+        %Environment config
+            font=\sffamily,
+            thick,
+        %Environment styles
+            GateCfg/.style={
+                logic gate inputs={normal,normal,normal},
+                draw,
+                scale=1.5
+            },
+            baseline=(current bounding box.center)
+        ]
+            % Draw two inputs A and B and the XNOR gate to an output Q
+            \node[xnor gate US, GateCfg] (xnor) at (0, 0) {};
+            \draw (xnor.input 1) -- ++(-.5, 0) node[left] {$A$};
+            \draw (xnor.input 2) -- ++(-.5, 0) node[left] {$B$};
+            \draw (xnor.output) -- ++(.5, 0) node[right] {$Q$};
+        \end{tikzpicture} &
+        \begin{tabular}{c|c||c}
+            $A$ & $B$ & $Q$ \\
+            \hline
+            0 & 0 & 1 \\
+            0 & 1 & 0 \\
+            1 & 0 & 0 \\
+            1 & 1 & 1 \\
+        \end{tabular} \\
+        \hline
+    \end{tabular}
+    \caption{Résumé des opérations logiques sur deux entrées}
+    \label{tab:two-in-gate-classic}
+\end{table}

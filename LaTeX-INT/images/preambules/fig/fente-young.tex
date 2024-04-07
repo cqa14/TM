@@ -1,0 +1,38 @@
+% \usepackage[usenames,dvipsnames]{pstricks}
+% \usepackage{pstricks-add}
+% \usepackage{epsfig}
+% \usepackage{pst-grad} % For gradients
+% \usepackage{pst-plot} % For axes
+% \usepackage[space]{grffile} % For spaces in paths
+% \usepackage{etoolbox} % For spaces in paths
+% \makeatletter % For spaces in paths
+% \patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+% \makeatother
+% 
+\begin{figure}[H]
+\centering
+\psscalebox{0.6 0.6} % Change this value to rescale the drawing.
+{
+\begin{pspicture}(0,-7.110007)(13.690191,3.5302057)
+\definecolor{colour0}{rgb}{0.9019608,0.5019608,0.3019608}
+\pscircle[linecolor=colour0, linewidth=0.04, fillstyle=solid,fillcolor=colour0, dimen=outer](0.52,-1.6198938){0.18}
+\rput[bl](0.0,-1.2998939){Source}
+\psline[linecolor=black, linewidth=0.04](6.1,3.5201063)(6.1,-0.49989378)
+\psline[linecolor=black, linewidth=0.04](6.1,-0.9598938)(6.1,-3.0398939)
+\psline[linecolor=black, linewidth=0.04](6.1,-3.519894)(6.1,-7.0998936)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(4.24,0.6201062)(5.94,-0.8198938)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(4.24,0.6001062)(5.98,-3.2198937)
+\rput[bl](3.38,1.0401062){Fentes}
+\pspolygon[linecolor=black, linewidth=0.04](10.34,2.12)(10.34,-4.3)(13.54,-7)(13.54,0.58)
+\psline[linecolor=yellow, linewidth=0.274](10.94,0.46)(12.72,-0.78)
+\psline[linecolor=yellow, linewidth=0.274](10.94,-0.46)(12.72,-1.7)
+\psline[linecolor=yellow, linewidth=0.274](10.94,-1.46)(12.72,-2.7)
+\psline[linecolor=yellow, linewidth=0.274](10.94,-2.46)(12.72,-3.7)
+\psline[linecolor=yellow, linewidth=0.274](10.94,-3.46)(12.72,-4.7)
+\rput[bl](11.28,1.9801062){Écran}
+\end{pspicture}
+}
+\caption{Schéma de l'expérience des fentes de Young}
+\label{fig:fente-young}
+\end{figure}
+

@@ -1,0 +1,20 @@
+\begin{algorithm}[H]
+    \caption{Recherche dichotomique}\label{alg:maximum-ord}
+    \Entree{Liste $L$ ordonnée, nombre $n$}
+    \Sortie{Position de $n$ dans $L$, ou $-1$ si $n$ n'est pas dans $L$}
+    $i \leftarrow 0$\;
+    $j \leftarrow |L|$\;
+    \Tq{$i < j$}{
+        $m \leftarrow \lfloor \frac{i+j}{2} \rfloor$\;
+        \Si{$L[m] < n$}{
+            $i \leftarrow m+1$\;
+        }
+        \SinonSi{$L[m] > n$}{
+            $j \leftarrow m$\;
+        }
+        \Sinon{
+            \Retour{$m$}\;
+        }
+    }
+    \Retour{$-1$}\;
+\end{algorithm}

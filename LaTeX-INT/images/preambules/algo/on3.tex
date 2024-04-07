@@ -1,0 +1,15 @@
+\begin{algorithm}[H]
+    \caption{Produit matriciel naïf}
+    \label{alg:naive-matrix-product}
+    \Entree{Deux matrices carrées $A$ et $B$ de taille $n$}
+    \Sortie{Le produit matriciel $C$ de $A$ et $B$}
+    \Pour{$i \gets 1 \textbf{ à } n$}{
+        \Pour{$j \gets 1 \textbf{ à } n$}{
+            $C[i,j] \gets 0$ \;
+            \Pour{$k \gets 1 \textbf{ à } n$}{
+                $C[i,j] \gets C[i,j] + A[i,k] \times B[k,j]$ \;
+            }
+        }
+    }
+    \Retour $C$\;
+\end{algorithm}

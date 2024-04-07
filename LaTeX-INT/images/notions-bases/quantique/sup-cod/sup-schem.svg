@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="windows-1252"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="103 -0.5 649.5 352.5" xmlns:latexdraw="http://latexdraw.sourceforge.net/namespaces/latexdraw" version="1.1" baseProfile="full">
+    <g>
+        <g latexdraw:type="bezierCurve" id="id759996422">
+            <path d="M 181.0 267.8633540372666 C 199.24609938707113 298.86024098726216 210.24775603996073 256.0841212964759 222.2535046728982 257.045548654244 C 234.25925330583223 258.0069760120123 239.45521153660349 294.43477514875383 258.28504672896986 276.71428571428646 C 277.11488192133737 258.99379627981733 350.18682339929137 143.43658263727175 404.5 141.0" stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="bezierCurve" id="id1060794747">
+            <path d="M 181.0 267.8633540372666 C 207.09223887094004 237.88539052470315 207.36094504815264 278.1491729311963 221.73130841121548 280.1563146997927 C 236.1016717742778 282.1634564683893 238.9462108335575 257.0624091582432 253.06308411214846 258.0289855072481 C 267.17995739073854 258.9955618562493 349.70798018549647 405.5568312095887 631.3668224299049 292.5" stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="square" id="id2010108801">
+            <rect x="404.0" y="111.0" width="48.0" height="48.0" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="none"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1838506687">
+            <rect x="413.0" y="97.0" width="6.0" height="13.0" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="none"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1852582705">
+            <rect x="435.0" y="96.5" width="5.5" height="13.5" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="none"/>
+        </g>
+        <g latexdraw:type="bezierCurve" id="id1987976653">
+            <path d="M 452.0 139.0 C 503.0 128.0 523.0 266.0 634.0 266.0" stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="square" id="id1214358179">
+            <rect x="632.0" y="252.0" width="54.0" height="54.0" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="none"/>
+        </g>
+        <g latexdraw:type="arc" id="id538580195">
+            <path d="M 679.5 288.75 A 19.25 19.25 0.0 0 0 641.040807960158 287.49722660609723" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1094303462">
+            <polyline points="672.0,262.0 659.0,286.0 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1570034939">
+            <polyline points="151.50526315789455,271.5368421052634 142.0,289.1894736842102 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id436405590">
+            <polyline points="151.50526315789455,271.98947368421085 160.10526315789426,291.0 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1158161282">
+            <polyline points="151.05263157894709,273.8000000000007 152.86315789473696,233.9684210526326 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id831346844">
+            <polyline points="151.50526315789455,245.73684210526352 142.9052631578949,257.0526315789481 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id738872672">
+            <polyline points="152.41052631578947,245.73684210526352 161.01052631578915,258.8631578947372 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="circle" id="id220714628">
+            <circle cx="152.97631578947374" cy="223.6710526315798" r="9.523684210526255" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="none"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1942581448">
+            <polyline points="467.9505813953489,80.625 458.0,99.10465116279053 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1757815129">
+            <polyline points="467.9505813953489,81.09883720930256 476.95348837209355,101.0 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1054454452">
+            <polyline points="467.47674418604674,82.99418604651181 469.3720930232558,41.296511627907044 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id841900360">
+            <polyline points="467.9505813953489,53.61627906976733 458.9476744186052,65.46220930232566 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id173611253">
+            <polyline points="468.89825581395326,53.61627906976733 477.90116279069736,67.35755813953469 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="circle" id="id1405893646">
+            <circle cx="469.49055232558226" cy="30.51671511627908" r="10.016715116279642" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="none"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1387243553">
+            <polyline points="720.5052631578945,288.5368421052634 711.0,306.1894736842102 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id972874410">
+            <polyline points="720.5052631578945,288.98947368421085 729.1052631578942,308.0 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id665582459">
+            <polyline points="720.0526315789471,290.8000000000007 721.863157894737,250.9684210526326 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1625304915">
+            <polyline points="720.5052631578945,262.7368421052635 711.9052631578949,274.0526315789481 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1335983566">
+            <polyline points="721.4105263157894,262.7368421052635 730.0105263157891,275.8631578947372 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="circle" id="id286666530">
+            <circle cx="721.9763157894738" cy="240.6710526315797" r="9.523684210526255" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id274531104" fill="black" latexdraw:position="bl">
+            <text x="123.0" y="315.0">Charlie crée l'intrication</text>
+        </g>
+        <g latexdraw:type="text" id="id1184055445" fill="black" latexdraw:position="bl">
+            <text x="243.0" y="93.0">Alice encode son message</text>
+        </g>
+        <g latexdraw:type="text" id="id1395714534" fill="black" latexdraw:position="bl">
+            <text x="606.0" y="332.0">Bob décode le message</text>
+        </g>
+    </g>
+    <defs/>
+    <metadata>
+        <latexdraw:metadata>
+            <latexdraw:centreHoriz>false</latexdraw:centreHoriz>
+            <latexdraw:positionVert/>
+            <latexdraw:zoom>1.0</latexdraw:zoom>
+            <latexdraw:vpx>0.5</latexdraw:vpx>
+            <latexdraw:vpy>0.4</latexdraw:vpy>
+        </latexdraw:metadata>
+    </metadata>
+</svg>

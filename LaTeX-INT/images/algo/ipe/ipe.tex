@@ -1,0 +1,56 @@
+% This file was created with tikzplotlib v0.10.1.
+\begin{tikzpicture}
+
+\definecolor{cornflowerblue100143255}{RGB}{100,143,255}
+\definecolor{darkgray176}{RGB}{176,176,176}
+
+\begin{groupplot}[group style={group size=2 by 1}]
+\nextgroupplot[
+height=4cm,
+tick align=outside,
+tick pos=left,
+width=4cm,
+x grid style={darkgray176},
+xmin=-0.275, xmax=0.275,
+xtick style={color=black},
+xtick={0},
+xticklabel style={rotate=70.0},
+xticklabels={001},
+y grid style={darkgray176},
+ymin=0, ymax=1126.4,
+ytick style={color=black}
+]
+\draw[draw=none,fill=cornflowerblue100143255] (axis cs:-0.25,0) rectangle (axis cs:0.25,1024);
+\draw (axis cs:0,1075.2) node[
+  scale=0.5,
+  anchor=south,
+  text=black,
+  rotate=0.0
+]{1024};
+
+\nextgroupplot[
+height=4cm,
+tick align=outside,
+tick pos=left,
+width=4cm,
+x grid style={darkgray176},
+xmin=-0.275, xmax=0.275,
+xtick style={color=black},
+xtick={0},
+xticklabel style={rotate=70.0},
+xticklabels={0.125},
+y grid style={darkgray176},
+ymajorgrids,
+ymin=0, ymax=1126.4,
+yticklabels={,,}
+]
+\draw[draw=none,fill=cornflowerblue100143255] (axis cs:-0.25,0) rectangle (axis cs:0.25,1024);
+\draw (axis cs:0,1075.2) node[
+  scale=0.5,
+  anchor=south,
+  text=black,
+  rotate=0.0
+]{1024};
+\end{groupplot}
+
+\end{tikzpicture}

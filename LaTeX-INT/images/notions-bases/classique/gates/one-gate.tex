@@ -1,0 +1,60 @@
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Nom & Symbole & Table de vérité \\
+        \hline
+        Buffer &
+        \begin{tikzpicture}[
+        %Environment config
+            font=\sffamily,
+            thick,
+        %Environment styles
+            GateCfg/.style={
+                logic gate inputs={normal,normal,normal},
+                draw,
+                scale=1
+            },
+            baseline=(current bounding box.center)
+        ]
+            % Draw an input A and a buffer to an output Q
+            \node[buffer gate US, draw, logic gate inputs={normal}, scale=1] (buffer) {};
+            \draw (buffer.input) -- ++(-0.1,0) node[left] (A) {$A$};
+            \draw (buffer.output) -- ++(0.1,0) node[right] (Q) {$Q$};
+        \end{tikzpicture} &
+        \begin{tabular}{c||c}
+            $A$ & $Q$ \\
+            \hline
+            0 & 0 \\
+            1 & 1 \\
+        \end{tabular} \\
+        \hline
+        NOT &
+        \begin{tikzpicture}[
+        %Environment config
+            font=\sffamily,
+            thick,
+        %Environment styles
+            GateCfg/.style={
+                logic gate inputs={normal,normal,normal},
+                draw,
+                scale=1
+            },
+            baseline=(current bounding box.center)
+        ]
+            % Draw an input A and a not to an output Q
+            \node[not gate US, draw, logic gate inputs={normal}, scale=1] (not) {};
+            \draw (not.input) -- ++(-0.1,0) node[left] (A) {$A$};
+            \draw (not.output) -- ++(0.1,0) node[right] (Q) {$Q$};
+        \end{tikzpicture} &
+        \begin{tabular}{c||c}
+            $A$ & $Q$ \\
+            \hline
+            0 & 1 \\
+            1 & 0 \\
+        \end{tabular} \\
+        \hline
+    \end{tabular}
+    \caption{Résumé des opérations logiques sur une entrée}
+    \label{tab:one-in-gate-classic}
+\end{table}

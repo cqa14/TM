@@ -1,0 +1,13 @@
+\begin{algorithm}[H]
+    \caption{Recherche du maximum d'une liste}
+    \label{alg:maximum}
+    \Entree{Une liste de nombres $L$}
+    \Sortie{Le maximum de la liste : $m$}
+    $m \gets L[0]$ \;
+    \Pour{$i \gets 1 \textbf{ à } n$}{
+        \Si{$L[i] > m$}{
+            $m \gets L[i]$ \;
+        }
+    }
+    \Retour $m$\;
+\end{algorithm}

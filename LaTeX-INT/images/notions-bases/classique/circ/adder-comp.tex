@@ -1,0 +1,64 @@
+% \usepackage[usenames,dvipsnames]{pstricks}
+% \usepackage{pstricks-add}
+% \usepackage{epsfig}
+% \usepackage{pst-grad} % For gradients
+% \usepackage{pst-plot} % For axes
+% \usepackage[space]{grffile} % For spaces in paths
+% \usepackage{etoolbox} % For spaces in paths
+% \makeatletter % For spaces in paths
+% \patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+% \makeatother
+% 
+\begin{figure}[H]
+\centering
+\psscalebox{0.7 0.7} % Change this value to rescale the drawing.
+{
+\begin{pspicture}(0,-5.035)(17.48,1.455)
+\rput[bl](0.0,0.285){$x_1$}
+\rput[bl](0.02,-0.735){$x_2$}
+\rput[bl](0.02,1.205){$x_0$}
+\rput[bl](0.06,-2.835){$y_0$}
+\rput[bl](0.08,-3.855){$y_1$}
+\rput[bl](0.04,-4.915){$y_2$}
+\rput[bl](17.12,0.505){$s_0$}
+\rput[bl](16.96,-1.635){$s_1$}
+\rput[bl](16.96,-3.755){$s_2$}
+\rput[bl](16.96,-4.495){$s_3$}
+\psframe[linecolor=black, linewidth=0.04, dimen=outer](5.64,1.325)(3.68,-0.635)
+\psframe[linecolor=black, linewidth=0.04, dimen=outer](9.76,-0.975)(7.8,-2.935)
+\psframe[linecolor=black, linewidth=0.04, dimen=outer](13.94,-3.075)(11.98,-5.035)
+\rput[bl](9.3,-1.695){$o_0$}
+\rput[bl](9.34,-2.375){$o_1$}
+\rput[bl](13.52,-3.775){$o_0$}
+\rput[bl](13.56,-4.455){$o_1$}
+\rput[bl](5.24,0.585){$o_0$}
+\rput[bl](5.28,-0.095){$o_1$}
+\rput[bl](4.62,0.205){2+}
+\rput[bl](8.6,-2.115){3+}
+\rput[bl](12.76,-4.195){3+}
+\rput[bl](3.76,0.545){$i_0$}
+\rput[bl](3.78,-0.415){$i_1$}
+\rput[bl](7.88,-1.555){$i_0$}
+\rput[bl](7.92,-2.155){$i_1$}
+\rput[bl](12.08,-3.635){$i_0$}
+\rput[bl](12.1,-4.275){$i_1$}
+\rput[bl](7.9,-2.755){$i_3$}
+\rput[bl](12.08,-4.895){$i_3$}
+\psline[linecolor=black, linewidth=0.04](0.52,1.325)(2.48,1.325)(2.48,0.765)(3.68,0.745)
+\psline[linecolor=black, linewidth=0.04](0.52,-2.735)(2.2,-2.755)(2.2,-0.255)(3.7,-0.255)
+\psline[linecolor=black, linewidth=0.04](5.64,0.705)(17.06,0.685)
+\psline[linecolor=black, linewidth=0.04](9.76,-1.535)(16.86,-1.515)
+\psline[linecolor=black, linewidth=0.04](13.94,-3.635)(16.86,-3.615)
+\psline[linecolor=black, linewidth=0.04](13.92,-4.335)(16.86,-4.315)
+\psline[linecolor=black, linewidth=0.04](5.64,0.025)(6.26,0.005)(6.24,-1.295)(7.82,-1.295)
+\psline[linecolor=black, linewidth=0.04](0.34,0.485)(3.18,0.445)(3.24,-1.895)(7.8,-1.955)
+\psline[linecolor=black, linewidth=0.04](0.48,-3.675)(6.12,-3.655)(6.1,-2.595)(7.84,-2.575)
+\psline[linecolor=black, linewidth=0.04](9.72,-2.255)(10.56,-2.255)(10.58,-3.375)(12.0,-3.355)
+\psline[linecolor=black, linewidth=0.04](0.4,-0.575)(1.38,-0.575)(1.38,-4.095)(11.96,-4.135)
+\psline[linecolor=black, linewidth=0.04](0.48,-4.775)(11.98,-4.675)
+\end{pspicture}
+}
+\caption{Schéma d'une addition de deux nombres de 3 bits}
+\label{fig:adder-comp}
+\end{figure}
+

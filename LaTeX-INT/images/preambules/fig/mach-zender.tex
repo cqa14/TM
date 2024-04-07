@@ -1,0 +1,48 @@
+% \usepackage[usenames,dvipsnames]{pstricks}
+% \usepackage{pstricks-add}
+% \usepackage{epsfig}
+% \usepackage{pst-grad} % For gradients
+% \usepackage{pst-plot} % For axes
+% \usepackage[space]{grffile} % For spaces in paths
+% \usepackage{etoolbox} % For spaces in paths
+% \makeatletter % For spaces in paths
+% \patchcmd\Gread@eps{\@inputcheck#1 }{\@inputcheck"#1"\relax}{}{}
+% \makeatother
+% 
+\begin{figure}[H]
+\centering
+\psscalebox{0.7 0.7} % Change this value to rescale the drawing.
+{
+\begin{pspicture}(0,-4.95)(9.46,1.95)
+\definecolor{colour0}{rgb}{0.7019608,0.7019608,0.7019608}
+\definecolor{colour1}{rgb}{0.4,0.4,0.4}
+\definecolor{colour2}{rgb}{0.6,0.6,0.6}
+\psframe[linecolor=black, linewidth=0.04, dimen=outer](1.0,1.23)(0.04,0.27)
+\pscircle[linecolor=yellow, linewidth=0.04, fillstyle=solid,fillcolor=yellow, dimen=outer](0.52,0.71){0.24}
+\rput[bl](0.0,1.43){Source}
+\psrotate(3.43, 0.72){39.936382}{\psellipse[linecolor=colour0, linewidth=0.04, fillstyle=gradient, gradlines=2000, gradbegin=colour0, gradend=white, dimen=outer](3.43,0.72)(0.19,0.75)}
+\psrotate(6.71, -2.44){39.936382}{\psellipse[linecolor=colour0, linewidth=0.04, fillstyle=gradient, gradlines=2000, gradbegin=colour0, gradend=white, dimen=outer](6.71,-2.44)(0.19,0.75)}
+\psrotate(3.35, -2.46){39.936382}{\psellipse[linecolor=colour1, linewidth=0.04, fillstyle=gradient, gradlines=2000, gradbegin=colour1, gradend=colour2, dimen=outer](3.35,-2.46)(0.19,0.75)}
+\psrotate(6.87, 0.8){39.936382}{\psellipse[linecolor=colour1, linewidth=0.04, fillstyle=gradient, gradlines=2000, gradbegin=colour1, gradend=colour2, dimen=outer](6.87,0.8)(0.19,0.75)}
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=black, dimen=outer](9.46,-2.23)(8.66,-2.69)
+\psframe[linecolor=black, linewidth=0.04, fillstyle=solid,fillcolor=black, dimen=outer](7.1,-3.97)(6.66,-4.95)
+\psline[linecolor=yellow, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(0.72,0.67)(3.44,0.65)
+\psline[linecolor=yellow, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(3.44,0.65)(3.4,-2.35)
+\psline[linecolor=yellow, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(3.42,0.63)(6.84,0.73)
+\psline[linecolor=yellow, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(3.36,-2.39)(6.74,-2.43)
+\psline[linecolor=yellow, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(6.84,0.77)(6.78,-2.41)
+\psline[linecolor=yellow, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(6.66,-2.39)(8.64,-2.41)
+\pscircle[linecolor=red, linewidth=0.04, fillstyle=solid,fillcolor=red, dimen=outer](9.18,-2.45){0.1}
+\rput[bl](7.38,1.21){Miroir réflechissant}
+\rput[bl](2.24,1.69){Miroir semi-réflechissant}
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(3.82,1.55)(3.54,1.09)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(7.64,1.15)(7.24,0.85)
+\rput[bl](8.26,-4.53){Détecteurs}
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(8.8,-4.11)(9.02,-2.79)
+\psline[linecolor=black, linewidth=0.04, arrowsize=0.05291667cm 2.0,arrowlength=1.4,arrowinset=0.0]{->}(8.18,-4.41)(7.22,-4.53)
+\end{pspicture}
+}
+\caption{Interféromètre de Mach-Zehnder}
+\label{fig:machzehnder}
+\end{figure}
+

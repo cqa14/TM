@@ -1,0 +1,24 @@
+\begin{lstlisting}[language=Python,label={lst:python-factorielle-10000},title={Programme de test en Python},
+    escapeinside={''}]
+import timeit
+
+p = 20
+def factorial(n):
+    result = 1
+    for i in range(1, n+1):
+        result *= i
+
+    return result
+
+
+f = factorial(p)
+elapsed_time = timeit.timeit(str((factorial(p))), number=10000)
+
+print("Factorial of", p, "=", factorial(p))
+print("Time measured :", elapsed_time, "seconds.")
+
+''
+out :
+Factorial of 20 = 2432902008176640000
+Time measured : 8.160003926604986e-05 seconds.
+\end{lstlisting}

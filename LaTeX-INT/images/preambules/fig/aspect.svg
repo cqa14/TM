@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="windows-1252"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="206 158 552 150" xmlns:latexdraw="http://latexdraw.sourceforge.net/namespaces/latexdraw" version="1.1" baseProfile="full">
+    <g>
+        <g latexdraw:type="circle" id="id2131442772">
+            <circle cx="479.0" cy="230.0" r="29.0" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="#ffb366"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id780653519">
+            <polyline points="450.0,230.0 333.0,229.0 " stroke="yellow" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0" marker-end="url(#arrow1-780653519)"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id937053410">
+            <polyline points="509.0,232.0 636.0,232.0 " stroke="yellow" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0" marker-end="url(#arrow1-937053410)"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1698579361">
+            <rect x="248.0" y="179.0" width="82.0" height="107.0" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="#ccffff"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id1547528383">
+            <rect x="641.0" y="180.0" width="88.0" height="107.0" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="#ccffff"/>
+        </g>
+        <g latexdraw:type="text" id="id635852394" fill="black" latexdraw:position="bl">
+            <text x="226.0" y="196.0">+</text>
+        </g>
+        <g latexdraw:type="text" id="id1232056607" fill="black" latexdraw:position="bl">
+            <text x="229.0" y="280.0">-</text>
+        </g>
+        <g latexdraw:type="text" id="id840199414" fill="black" latexdraw:position="bl">
+            <text x="735.0" y="195.0">+</text>
+        </g>
+        <g latexdraw:type="text" id="id1317726586" fill="black" latexdraw:position="bl">
+            <text x="738.0" y="279.0">-</text>
+        </g>
+        <g latexdraw:type="text" id="id1206175576" fill="black" latexdraw:position="bl">
+            <text x="260.0" y="237.0">Détecteur 1</text>
+        </g>
+        <g latexdraw:type="text" id="id474740636" fill="black" latexdraw:position="bl">
+            <text x="653.0" y="238.0">Détecteur 2</text>
+        </g>
+        <g latexdraw:type="text" id="id538290661" fill="black" latexdraw:position="bl">
+            <text x="451.0" y="196.0">Source</text>
+        </g>
+        <g latexdraw:type="text" id="id796321494" fill="black" latexdraw:position="bl">
+            <text x="523.0" y="259.0">particule 2</text>
+        </g>
+        <g latexdraw:type="text" id="id1470221399" fill="black" latexdraw:position="bl">
+            <text x="356.0" y="255.0">particule 1</text>
+        </g>
+    </g>
+    <defs>
+        <marker overflow="visible" markerUnits="userSpaceOnUse" orient="180.49" id="arrow1-780653519">
+            <path d="M 0.0 0.0 L -9.304166666666667 -3.322916666666667 L -9.304166666666667 0.0 L -9.304166666666667 3.322916666666667 z" fill="yellow" stroke="yellow" latexdraw:arrSizeNum="2" latexdraw:tbarSizeNum="5"/>
+        </marker>
+        <marker overflow="visible" markerUnits="userSpaceOnUse" orient="auto" id="arrow1-937053410">
+            <path d="M 0.0 0.0 L -9.304166666666667 -3.322916666666667 L -9.304166666666667 0.0 L -9.304166666666667 3.322916666666667 z" fill="yellow" stroke="yellow" latexdraw:arrSizeNum="2" latexdraw:tbarSizeNum="5"/>
+        </marker>
+    </defs>
+    <metadata>
+        <latexdraw:metadata>
+            <latexdraw:centreHoriz>false</latexdraw:centreHoriz>
+            <latexdraw:positionVert/>
+            <latexdraw:zoom>1.0</latexdraw:zoom>
+            <latexdraw:vpx>0.5</latexdraw:vpx>
+            <latexdraw:vpy>0.4</latexdraw:vpy>
+        </latexdraw:metadata>
+    </metadata>
+</svg>

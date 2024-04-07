@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="windows-1252"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="223 101 268 236" xmlns:latexdraw="http://latexdraw.sourceforge.net/namespaces/latexdraw" version="1.1" baseProfile="full">
+    <g>
+        <g latexdraw:type="circle" id="id1946397769">
+            <circle cx="261.25" cy="240.25" r="17.25" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id1736014175" fill="black" latexdraw:position="bl">
+            <text x="255.0" y="246.0">U</text>
+        </g>
+        <g latexdraw:type="joinedLines" id="id43495977">
+            <polyline points="262.0,222.0 263.0,157.0 336.0,156.0 336.0,138.0 336.0,174.0 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id832570848">
+            <polyline points="422.5,216.0 422.43918918918735,155.0 350.0,155.0 350.0,137.0 350.0,174.0 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="square" id="id396306890">
+            <rect x="406.0" y="217.0" width="36.0" height="36.0" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="none"/>
+        </g>
+        <g latexdraw:type="text" id="id872135432" fill="black" latexdraw:position="bl">
+            <text x="311.0" y="129.0">C</text>
+        </g>
+        <g latexdraw:type="text" id="id748620284" fill="black" latexdraw:position="bl">
+            <text x="458.0" y="262.0">J</text>
+        </g>
+        <g latexdraw:type="joinedLines" id="id283323900">
+            <polyline points="404.0,217.0 441.0,252.0 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id481802280">
+            <polyline points="407.0,254.0 443.0,218.0 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="joinedLines" id="id1584570752">
+            <polyline points="261.0,257.0 261.0,317.0 428.0,316.0 427.0,253.0 " stroke="black" stroke-width="2.0" fill="none" latexdraw:rotationAngle="0.0"/>
+        </g>
+        <g latexdraw:type="rectangle" id="id652485525">
+            <rect x="343.0" y="122.0" width="127.0" height="113.0" latexdraw:borderPos="outer" stroke="black" stroke-width="2.0" fill="none" stroke-linecap="round" stroke-dasharray="1, 7.291666666666667"/>
+        </g>
+    </g>
+    <defs/>
+    <metadata>
+        <latexdraw:metadata>
+            <latexdraw:centreHoriz>false</latexdraw:centreHoriz>
+            <latexdraw:positionVert/>
+            <latexdraw:zoom>1.0</latexdraw:zoom>
+            <latexdraw:vpx>0.5</latexdraw:vpx>
+            <latexdraw:vpy>0.4</latexdraw:vpy>
+        </latexdraw:metadata>
+    </metadata>
+</svg>
