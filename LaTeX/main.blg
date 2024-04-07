@@ -1,0 +1,80 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: biblatex.bst
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+Reallocating 'name_of_file' (item size: 1) to 23 items.
+Reallocating 'name_of_file' (item size: 1) to 18 items.
+Reallocating 'name_of_file' (item size: 1) to 17 items.
+Reallocating 'glb_str_end' (item size: 4) to 20 items.
+Reallocating 'glb_str_ptr' (item size: 4) to 20 items.
+Reallocating 'global_strs' (item size: 1) to 4000000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 6000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Database file #1: main-blx.bib
+Database file #2: sources/sources-global.bib
+Database file #3: sources/wikipedia.bib
+Database file #4: sources/articles.bib
+Reallocating 'field_info' (item size: 4) to 10040 items.
+Biblatex version: 3.16
+Reallocating 'wiz_functions' (item size: 4) to 9000 items.
+Warning--you've exceeded 500, the entry-string-size, for entry Qiskit
+while executing--line 2697 of file biblatex.bst
+*Please notify the bibstyle designer*
+Warning--you've exceeded 500, the entry-string-size, for entry Qiskit
+while executing--line 2725 of file biblatex.bst
+*Please notify the bibstyle designer*
+Reallocating 'singl_function' (item size: 4) to 100 items.
+You've used 41 entries,
+            6393 wiz_defined-function locations,
+            1385 strings with 26001 characters,
+and the built_in function-call counts, 877527 in all, are:
+= -- 78659
+> -- 8781
+< -- 1193
++ -- 29506
+- -- 4435
+* -- 68166
+:= -- 121071
+add.period$ -- 0
+call.type$ -- 41
+change.case$ -- 484
+chr.to.int$ -- 66
+cite$ -- 80
+duplicate$ -- 90782
+empty$ -- 69779
+format.name$ -- 8586
+if$ -- 162843
+int.to.chr$ -- 0
+int.to.str$ -- 135
+missing$ -- 0
+newline$ -- 4328
+num.names$ -- 1814
+pop$ -- 22040
+preamble$ -- 1
+purify$ -- 1777
+quote$ -- 0
+skip$ -- 9941
+stack$ -- 0
+substring$ -- 156043
+swap$ -- 12658
+text.length$ -- 1688
+text.prefix$ -- 46
+top$ -- 1
+type$ -- 1382
+warning$ -- 0
+while$ -- 16913
+width$ -- 0
+write$ -- 4288
+(There were 2 warnings)

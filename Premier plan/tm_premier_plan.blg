@@ -1,0 +1,81 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: tm_premier_plan.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: biblatex.bst
+Reallocating 'name_of_file' (item size: 1) to 20 items.
+Reallocating 'name_of_file' (item size: 1) to 8 items.
+Reallocating 'glb_str_end' (item size: 4) to 20 items.
+Reallocating 'glb_str_ptr' (item size: 4) to 20 items.
+Reallocating 'global_strs' (item size: 1) to 4000000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 6000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Database file #1: tm_premier_plan-blx.bib
+Database file #2: sources.bib
+Biblatex version: 3.16
+Reallocating 'wiz_functions' (item size: 4) to 9000 items.
+Warning--you've exceeded 500, the entry-string-size, for entry Qiskit
+while executing--line 2697 of file biblatex.bst
+*Please notify the bibstyle designer*
+Warning--you've exceeded 500, the entry-string-size, for entry Qiskit
+while executing--line 2697 of file biblatex.bst
+*Please notify the bibstyle designer*
+Warning--you've exceeded 500, the entry-string-size, for entry Qiskit
+while executing--line 2711 of file biblatex.bst
+*Please notify the bibstyle designer*
+Warning--you've exceeded 500, the entry-string-size, for entry Qiskit
+while executing--line 2725 of file biblatex.bst
+*Please notify the bibstyle designer*
+Reallocating 'singl_function' (item size: 4) to 100 items.
+You've used 4 entries,
+            6393 wiz_defined-function locations,
+            1214 strings with 19733 characters,
+and the built_in function-call counts, 729370 in all, are:
+= -- 67437
+> -- 10036
+< -- 200
++ -- 29097
+- -- 5765
+* -- 57757
+:= -- 109639
+add.period$ -- 0
+call.type$ -- 4
+change.case$ -- 29
+chr.to.int$ -- 50
+cite$ -- 6
+duplicate$ -- 73282
+empty$ -- 52082
+format.name$ -- 8900
+if$ -- 130344
+int.to.chr$ -- 0
+int.to.str$ -- 4
+missing$ -- 0
+newline$ -- 3336
+num.names$ -- 41
+pop$ -- 9828
+preamble$ -- 1
+purify$ -- 1750
+quote$ -- 0
+skip$ -- 5743
+stack$ -- 0
+substring$ -- 136910
+swap$ -- 7917
+text.length$ -- 800
+text.prefix$ -- 9
+top$ -- 1
+type$ -- 124
+warning$ -- 0
+while$ -- 14945
+width$ -- 0
+write$ -- 3333
+(There were 4 warnings)
